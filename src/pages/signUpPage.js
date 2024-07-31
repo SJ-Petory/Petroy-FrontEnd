@@ -13,6 +13,10 @@ function SignUpPage() {
         image: null
     });
     const [isFormValid, setIsFormValid] = useState(false);
+    const [emailError, setEmailError] = useState('');
+    const [nameError, setNameError] = useState('');
+    const [emailChecked, setEmailChecked] = useState(false);
+    const [nameChecked, setNameChecked] = useState(false);
 
     const handleHomeClick = () => {
         navigate('/');
@@ -24,6 +28,16 @@ function SignUpPage() {
             ...prevData,
             [name]: files ? files[0] : value
         }));
+        
+        if (name === 'name') {
+            setNameChecked(false);
+            setNameError('이름 중복 확인을 해주세요.');
+        }
+
+        if (name === 'email') {
+            setEmailChecked(false);
+            setEmailError('이메일 중복 확인을 해주세요.');
+        }
     };
 
     const validateForm = () => {
@@ -32,12 +46,46 @@ function SignUpPage() {
         const passwordValid = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/.test(formData.password);
         const phoneValid = /^\d{3}-\d{4}-\d{4}$/.test(formData.phone);
 
-        setIsFormValid(nameValid && emailValid && passwordValid && phoneValid);
+        setIsFormValid(nameValid && emailValid && passwordValid && phoneValid && emailChecked && nameChecked);
     };
 
     useEffect(() => {
         validateForm();
-    }, [formData]);
+    }, [formData, emailChecked, nameChecked]);
+
+    const checkEmailDuplicate = async () => {
+        try {
+            const response = await axios.get('/members/check-email', { params: { email: formData.email } });
+            if (response.data) {
+                setEmailError('이메일이 중복되었습니다.');
+                setEmailChecked(false);
+            } else {
+                setEmailError('');
+                setEmailChecked(true);
+            }
+        } catch (error) {
+            console.error(error);
+            setEmailError('이메일 중복 검사 중 오류가 발생했습니다.');
+            setEmailChecked(false);
+        }
+    };
+
+    const checkNameDuplicate = async () => {
+        try {
+            const response = await axios.get('/members/check-name', { params: { name: formData.name } });
+            if (response.data) {
+                setNameError('이름이 중복되었습니다.');
+                setNameChecked(false);
+            } else {
+                setNameError('');
+                setNameChecked(true);
+            }
+        } catch (error) {
+            console.error(error);
+            setNameError('이름 중복 검사 중 오류가 발생했습니다.');
+            setNameChecked(false);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -51,7 +99,7 @@ function SignUpPage() {
         }
 
         try {
-            const response = await axios.post('/member', data, {
+            const response = await axios.post('/members', data, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -69,30 +117,38 @@ function SignUpPage() {
             <p>회원가입 페이지임</p>
             <div className='signUpFull'>
                 <form onSubmit={handleSubmit}>
-                    <div className="loginFormGroup">
+                    <div className="signUpFormGroup">
                         <label htmlFor="name">이름</label>
-                        <input 
-                            type="text" 
-                            id="name" 
-                            name="name" 
-                            maxLength="10" 
-                            required 
-                            placeholder='김지훈'
-                            value={formData.name}
-                            onChange={handleChange}
-                        />
+                        <div className="inputGroup">
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                maxLength="10" 
+                                required 
+                                placeholder='김지훈'
+                                value={formData.name}
+                                onChange={handleChange}
+                            />
+                            <button type="button" onClick={checkNameDuplicate}>중복 확인</button>
+                        </div>
+                        {nameError && <p className="error">{nameError}</p>}
                     </div>
                     <div className="signUpFormGroup">
                         <label htmlFor="email">이메일</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            placeholder='wlgns5041@naver.com'
-                            required 
-                            value={formData.email}
-                            onChange={handleChange}
-                        />
+                        <div className="inputGroup">
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                placeholder='wlgns5041@naver.com'
+                                required 
+                                value={formData.email}
+                                onChange={handleChange}
+                            />
+                            <button type="button" onClick={checkEmailDuplicate}>중복 확인</button>
+                        </div>
+                        {emailError && <p className="error">{emailError}</p>}
                     </div>
                     <div className="signUpFormGroup">
                         <label htmlFor="password">비밀번호</label>
@@ -135,9 +191,7 @@ function SignUpPage() {
                         <button 
                             type="submit" 
                             disabled={!isFormValid} 
-                            style={{
-                                backgroundColor: isFormValid ? 'green' : 'gray'
-                            }}
+                            className={`submitBtn ${isFormValid ? 'active' : 'inactive'}`}
                         >
                             확인
                         </button>
