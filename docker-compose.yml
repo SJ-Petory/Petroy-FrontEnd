@@ -4,7 +4,7 @@ services:
     container_name: jenkins
     image: jenkins/jenkins:lts
     ports:
-      - "8080:8080"
+      - "9090:9090"
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home

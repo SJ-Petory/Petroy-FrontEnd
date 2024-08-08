@@ -1,17 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../styles/mainPage.css';
+import CalendarComponent from '../components/commons/CalendarComponent';
 
 function MainPage() {
-
     return (
-        <>
-            
-        </>
-    )
+        <div className="main-page">
+            <CalendarComponent />
+        </div>
+    );
 }
 
 export default MainPage;
-
-
-

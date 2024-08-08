@@ -55,7 +55,7 @@ function SignUpPage() {
 
     const checkEmailDuplicate = async () => {
         try {
-            const response = await axios.get('/members/check-email', { params: { email: formData.email } });
+            const response = await axios.get('http://43.202.195.199:8080/members/check-email', { params: { email: formData.email } });
             if (response.data) {
                 setEmailError('이메일이 중복되었습니다.');
                 setEmailChecked(false);
@@ -72,7 +72,7 @@ function SignUpPage() {
 
     const checkNameDuplicate = async () => {
         try {
-            const response = await axios.get('/members/check-name', { params: { name: formData.name } });
+            const response = await axios.get('http://43.202.195.199:8080/members/check-name', { params: { name: formData.name } });
             if (response.data) {
                 setNameError('이름이 중복되었습니다.');
                 setNameChecked(false);
@@ -99,7 +99,7 @@ function SignUpPage() {
         }
 
         try {
-            const response = await axios.post('/members', data, {
+            const response = await axios.post('http://43.202.195.199:8080/members', data, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
