@@ -45,6 +45,7 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
-  
+    
+  },
+  "proxy": "http://43.202.195.199:8080"
 }
