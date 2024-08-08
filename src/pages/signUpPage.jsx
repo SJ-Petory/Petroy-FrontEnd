@@ -40,16 +40,16 @@ function SignUpPage() {
         }
     };
 
-    const validateForm = () => {
-        const nameValid = formData.name.length > 0 && formData.name.length <= 10;
-        const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
-        const passwordValid = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/.test(formData.password);
-        const phoneValid = /^\d{3}-\d{4}-\d{4}$/.test(formData.phone);
-
-        setIsFormValid(nameValid && emailValid && passwordValid && phoneValid && emailChecked && nameChecked);
-    };
-
     useEffect(() => {
+        const validateForm = () => {
+            const nameValid = formData.name.length > 0 && formData.name.length <= 10;
+            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+            const passwordValid = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/.test(formData.password);
+            const phoneValid = /^\d{3}-\d{4}-\d{4}$/.test(formData.phone);
+    
+            setIsFormValid(nameValid && emailValid && passwordValid && phoneValid && emailChecked && nameChecked);
+        };
+        
         validateForm();
     }, [formData, emailChecked, nameChecked]);
 
