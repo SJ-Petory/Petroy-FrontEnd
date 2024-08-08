@@ -102,11 +102,8 @@ function SignUpPage() {
         }
 
         try {
-            const response = await axios.post('http://43.202.195.199:8080/members', data, {
-                // headers: {
-                //     'Content-Type': 'multipart/form-data'
-                // }
-            });
+            const response = await axios.post('http://43.202.195.199:8080/members', data)
+        
             console.log(response.data);
             navigate('/');
         } catch (error) {
