@@ -76,11 +76,11 @@ function SignUpPage() {
     const checkNameDuplicate = async () => {
         try {
             const response = await axios.get('http://43.202.195.199:8080/members/check-name', { params: { name: formData.name } });
-            if (response.data) {
+            if (!response.data) {
                 setNameError('이름이 중복되었습니다.');
                 setNameChecked(false);
             } else {
-                setNameError('');
+                setNameError('사용가능한 이름입니다');
                 setNameChecked(true);
             }
         } catch (error) {
