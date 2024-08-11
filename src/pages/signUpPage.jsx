@@ -76,6 +76,12 @@ function SignUpPage() {
     }, [formData, emailChecked, nameChecked, passwordCriteria]);
 
     const checkEmailDuplicate = async () => {
+        if (formData.email.trim() === '') {
+            setEmailError('이메일을 입력해 주세요.');
+            setEmailChecked(false);
+            return;
+        }
+
         try {
             const response = await axios.get('http://43.202.195.199:8080/members/check-email', { params: { email: formData.email } });
 
@@ -94,6 +100,12 @@ function SignUpPage() {
     };
 
     const checkNameDuplicate = async () => {
+        if (formData.name.trim() === '') {
+            setNameError('이름을 입력해 주세요.');
+            setNameChecked(false);
+            return;
+        }
+
         try {
             const response = await axios.get('http://43.202.195.199:8080/members/check-name', { params: { name: formData.name } });
             if (!response.data) {
@@ -112,6 +124,12 @@ function SignUpPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!isFormValid) {
+            alert('모든 필드를 올바르게 입력해 주세요.');
+            return;
+        }
+
         const data = new FormData();
         data.append('name', formData.name);
         data.append('email', formData.email);
