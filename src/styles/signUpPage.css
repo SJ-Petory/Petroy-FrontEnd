@@ -114,3 +114,14 @@ p {
     background-color: gray;
 }
 
+.passwordCriteria {
+    margin-top: 10px; 
+}
+
+.passwordCriteria p {
+    margin: 2px 0; 
+    padding: 0; 
+    font-size: 12px;
+}
+
+
