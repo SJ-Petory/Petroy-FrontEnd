@@ -45,7 +45,13 @@ function SignUpPage() {
         if (name === 'email') {
             setEmailChecked(false);
             setEmailError('이메일 중복 확인을 해주세요.');
+    
+            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+            if (!emailValid) {
+                setEmailError('이메일 형식을 확인해 주세요.');
+            }
         }
+    
 
         if (name === 'password') {
             validatePassword(value);
@@ -81,6 +87,14 @@ function SignUpPage() {
             setEmailChecked(false);
             return;
         }
+
+        
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+    if (!emailValid) {
+        setEmailError('이메일 형식을 확인해 주세요.');
+        setEmailChecked(false);
+        return;
+    }
     
         try {
             const response = await axios.get('http://43.202.195.199:8080/members/check-email', { params: { email: formData.email } });
