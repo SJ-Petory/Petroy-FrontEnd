@@ -44,11 +44,12 @@ function SignUpPage() {
 
         if (name === 'email') {
             setEmailChecked(false);
-            setEmailError('이메일 중복 확인을 해주세요.');
     
             const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
             if (!emailValid) {
                 setEmailError('이메일 형식을 확인해 주세요.');
+            } else {
+                setEmailError('이메일 중복 확인을 해주세요.');
             }
         }
     
