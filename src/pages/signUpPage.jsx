@@ -18,6 +18,14 @@ function SignUpPage() {
     const [emailChecked, setEmailChecked] = useState(false);
     const [nameChecked, setNameChecked] = useState(false);
 
+    const [passwordCriteria, setPasswordCriteria] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        specialChar: false
+    });
+
     const handleHomeClick = () => {
         navigate('/');
     };
@@ -38,32 +46,44 @@ function SignUpPage() {
             setEmailChecked(false);
             setEmailError('이메일 중복 확인을 해주세요.');
         }
+
+        if (name === 'password') {
+            validatePassword(value);
+        }
+    };
+
+    const validatePassword = (password) => {
+        setPasswordCriteria({
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /\d/.test(password),
+            specialChar: /[@$!%*?&]/.test(password)
+        });
     };
 
     useEffect(() => {
         const validateForm = () => {
             const nameValid = formData.name.length > 0 && formData.name.length <= 10;
             const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
-            const passwordValid = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/.test(formData.password);
+            const passwordValid = Object.values(passwordCriteria).every(Boolean);
             const phoneValid = /^\d{3}-\d{4}-\d{4}$/.test(formData.phone);
     
             setIsFormValid(nameValid && emailValid && passwordValid && phoneValid && emailChecked && nameChecked);
         };
         
         validateForm();
-    }, [formData, emailChecked, nameChecked]);
+    }, [formData, emailChecked, nameChecked, passwordCriteria]);
 
     const checkEmailDuplicate = async () => {
         try {
             const response = await axios.get('http://43.202.195.199:8080/members/check-email', { params: { email: formData.email } });
 
-            console.log(response.data);
-            // true 아니면 예외값
-            if (!response.data) {  //예외값
+            if (!response.data) {
                 setEmailError('중복된 이메일입니다.');
                 setEmailChecked(false);
             } else {
-                setEmailError('사용가능한 이메일입니다'); //true
+                setEmailError('사용가능한 이메일입니다.');
                 setEmailChecked(true);
             }
         } catch (error) {
@@ -102,11 +122,7 @@ function SignUpPage() {
         }
 
         try {
-            const response = await axios.post('http://43.202.195.199:8080/members', data, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await axios.post('http://43.202.195.199:8080/members', data);
             console.log(response.data);
             navigate('/');
         } catch (error) {
@@ -159,12 +175,28 @@ function SignUpPage() {
                             type="password"
                             id="password"
                             name="password"
-                            pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                             placeholder='영문 대소문자, 숫자, 특수문자 포함 8자 이상'
                             required
                             value={formData.password}
                             onChange={handleChange}
                         />
+                        <div className="passwordCriteria">
+                            <p className={passwordCriteria.length ? 'valid' : 'invalid'}>
+                                {passwordCriteria.length ? '✔' : '✘'} 8자 이상
+                            </p>
+                            <p className={passwordCriteria.uppercase ? 'valid' : 'invalid'}>
+                                {passwordCriteria.uppercase ? '✔' : '✘'} 영문 대문자 포함
+                            </p>
+                            <p className={passwordCriteria.lowercase ? 'valid' : 'invalid'}>
+                                {passwordCriteria.lowercase ? '✔' : '✘'} 영문 소문자 포함
+                            </p>
+                            <p className={passwordCriteria.number ? 'valid' : 'invalid'}>
+                                {passwordCriteria.number ? '✔' : '✘'} 숫자 포함
+                            </p>
+                            <p className={passwordCriteria.specialChar ? 'valid' : 'invalid'}>
+                                {passwordCriteria.specialChar ? '✔' : '✘'} 특수문자 포함 (@$!%*?&)
+                            </p>
+                        </div>
                     </div>
                     <div className="signUpFormGroup">
                         <label htmlFor="phone">휴대폰번호 (-포함)</label>
