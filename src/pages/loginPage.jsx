@@ -41,7 +41,7 @@ function LoginPage() {
             const data = await response.json();
             localStorage.setItem('accessToken', data.accessToken);
             localStorage.setItem('refreshToken', data.refreshToken);
-            navigate('/');
+            navigate('/mainPage');
         } catch (error) {
             setError(error.message || '로그인에 실패했습니다. 다시 시도해 주세요.');
         }
