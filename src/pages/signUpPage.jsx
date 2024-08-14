@@ -44,11 +44,12 @@ function SignUpPage() {
 
         if (name === 'email') {
             setEmailChecked(false);
-            setEmailError('이메일 중복 확인을 해주세요.');
     
             const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
             if (!emailValid) {
                 setEmailError('이메일 형식을 확인해 주세요.');
+            } else {
+                setEmailError('이메일 중복 확인을 해주세요.');
             }
         }
     
@@ -178,11 +179,18 @@ function SignUpPage() {
         }
 
         try {
-            const response = await axios.post('http://43.202.195.199:8080/members', data);
-            console.log(response.data);
-            navigate('/');
+            const response = await axios.post('http://43.202.195.199:8080/members', formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.status === 200) {
+                alert('회원가입 성공');
+                navigate('/login');
+            }
         } catch (error) {
             console.error(error);
+            alert('회원가입 실패');
         }
     };
 
