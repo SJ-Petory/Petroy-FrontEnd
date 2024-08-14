@@ -16,7 +16,7 @@ function LoginPage() {
         e.preventDefault();
     
         try {
-            const response = await fetch('http://43.202.195.199/members/login', {
+            const response = await fetch('http://43.202.195.199:8080/members/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
