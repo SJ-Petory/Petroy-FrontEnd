@@ -4,7 +4,7 @@ import CalendarComponent from '../components/commons/CalendarComponent';
 
 const fetchCurrentMember = async (token) => {
     try {
-        const response = await fetch('/api/members', {
+        const response = await fetch('http://43.202.195.199:8080/members', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -13,15 +13,15 @@ const fetchCurrentMember = async (token) => {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('회원 정보를 가져오는데 실패했습니다.', errorData.message);
+            const errorText = await response.text();
+            console.error('회원 정보를 찾을 수 없습니다', errorText);
             return null;
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('회원 정보를 가져오는데 실패했습니다.', error);
+        console.error('회원 정보를 찾을 수 없습니다', error);
         return null;
     }
 };
@@ -37,6 +37,8 @@ function MainPage() {
                 const memberData = await fetchCurrentMember(token);
                 if (memberData && memberData.name) {
                     setMemberName(memberData.name);
+                } else {
+                    console.error('회원 정보를 찾을 수 없습니다');
                 }
             };
 
@@ -48,7 +50,7 @@ function MainPage() {
 
     return (
         <div className="main-page">
-            <h1>안녕하세요, {memberName}님!</h1>
+            <h1>안녕하세요. {memberName}님!</h1>
             <CalendarComponent />
         </div>
     );
