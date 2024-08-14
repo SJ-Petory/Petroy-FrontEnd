@@ -13,13 +13,13 @@ function LoginPage() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // 기본 폼 제출 동작을 막음
 
         try {
             const response = await fetch('http://43.202.195.199/members/login', {
-                method: 'POST',
+                method: 'POST', // POST 메서드를 사용
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json', // 요청 본문을 JSON으로 설정
                 },
                 body: JSON.stringify({
                     email: email,
@@ -27,19 +27,22 @@ function LoginPage() {
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('로그인 실패');
+            const data = await response.json(); // 응답 JSON 파싱
+
+            if (response.ok) {
+                // 성공적으로 로그인한 경우
+                localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('refreshToken', data.refreshToken);
+
+                // 홈 페이지로 리다이렉트
+                navigate('/');
+            } else {
+                // 오류가 발생한 경우
+                throw new Error(data.errorMessage || '로그인 실패');
             }
-
-            const data = await response.json();
-
-            localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('refreshToken', data.refreshToken);
-            
-            navigate('/');
-
         } catch (error) {
-            setError('로그인에 실패했습니다. 다시 시도해 주세요.');
+            // 오류 메시지 설정
+            setError(error.message || '로그인에 실패했습니다. 다시 시도해 주세요.');
         }
     };
 
