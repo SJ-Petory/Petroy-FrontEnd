@@ -1,12 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/loginPage.css';
 
 function LoginPage() {
     const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
 
     const handleHomeClick = () => {
         navigate('/');
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('http://43.202.195.199/members/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('로그인 실패');
+            }
+
+            const data = await response.json();
+
+            localStorage.setItem('accessToken', data.accessToken);
+            localStorage.setItem('refreshToken', data.refreshToken);
+            
+            navigate('/');
+
+        } catch (error) {
+            setError('로그인에 실패했습니다. 다시 시도해 주세요.');
+        }
     };
 
     return (
@@ -14,15 +48,30 @@ function LoginPage() {
             <h1>펫토리</h1>
             <p>로그인 페이지임</p>
             <div className='loginFull'>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="loginFormGroup">
                         <label htmlFor="e-mail">E-mail</label>
-                        <input type="text" id="e-mail" name="e-mail" required />
+                        <input
+                            type="text"
+                            id="e-mail"
+                            name="e-mail"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
                     </div>
                     <div className="loginFormGroup">
                         <label htmlFor="password">Password</label>
-                        <input type="password" id="password" name="password" required />
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
                     </div>
+                    {error && <p className="error">{error}</p>}
                     <div className="loginButtonGroup">
                         <button type="button" onClick={handleHomeClick}>취소</button>
                         <button type="submit">확인</button>
