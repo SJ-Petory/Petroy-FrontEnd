@@ -4,20 +4,23 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/signUpPage.css';
 
 function SignUpPage() {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
+    const navigate = useNavigate(); // 사용자 페이지 이동 관리
+    const [formData, setFormData] = useState({ // 입력 상태 저장
         name: '',
         email: '',
         password: '',
         phone: '',
         image: null
     });
+
+    // 각종 폼 유효성 검사 상태 
     const [isFormValid, setIsFormValid] = useState(false);
     const [emailError, setEmailError] = useState('');
     const [nameError, setNameError] = useState('');
     const [emailChecked, setEmailChecked] = useState(false);
     const [nameChecked, setNameChecked] = useState(false);
 
+    // 비밀번호 관련 상태 (다 false로 시작)
     const [passwordCriteria, setPasswordCriteria] = useState({
         length: false,
         uppercase: false,
@@ -26,26 +29,32 @@ function SignUpPage() {
         specialChar: false
     });
 
+    // 홈 이동
     const handleHomeClick = () => {
         navigate('/');
     };
 
+    // 양식 필드 변경 처리 (필드 속성 : name, value : 제출 값)
     const handleChange = (e) => {
         const { name, value, files } = e.target;
+
         setFormData((prevData) => ({
-            ...prevData,
-            [name]: files ? files[0] : value
+            ...prevData, // 이전 입력 계속 저장 (formDate)
+
+            [name]: files ? files[0] : value // 파일 입력 필드에서는 파일, 그 외에는 value 속성 저장
         }));
         
+        // name 필드일 때 메시지 출력
         if (name === 'name') {
             setNameChecked(false);
             setNameError('이름 중복 확인을 해주세요.');
         }
 
+        // email 필드일 때 메시지 출력
         if (name === 'email') {
             setEmailChecked(false);
     
-            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); //정규 표현식
             if (!emailValid) {
                 setEmailError('이메일 형식을 확인해 주세요.');
             } else {
@@ -53,12 +62,13 @@ function SignUpPage() {
             }
         }
     
-
+        // password 필드일때 유효성 검사 함수 호출, 상태 업데이트
         if (name === 'password') {
             validatePassword(value);
         }
     };
 
+    // 비밀번호 유효성 상태 체크
     const validatePassword = (password) => {
         setPasswordCriteria({
             length: password.length >= 8,
@@ -71,25 +81,29 @@ function SignUpPage() {
 
     useEffect(() => {
         const validateForm = () => {
+            // 각 유효성 검사
             const nameValid = formData.name.length > 0 && formData.name.length <= 10;
             const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
             const passwordValid = Object.values(passwordCriteria).every(Boolean);
             const phoneValid = /^\d{3}-\d{4}-\d{4}$/.test(formData.phone);
-    
+            
+            // 각 유효성 검사 여부로 전체 폼 유효성 상태 변경
             setIsFormValid(nameValid && emailValid && passwordValid && phoneValid && emailChecked && nameChecked);
         };
         
         validateForm();
+        // 아래 배열 항목에 따라 전체 폼 유효성 상태 업데이트
     }, [formData, emailChecked, nameChecked, passwordCriteria]);
 
     const checkEmailDuplicate = async () => {
-        if (formData.email.trim() === '') {
+        // 빈 문자열인지 확인 trim()으로 공백 제거
+        if (formData.email.trim() === '') { 
             setEmailError('이메일을 입력해 주세요.');
             setEmailChecked(false);
             return;
         }
 
-        
+    // 이메일 형식 확인
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
     if (!emailValid) {
         setEmailError('이메일 형식을 확인해 주세요.');
@@ -127,7 +141,8 @@ function SignUpPage() {
     
 
     const checkNameDuplicate = async () => {
-        if (formData.name.trim() === '') {
+        // 빈 문자열인지 확인 trim()으로 공백 제거
+        if (formData.name.trim() === '') { 
             setNameError('이름을 입력해 주세요.');
             setNameChecked(false);
             return;
@@ -162,14 +177,18 @@ function SignUpPage() {
     };
     
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // 새로고침(기본동작) 방지
 
+        // 전체 폼 유효성 검사
         if (!isFormValid) {
             alert('모든 필드를 올바르게 입력해 주세요.');
             return;
         }
 
+        // FormData 객체
         const data = new FormData();
+
+        // 객체에 각 필드 추가
         data.append('name', formData.name);
         data.append('email', formData.email);
         data.append('password', formData.password);
@@ -178,7 +197,7 @@ function SignUpPage() {
             data.append('image', formData.image);
         }
 
-        try {
+        try { //FormData 객체 전송
             const response = await axios.post('http://43.202.195.199:8080/members', formData, {
                 headers: {
                     'Content-Type': 'application/json',
