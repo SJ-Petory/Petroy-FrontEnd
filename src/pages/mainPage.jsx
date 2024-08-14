@@ -14,14 +14,14 @@ const fetchCurrentMember = async (token) => {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('회원 정보를 찾을 수 없습니다', errorText);
+            console.error('회원 정보를 가져오는 데 실패했습니다', errorText);
             return null;
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('회원 정보를 찾을 수 없습니다', error);
+        console.error('회원 정보를 가져오는 데 실패했습니다', error);
         return null;
     }
 };
