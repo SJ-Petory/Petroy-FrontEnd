@@ -4,7 +4,9 @@ import '../styles/myPage.css';
 function MyPage() {
     return (
         <div>
+             <div>
 
+            </div>
         </div>
     );
 
