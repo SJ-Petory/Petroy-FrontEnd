@@ -96,83 +96,69 @@ function SignUpPage() {
     }, [formData, emailChecked, nameChecked, passwordCriteria]);
 
     const checkEmailDuplicate = async () => {
-        // 빈 문자열인지 확인 trim()으로 공백 제거
-        if (formData.email.trim() === '') { 
+        // 빈 문자열인지 확인 (trim()으로 공백 제거)
+        if (formData.email.trim() === '') {
             setEmailError('이메일을 입력해 주세요.');
             setEmailChecked(false);
             return;
         }
-
-    // 이메일 형식 확인
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
-    if (!emailValid) {
-        setEmailError('이메일 형식을 확인해 주세요.');
-        setEmailChecked(false);
-        return;
-    }
+    
+        // 이메일 형식 확인
+        const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+        if (!emailValid) {
+            setEmailError('이메일 형식을 확인해 주세요.');
+            setEmailChecked(false);
+            return;
+        }
     
         try {
-            const response = await axios.get('http://43.202.195.199:8080/members/check-email', { params: { email: formData.email } });
-            
-            if (response.status === 200) {
-                if (response.data === true) {
-                    setEmailError('사용가능한 이메일입니다.');
-                    setEmailChecked(true);
-                } 
-            } else if (response.status >= 300 && response.status < 400) {
-                setEmailError('리다이렉션이 필요합니다.');
-                setEmailChecked(false);
-            } else if (response.status >= 400 && response.status < 500) {
-                setEmailError('클라이언트 오류가 발생했습니다.');
-                setEmailChecked(false);
-            } else if (response.status >= 500 && response.status < 600) {
-                setEmailError('서버 오류가 발생했습니다.');
-                setEmailChecked(false);
-            } else {
-                setEmailError('알 수 없는 오류가 발생했습니다.');
-                setEmailChecked(false);
-            }
+            const response = await axios.get('http://43.202.195.199:8080/members/check-email', {
+                params: { email: formData.email }
+            });
     
-        } catch (error) {   
-            setEmailError('중복된 이메일입니다.');
+            if (response.status === 200) {
+                // 상태 코드 200일 때 사용 가능한 이메일 처리
+                setEmailError('사용가능한 이메일입니다.');
+                setEmailChecked(true);
+            }
+            
+        } catch (error) {
+            // 서버 응답이 400 상태 코드를 반환한 경우
+            if (error.response && error.response.status === 400) {
+                setEmailError('서버 오류가 발생했습니다.');
+            } else {
+                setEmailError('중복된 이메일입니다.');
+            }
             setEmailChecked(false);
         }
     };
     
-
     const checkNameDuplicate = async () => {
-        // 빈 문자열인지 확인 trim()으로 공백 제거
-        if (formData.name.trim() === '') { 
+        // 빈 문자열인지 확인 (trim()으로 공백 제거)
+        if (formData.name.trim() === '') {
             setNameError('이름을 입력해 주세요.');
             setNameChecked(false);
             return;
         }
     
         try {
-            const response = await axios.get('http://43.202.195.199:8080/members/check-name', { params: { name: formData.name } });
-            
+            const response = await axios.get('http://43.202.195.199:8080/members/check-name', {
+                params: { name: formData.name }
+            });
+    
             if (response.status === 200) {
-                if (response.data === true) {
-                    setNameError('사용 가능한 이름입니다.');
-                    setNameChecked(true);
-                } 
-            } else if (response.status >= 300 && response.status < 400) {
-                setNameError('리다이렉션이 필요합니다.');
-                setNameChecked(false);
-            } else if (response.status >= 400 && response.status < 500) {
-                setNameError('클라이언트 오류가 발생했습니다.');
-                setNameChecked(false);
-            } else if (response.status >= 500 && response.status < 600) {
-                setNameError('서버 오류가 발생했습니다.');
-                setNameChecked(false);
-            } else {
-                setNameError('알 수 없는 오류가 발생했습니다.');
-                setNameChecked(false);
+                // 상태 코드 200일 때 사용 가능한 이름 처리
+                setNameError('사용 가능한 이름입니다.');
+                setNameChecked(true);
             }
-            
-        // 에러처리 추가
+    
         } catch (error) {
-            setNameError('중복된 이름입니다.');
+            // 서버 응답이 400 상태 코드를 반환한 경우
+            if (error.response && error.response.status === 400) {
+                setNameError('서버 오류가 발생했습니다.');
+            } else {
+                setNameError('중복된 이름입니다.');
+            }
             setNameChecked(false);
         }
     };
