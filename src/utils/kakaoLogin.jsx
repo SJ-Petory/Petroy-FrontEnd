@@ -62,13 +62,13 @@ function KakaoLogin() {
 
   return (
     <div>
-      <a id="kakao-login-btn" href="javascript:void(0)" onClick={loginWithKakao}>
+      <button id="kakao-login-btn" onClick={loginWithKakao} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
         <img 
           src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" 
           width="222" 
           alt="Kakao login button" 
         />
-      </a>
+      </button>
       <p id="token-result"></p>
     </div>
   );
