@@ -118,20 +118,25 @@ function SignUpPage() {
     
             if (response.status === 200) {
                 // 상태 코드 200일 때 사용 가능한 이메일 처리
-                setEmailError('사용가능한 이메일입니다.');
+                setEmailError('사용 가능한 이메일입니다.');
                 setEmailChecked(true);
             }
-            
+    
         } catch (error) {
-            // 서버 응답이 4XX 상태 코드를 반환한 경우
-            if (error.response && error.response.status >= 400 && error.response.status < 500) {
-                setEmailError('서버 오류가 발생했습니다.');
-            } else {
+            if (error.response) {
+                // 서버가 응답했지만, 에러가 발생한 경우 (중복된 이메일)
                 setEmailError('중복된 이메일입니다.');
+            } else if (error.request) {
+                // 서버가 응답하지 않았을 때 (네트워크 오류)
+                setEmailError('서버에 연결할 수 없습니다.');
+            } else {
+                // 기타 예기치 못한 오류
+                setEmailError('알 수 없는 오류가 발생했습니다.');
             }
             setEmailChecked(false);
         }
     };
+    
     
     const checkNameDuplicate = async () => {
         // 빈 문자열인지 확인 (trim()으로 공백 제거)
@@ -153,11 +158,15 @@ function SignUpPage() {
             }
     
         } catch (error) {
-            // 서버 응답이 4XX 상태 코드를 반환한 경우
-            if (error.response && error.response.status >= 400 && error.response.status < 500) {
-                setNameError('서버 오류가 발생했습니다.');
-            } else {
+            if (error.response) {
+                // 서버가 응답했지만, 에러가 발생한 경우 (중복된 이름)
                 setNameError('중복된 이름입니다.');
+            } else if (error.request) {
+                // 서버가 응답하지 않았을 때 (네트워크 오류)
+                setNameError('서버에 연결할 수 없습니다.');
+            } else {
+                // 기타 예기치 못한 오류
+                setNameError('알 수 없는 오류가 발생했습니다.');
             }
             setNameChecked(false);
         }
