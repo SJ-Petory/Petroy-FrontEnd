@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/loginPage.css';
+import KakaoLogin from '../utils/kakaoLogin.jsx'
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -49,6 +50,7 @@ function LoginPage() {
 
     return (
         <div className="loginContainer">
+            <KakaoLogin />
             <h1>펫토리</h1>
             <p>로그인 페이지임</p>
             <div className='loginFull'>
