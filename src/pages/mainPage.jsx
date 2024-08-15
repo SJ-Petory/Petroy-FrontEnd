@@ -8,8 +8,7 @@ const fetchCurrentMember = async (token) => {
         const response = await fetch('http://43.202.195.199:8080/members', {
             method: 'GET',
             headers: {
-                // 'Content-Type': 'application/json', 
-                'Authorization': `${token}`, // API 명세서 헤더 포함 
+                'Authorization' : `${token}`, // API 명세서 헤더 포함 
             },
         });
 
@@ -34,6 +33,8 @@ function MainPage() {
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken'); // 토큰 가져옴
+        console.log('accessToken');
+        console.log(token);
 
         if (token) { 
             const getMemberData = async () => {
