@@ -170,6 +170,7 @@ function SignUpPage() {
                 setNameChecked(false);
             }
             
+        // 에러처리 추가
         } catch (error) {
             setNameError('중복된 이름입니다.');
             setNameChecked(false);
