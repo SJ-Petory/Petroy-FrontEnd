@@ -9,7 +9,7 @@ const fetchCurrentMember = async (token) => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${token}`, // API 명세서 헤더 포함 
+                'Authorization': `${token}`, // API 명세서 헤더 포함 
             },
         });
 
