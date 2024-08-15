@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/mainPage.css';
-import NavBar from '../components/commons/NavBar.jsx'
 import CalendarComponent from '../components/commons/CalendarComponent';
 
 // 토큰 파라미터를 받는 함수 생성
@@ -59,7 +58,6 @@ function MainPage() {
 
     return (
         <div className="main-page">
-            <NavBar /> 
             <h1>안녕하세요, {memberName}님!</h1>
             <CalendarComponent />
             <button type="button" onClick={handleMyPageClick}>마이페이지</button>
