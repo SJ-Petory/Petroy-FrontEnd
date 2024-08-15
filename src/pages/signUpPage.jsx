@@ -123,8 +123,8 @@ function SignUpPage() {
             }
             
         } catch (error) {
-            // 서버 응답이 400 상태 코드를 반환한 경우
-            if (error.response && error.response.status === 400) {
+            // 서버 응답이 4XX 상태 코드를 반환한 경우
+            if (error.response && error.response.status >= 400 && error.response.status < 500) {
                 setEmailError('서버 오류가 발생했습니다.');
             } else {
                 setEmailError('중복된 이메일입니다.');
@@ -153,8 +153,8 @@ function SignUpPage() {
             }
     
         } catch (error) {
-            // 서버 응답이 400 상태 코드를 반환한 경우
-            if (error.response && error.response.status === 400) {
+            // 서버 응답이 4XX 상태 코드를 반환한 경우
+            if (error.response && error.response.status >= 400 && error.response.status < 500) {
                 setNameError('서버 오류가 발생했습니다.');
             } else {
                 setNameError('중복된 이름입니다.');
