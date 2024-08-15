@@ -32,9 +32,7 @@ function MainPage() {
     const [memberName, setMemberName] = useState('');
 
     useEffect(() => {
-        const token = localStorage.getItem('accessToken'); // 토큰 가져옴
-        console.log('accessToken');
-        console.log(token);
+        const token = localStorage.getItem('accessToken'); // 토큰 가져옴    
 
         if (token) { 
             const getMemberData = async () => {
