@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '../styles/petPage.css';
 
 const API_BASE_URL = 'http://43.202.195.199:8080';
@@ -16,6 +17,8 @@ const PetPage = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const navigate = useNavigate(); 
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -64,6 +67,11 @@ const PetPage = () => {
             setLoading(false);
         }
     };
+
+    const handleMainPageRedirect = () => {
+        navigate('/mainPage'); 
+    };
+
 
     return (
         <div className="petPage">
@@ -150,6 +158,7 @@ const PetPage = () => {
                 </button>
                 {error && <p className="error">{error}</p>}
             </form>
+            <button onClick={handleMainPageRedirect}>메인 페이지로 이동</button>
         </div>
     );
 };
