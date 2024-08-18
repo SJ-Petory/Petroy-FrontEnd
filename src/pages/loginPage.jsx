@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/loginPage.css';
 import KakaoLogin from '../utils/kakaoLogin.jsx'
 
+const API_BASE_URL = 'http://43.202.195.199:8080';
+
 function LoginPage() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -17,7 +19,7 @@ function LoginPage() {
         e.preventDefault();
     
         try {
-            const response = await fetch('http://43.202.195.199:8080/members/login', {
+            const response = await fetch(`${API_BASE_URL}/members/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

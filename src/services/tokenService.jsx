@@ -12,7 +12,6 @@ export const fetchCurrentMember = async (token) => {
         if (!response.ok) {
             const errorText = await response.text();
             console.error('회원 정보를 찾을 수 없습니다', errorText);
-            throw new Error('회원 정보를 찾을 수 없습니다');
         }
 
         return await response.json();
@@ -33,7 +32,6 @@ export const fetchMemberPets = async (token) => {
         if (!response.ok) {
             const errorText = await response.text();
             console.error('반려동물 정보를 찾을 수 없습니다', errorText);
-            throw new Error('반려동물 정보를 찾을 수 없습니다');
         }
 
         return await response.json();
@@ -54,7 +52,6 @@ export const fetchMemberPosts = async (token) => {
         if (!response.ok) {
             const errorText = await response.text();
             console.error('게시물 정보를 찾을 수 없습니다', errorText);
-            throw new Error('게시물 정보를 찾을 수 없습니다');
         }
 
         return await response.json();
