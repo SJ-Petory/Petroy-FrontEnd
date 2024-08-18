@@ -13,9 +13,9 @@ const MyPage = () => {
       const fetchData = async () => {
         try {
           const [userResponse, petsResponse, postsResponse] = await Promise.all([
-            axios.get('/members'),
-            axios.get('/members/pets'),
-            axios.get('/members/posts')
+            axios.get('http://43.202.195.199:8080/members'),
+            axios.get('http://43.202.195.199:8080/members/pets'),
+            axios.get('http://43.202.195.199:8080/members/posts')
           ]);
   
           setUserInfo(userResponse.data);
@@ -33,7 +33,7 @@ const MyPage = () => {
   
     const handleNameChange = async () => {
       try {
-        await axios.patch('/members', { name: newName });
+        await axios.patch('http://43.202.195.199:8080/members', { name: newName });
         setUserInfo((prev) => ({ ...prev, name: newName }));
         setNewName('');
       } catch (error) {
@@ -42,14 +42,19 @@ const MyPage = () => {
     };
   
     const handleAccountDelete = async () => {
-      try {
-        await axios.delete('/members');
-        alert('회원 탈퇴에 성공했습니다.');
-        window.location.href = '/loginPage';
-      } catch (error) {
-        console.error('회원 탈퇴 실패', error);
-      }
-    };
+        try {
+          await axios.delete('http://43.202.195.199:8080/members');
+      
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+      
+          alert('회원 탈퇴에 성공했습니다.');
+      
+          window.location.href = '/loginPage';
+        } catch (error) {
+          console.error('회원 탈퇴 실패', error);
+        }
+      };
   
     if (loading) return <p>잠시만 기다려주세요</p>;
   
