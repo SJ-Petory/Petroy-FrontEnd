@@ -31,7 +31,7 @@ const PetPage = () => {
         setError(null);
 
         try {
-            const token = localStorage.getItem('accessToken'); // 토큰 가져오기
+            const token = localStorage.getItem('accessToken'); 
 
             if (token) {
                 const response = await axios.post(`${API_BASE_URL}/pets`, petInfo, {
@@ -71,23 +71,29 @@ const PetPage = () => {
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>종:</label>
-                    <input
-                        type="text"
+                    <select
                         name="species"
                         value={petInfo.species}
                         onChange={handleChange}
                         required
-                    />
+                    >
+                        <option value="">선택</option>
+                        <option value="DOG">강아지</option>
+                        <option value="CAT">고양이</option>
+                    </select>
                 </div>
                 <div className="form-group">
                     <label>품종:</label>
-                    <input
-                        type="text"
+                    <select
                         name="breed"
                         value={petInfo.breed}
                         onChange={handleChange}
                         required
-                    />
+                    >
+                        <option value="">선택</option>
+                        <option value="치와와">치와와</option>
+                        <option value="진돗개">진돗개</option>
+                    </select>
                 </div>
                 <div className="form-group">
                     <label>이름:</label>
