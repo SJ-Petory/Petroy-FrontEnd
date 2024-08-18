@@ -5,6 +5,7 @@ import LoginPage from '../pages/loginPage.jsx';
 import SignUpPage from '../pages/signUpPage.jsx';
 import MainPage from '../pages/mainPage.jsx';
 import MyPage from '../pages/myPage.jsx';
+import PetPage from '../pages/petPage.jsx';  
 import KakaoCallback from '../utils/kakaoCallback.jsx'; 
 
 const Routing = () => {
@@ -16,6 +17,7 @@ const Routing = () => {
 			<Route path='/oauth/kakao/callback' element={<KakaoCallback />} /> 
 			<Route path='/mainPage' element={<MainPage/>} />
 			<Route path='/myPage' element={<MyPage/>} />
+			<Route path='/petPage' element={<PetPage/>} />
 			<Route path='/' element={<HomePage/>} />
             
 		</Routes>
