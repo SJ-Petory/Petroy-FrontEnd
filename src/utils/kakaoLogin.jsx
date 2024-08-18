@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react';
 
 function KakaoLogin() {
-  
   const KAKAO_KEY = process.env.REACT_APP_KAKAO_KEY;
 
   useEffect(() => {
+    if (!KAKAO_KEY) {
+      console.error('KAKAO_KEY를 찾을 수 없습니다.');
+      return;
+    }
+
     const script = document.createElement('script');
     script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js";
     script.integrity = "sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4";
@@ -21,13 +25,12 @@ function KakaoLogin() {
     return () => {
       document.body.removeChild(script);
     };
-  }, [KAKAO_KEY]); 
-
+  }, [KAKAO_KEY]);
 
   const loginWithKakao = () => {
     if (window.Kakao) {
       window.Kakao.Auth.authorize({
-        redirectUri : 'http://43.202.195.199:8080/oauth/kakao/callback',
+        redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback',
       });
     }
   };

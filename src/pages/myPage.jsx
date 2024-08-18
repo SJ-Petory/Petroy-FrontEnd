@@ -50,7 +50,7 @@ const MyPage = () => {
       
           alert('회원 탈퇴에 성공했습니다.');
       
-          window.location.href = '/loginPage';
+          window.location.href = '/login';
         } catch (error) {
           console.error('회원 탈퇴 실패', error);
         }
@@ -59,41 +59,42 @@ const MyPage = () => {
     if (loading) return <p>잠시만 기다려주세요</p>;
   
     return (
-      <div className="myPage">
-        <div className="userInfo">
-          <h2>내 정보</h2>
-          <p><strong>이름 :</strong> {userInfo.name}</p>
-          <p><strong>전화번호 :</strong> {userInfo.phone}</p>
-          <p><strong>회원 사진 :</strong> {userInfo.image ? <img src={userInfo.image} alt="Profile" /> : 'No image'}</p>
+      <div className="myPage-container">
+        <div className="myPage-userInfo">
+          <h2 className="myPage-heading">내 정보</h2>
+          <p className="myPage-info"><strong>이름 :</strong> {userInfo.name}</p>
+          <p className="myPage-info"><strong>전화번호 :</strong> {userInfo.phone}</p>
+          <p className="myPage-info"><strong>회원 사진 :</strong> {userInfo.image ? <img className="myPage-img" src={userInfo.image} alt="Profile" /> : 'No image'}</p>
           <input
             type="text"
             placeholder="New name"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
+            className="myPage-input"
           />
-          <button onClick={handleNameChange}>이름 수정</button>
-          <button onClick={handleAccountDelete}>회원 탈퇴</button>
+          <button onClick={handleNameChange} className="myPage-button">이름 수정</button>
+          <button onClick={handleAccountDelete} className="myPage-button">회원 탈퇴</button>
         </div>
   
-        <div className="pets">
-          <h2>My Pets</h2>
+        <div className="myPage-pets">
+          <h2 className="myPage-heading">My Pets</h2>
           <ul>
             {pets.map((pet) => (
               <li key={pet.petId}>
-                <p><strong>펫 이름 :</strong> {pet.name}</p>
-                <p><strong>펫 사진 :</strong> {pet.image ? <img src={pet.image} alt={pet.name} /> : 'No image'}</p>
+                <p className="myPage-info"><strong>펫 이름 :</strong> {pet.name}</p>
+                <p className="myPage-info"><strong>펫 사진 :</strong> {pet.image ? <img className="myPage-img" src={pet.image} alt={pet.name} /> : 'No image'}</p>
               </li>
             ))}
           </ul>
         </div>
   
-        <div className="posts">
-          <h2>내 작성 글</h2>
+        <div className="myPage-posts">
+          <h2 className="myPage-heading">내 작성 글</h2>
           <ul>
             {posts.map((post) => (
               <li key={post.postId}>
-                <p><strong>제목 :</strong> {post.title}</p>
-                <p><strong>내용 :</strong> {post.content}</p>
+                <p className="myPage-info"><strong>제목 :</strong> {post.title}</p>
+                <p className="myPage-info"><strong>내용 :</strong> {post.content}</p>
               </li>
             ))}
           </ul>
