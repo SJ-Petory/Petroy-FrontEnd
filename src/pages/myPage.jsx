@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../services/tokenService.jsx';
+import { useNavigate } from 'react-router-dom';
 import '../styles/myPage.css';
 
 const API_BASE_URL = 'http://43.202.195.199:8080';
@@ -10,6 +11,8 @@ const MyPage = () => {
     const [posts, setPosts] = useState([]);
     const [newName, setNewName] = useState('');
     const [loading, setLoading] = useState(true);
+
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
@@ -92,6 +95,10 @@ const MyPage = () => {
         }
     };
 
+    const handleMainPageRedirect = () => {
+        navigate('/mainPage'); 
+    };
+
     if (loading) return <p>잠시만 기다려주세요...</p>;
 
     return (
@@ -100,15 +107,16 @@ const MyPage = () => {
                 <h2>내 정보</h2>
                 <p><strong>이름 :</strong> {userInfo.name}</p>
                 <p><strong>전화번호 :</strong> {userInfo.phone}</p>
-                <p><strong>회원 사진 :</strong> {userInfo.image ? <img src={userInfo.image} alt="Profile" /> : 'No image'}</p>
+                <p><strong>회원 사진 :</strong> {userInfo.image ? <img src={userInfo.image} alt="Profile" /> : '등록된 사진이 없어요'}</p>
                 <input
                     type="text"
-                    placeholder="New name"
+                    placeholder="변경 이름"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                 />
                 <button onClick={handleNameChange}>이름 수정</button>
                 <button onClick={handleAccountDelete}>회원 탈퇴</button>
+                <button onClick={handleMainPageRedirect}>메인 페이지로 이동</button>
             </div>
 
             <div className="pets">
@@ -117,7 +125,7 @@ const MyPage = () => {
                     {pets.map((pet) => (
                         <li key={pet.petId}>
                             <p><strong>펫 이름 :</strong> {pet.name}</p>
-                            <p><strong>펫 사진 :</strong> {pet.image ? <img src={pet.image} alt={pet.name} /> : 'No image'}</p>
+                            <p><strong>펫 사진 :</strong> {pet.image ? <img src={pet.image} alt={pet.name} /> : '등록된 사진이 없어요'}</p>
                         </li>
                     ))}
                 </ul>
