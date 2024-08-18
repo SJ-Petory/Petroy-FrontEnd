@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/mainPage.css';
 import CalendarComponent from '../components/commons/CalendarComponent';
 
@@ -30,6 +31,11 @@ const fetchCurrentMember = async (token) => {
 
 function MainPage() {
     const [memberName, setMemberName] = useState('');
+    const navigate = useNavigate();
+
+    const handleMyPageClick = () => {
+        navigate('/myPage');
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken'); // 토큰 가져옴    
@@ -54,6 +60,7 @@ function MainPage() {
         <div className="main-page">
             <h1>안녕하세요, {memberName}님!</h1>
             <CalendarComponent />
+            <button type="button" onClick={handleMyPageClick}>마이페이지</button>
         </div>
     );
 }
