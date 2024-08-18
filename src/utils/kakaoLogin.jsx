@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 function KakaoLogin() {
-  const KAKAO_KEY = process.env.REACT_APP_KAKAO_KEY;
+  const KAKAO_KEY = '2a92f1c96bf764ce19e3fb25542b01be';
 
   useEffect(() => {
     if (!KAKAO_KEY) {
