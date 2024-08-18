@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-const KAKAO_KEY = "2a92f1c96bf764ce19e3fb25542b01be";
-
 function KakaoLogin() {
   
+  const KAKAO_KEY = process.env.REACT_APP_KAKAO_KEY;
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js";
