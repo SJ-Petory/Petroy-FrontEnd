@@ -1,0 +1,49 @@
+.petPage {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.petPage h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.petPage .form-group {
+    margin-bottom: 15px;
+}
+
+.petPage label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.petPage input[type="text"],
+.petPage input[type="number"],
+.petPage textarea,
+.petPage select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.petPage button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.petPage button:disabled {
+    background-color: #6c757d;
+}
+
+.petPage .error {
+    color: red;
+    margin-top: 10px;
+}
