@@ -1,69 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../services/tokenService.jsx';
 import '../styles/myPage.css';
-
-const fetchCurrentMember = async (token) => {
-    try {
-        const response = await fetch('http://43.202.195.199:8080/members', {
-            method: 'GET',
-            headers: {
-                'Authorization': `${token}`, 
-            },
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('회원 정보를 찾을 수 없습니다', errorText);
-            throw new Error('회원 정보를 찾을 수 없습니다');
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('회원 정보를 불러오는 중 오류 발생:', error);
-    }
-};
-
-const fetchMemberPets = async (token) => {
-    try {
-        const response = await fetch('http://43.202.195.199:8080/members/pets', {
-            method: 'GET',
-            headers: {
-                'Authorization': `${token}`, 
-            },
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('반려동물 정보를 찾을 수 없습니다', errorText);
-            throw new Error('반려동물 정보를 찾을 수 없습니다');
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('반려동물 정보를 불러오는 중 오류 발생:', error);
-    }
-};
-
-const fetchMemberPosts = async (token) => {
-    try {
-        const response = await fetch('http://43.202.195.199:8080/members/posts', {
-            method: 'GET',
-            headers: {
-                'Authorization': `${token}`, 
-            },
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('게시물 정보를 찾을 수 없습니다', errorText);
-            throw new Error('게시물 정보를 찾을 수 없습니다');
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('게시물 정보를 불러오는 중 오류 발생:', error);
-    }
-};
 
 const MyPage = () => {
     const [userInfo, setUserInfo] = useState({});
@@ -71,7 +8,7 @@ const MyPage = () => {
     const [posts, setPosts] = useState([]);
     const [newName, setNewName] = useState('');
     const [loading, setLoading] = useState(true);
-    
+
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
 
@@ -108,6 +45,7 @@ const MyPage = () => {
                     method: 'PATCH',
                     headers: {
                         'Authorization': `${token}`,
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ name: newName })
                 });
