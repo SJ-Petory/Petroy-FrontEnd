@@ -31,11 +31,6 @@ function KakaoLogin() {
     }
   };
 
-  const getCookie = (name) => {
-    const parts = document.cookie.split(name + '=');
-    if (parts.length === 2) return parts[1].split(';')[0];
-  };
-
   return (
     <div>
       <button id="kakao-login-btn" onClick={loginWithKakao} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
@@ -45,10 +40,8 @@ function KakaoLogin() {
           alt="Kakao login button" 
         />
       </button>
-      <p id="token-result"></p>
     </div>
   );
 }
-
 
 export default KakaoLogin;
