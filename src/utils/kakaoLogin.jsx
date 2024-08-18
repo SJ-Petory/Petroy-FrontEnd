@@ -21,7 +21,8 @@ function KakaoLogin() {
     return () => {
       document.body.removeChild(script);
     };
-  }, []);
+  }, [KAKAO_KEY]); 
+
 
   const loginWithKakao = () => {
     if (window.Kakao) {
