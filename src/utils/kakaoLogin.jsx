@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 
-const KAKAO_KEY = "9cc8b095980e29dc0f5887656a07280a"
-
+const KAKAO_KEY = "9cc8b095980e29dc0f5887656a07280a";
 
 function KakaoLogin() {
   
@@ -27,33 +26,10 @@ function KakaoLogin() {
   const loginWithKakao = () => {
     if (window.Kakao) {
       window.Kakao.Auth.authorize({
-        redirectUri : 'http://43.202.195.199:8080/mainPage',
+        redirectUri : 'http://43.202.195.199:8080/oauth/kakao/callback',
       });
     }
   };
-
-  useEffect(() => {
-    const displayToken = () => {
-      const token = getCookie('authorize-access-token');
-      if (token) {
-        if (window.Kakao) {
-          window.Kakao.Auth.setAccessToken(token);
-          window.Kakao.Auth.getStatusInfo()
-            .then((res) => {
-              if (res.status === 'connected') {
-                document.getElementById('token-result').innerText =
-                  'Login success, token: ' + window.Kakao.Auth.getAccessToken();
-              }
-            })
-            .catch(() => {
-              window.Kakao.Auth.setAccessToken(null);
-            });
-        }
-      }
-    };
-
-    displayToken();
-  }, []);
 
   const getCookie = (name) => {
     const parts = document.cookie.split(name + '=');
@@ -73,5 +49,6 @@ function KakaoLogin() {
     </div>
   );
 }
+
 
 export default KakaoLogin;
