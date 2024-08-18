@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../services/tokenService.jsx';
 import '../styles/myPage.css';
 
+const API_BASE_URL = 'http://43.202.195.199:8080';
+
 const MyPage = () => {
     const [userInfo, setUserInfo] = useState({});
     const [pets, setPets] = useState([]);
@@ -41,7 +43,7 @@ const MyPage = () => {
         const token = localStorage.getItem('accessToken');
         if (token) {
             try {
-                const response = await fetch('http://43.202.195.199:8080/members', {
+                const response = await fetch(`${API_BASE_URL}/members`, {
                     method: 'PATCH',
                     headers: {
                         'Authorization': `${token}`,
@@ -53,7 +55,6 @@ const MyPage = () => {
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('이름을 수정하는 중 오류 발생:', errorText);
-                    throw new Error('이름을 수정하는 중 오류 발생');
                 }
 
                 setUserInfo((prev) => ({ ...prev, name: newName }));
@@ -68,7 +69,7 @@ const MyPage = () => {
         const token = localStorage.getItem('accessToken');
         if (token) {
             try {
-                const response = await fetch('http://43.202.195.199:8080/members', {
+                const response = await fetch(`${API_BASE_URL}/members`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `${token}`,
@@ -78,14 +79,13 @@ const MyPage = () => {
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('회원 탈퇴 중 오류 발생:', errorText);
-                    throw new Error('회원 탈퇴 중 오류 발생');
                 }
 
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
 
                 alert('회원 탈퇴에 성공했습니다.');
-                window.location.href = '/login';
+                window.location.href = '/';
             } catch (error) {
                 console.error('회원 탈퇴 중 오류 발생:', error);
             }

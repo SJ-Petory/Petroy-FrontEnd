@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/signUpPage.css';
 
+const API_BASE_URL = 'http://43.202.195.199:8080';
+
 function SignUpPage() {
     const navigate = useNavigate(); // 사용자 페이지 이동 관리
     const [formData, setFormData] = useState({ // 입력 상태 저장
@@ -112,7 +114,7 @@ function SignUpPage() {
         }
     
         try {
-            const response = await axios.get('http://43.202.195.199:8080/members/check-email', {
+            const response = await axios.get(`${API_BASE_URL}/members/check-email`, {
                 params: { email: formData.email }
             });
     
@@ -147,7 +149,7 @@ function SignUpPage() {
         }
     
         try {
-            const response = await axios.get('http://43.202.195.199:8080/members/check-name', {
+            const response = await axios.get(`${API_BASE_URL}/members/check-name`, {
                 params: { name: formData.name }
             });
     
@@ -194,7 +196,7 @@ function SignUpPage() {
         }
 
         try { //FormData 객체 전송
-            const response = await axios.post('http://43.202.195.199:8080/members', formData, {
+            const response = await axios.post(`${API_BASE_URL}/members`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
