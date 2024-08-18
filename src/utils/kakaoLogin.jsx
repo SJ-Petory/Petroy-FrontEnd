@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const KAKAO_KEY = "2334f2c209a933345f71853f1d580d82";
+const KAKAO_KEY = "2a92f1c96bf764ce19e3fb25542b01be";
 
 function KakaoLogin() {
   
