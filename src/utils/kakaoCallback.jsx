@@ -1,36 +1,42 @@
 import { useLocation } from 'react-router-dom'; 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
+const API_BASE_URL = 'http://43.202.195.199:8080'; 
 
 function KakaoCallback() {
     const location = useLocation(); 
     const code = new URLSearchParams(location.search).get('code');
-    // const email = localStorage.getItem('email');
-    // const phone = localStorage.getItem('phone');
 
-    const data = { email :"wlgns5041@naver.com", phone :'01056645041'}
+    const [data, setData] = useState({
+        email: '',
+        phone: '',
+    });
 
     useEffect(() => {
+        const email = localStorage.getItem('email');
+        const phone = localStorage.getItem('phone');
+
+        setData({ email, phone });
+
         if (code) {
-            fetch('http://43.202.195.199:8080/oauth/kakao/callback', {
-                method: 'GET', 
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify( data ),  
+            axios.post(`${API_BASE_URL}/oauth/kakao/callback`, {
+                code,
+                email: data.email,
+                phone: data.phone,
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+            .then(response => {
+                if (response.status === 200 && response.data.success) {
                     alert("카카오 로그인 성공");
                     localStorage.removeItem('email');
                     localStorage.removeItem('phone');
                 } else {
-                    alert("카카오 로그인 실패 : " + data.message);
+                    alert("카카오 로그인 실패 : " + response.data.message);
                 }
             })
             .catch(error => {
                 console.error('에러 :', error);
+                alert('서버와의 연결에 문제가 발생했습니다.');
             });
         }
     }, [code, data]);
