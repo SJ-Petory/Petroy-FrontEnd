@@ -1,26 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function InputInfo() {
   const [userData, setUserData] = useState({ email: '', phone: '' });
+  const [accessToken, setAccessToken] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (token) {
+      setAccessToken(token);
+    } else {
+      console.error('액세스 토큰이 쿼리 파라미터에서 발견되지 않았습니다.');
+    }
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const accessToken = localStorage.getItem('kakaoAccessToken');
     if (!accessToken) {
       console.error('액세스 토큰이 없습니다.');
       return;
     }
 
     try {
-      await axios.post('http://43.202.195.199:8080/oauth/kakao/extraInfo', {
-        accessToken,
-        email: userData.email,
-        phone: userData.phone,
-      });
+      await axios.post('http://43.202.195.199:8080/oauth/kakao/extraInfo', 
+        {
+          email: userData.email,
+          phone: userData.phone,
+        }, 
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      );
       alert('서버로 데이터 전송 성공');
       
       navigate('/mainPage');
@@ -33,7 +50,7 @@ function InputInfo() {
     <div>
       <form onSubmit={handleSubmit}>
         <label>
-          Email:
+          이메일 :
           <input 
             type="email" 
             value={userData.email}
@@ -43,7 +60,7 @@ function InputInfo() {
         </label>
         <br />
         <label>
-          Phone:
+          전화번호 :
           <input 
             type="tel" 
             value={userData.phone}
@@ -52,7 +69,7 @@ function InputInfo() {
           />
         </label>
         <br />
-        <button type="submit">Submit</button>
+        <button type="submit">완료</button>
       </form>
     </div>
   );
