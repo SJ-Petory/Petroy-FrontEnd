@@ -12,10 +12,19 @@ function InputInfo() {
     const token = urlParams.get('token');
 
     if (token) {
-      console.log('토큰: ', token); 
+      console.log('쿼리 파라미터에서 가져온 토큰:', token);
+      
+      localStorage.setItem('accessToken', token);
       setAccessToken(token);
     } else {
-      console.error('액세스 토큰이 쿼리 파라미터에서 발견되지 않았습니다.');
+      
+      const storedToken = localStorage.getItem('accessToken');
+      if (storedToken) {
+        console.log('로컬 스토리지에서 가져온 토큰:', storedToken);
+        setAccessToken(storedToken);
+      } else {
+        console.error('로컬 스토리지에서 액세스 토큰을 찾을 수 없습니다.');
+      }
     }
   }, []);
 
