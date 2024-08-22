@@ -44,7 +44,7 @@ function KakaoLogin() {
 
   const handleSubmitEmail = () => {
     if (isEmailValid) {
-      sessionStorage.setItem('kakaoUserEmail', email);
+      localStorage.setItem('kakaoUserEmail', email);
 
       if (window.Kakao) {
         window.Kakao.Auth.authorize({
