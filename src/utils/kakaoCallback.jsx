@@ -5,30 +5,39 @@ function Callback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
+    // 현재 URL에서 액세스 토큰을 서버에서 제공하는 경우
+    const fetchToken = async () => {
+      try {
+    
+        const response = await fetch('http://43.202.195.199:8080/oauth/kakao/callback', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-    if (code) {
-     
-      fetch('http://43.202.195.199:8080/oauth/kakao/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          
-          const { accessToken } = data;
+        if (!response.ok) {
+          throw new Error('서버 응답에 실패했습니다.');
+        }
+
+        const data = await response.json();
+        const { accessToken } = data;
+
+        if (accessToken) {
+      
           localStorage.setItem('kakaoToken', accessToken);
 
+  
           navigate('/inputInfo');
-        })
-        .catch(error => {
-          console.error('토큰이 없습니다 :', error);
-        });
-    }
+        } else {
+          console.error('액세스 토큰이 서버 응답에서 발견되지 않았습니다.');
+        }
+      } catch (error) {
+        console.error('토큰을 가져오는 데 실패했습니다:', error);
+      }
+    };
+
+    fetchToken();
   }, [navigate]);
 
   return <div>로딩 중입니다.</div>;
