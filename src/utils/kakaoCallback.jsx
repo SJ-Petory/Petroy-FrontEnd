@@ -10,6 +10,7 @@ function Callback() {
     const Token = urlParams.get('token');
 
     if (Token) {
+      console.log('토큰: ', Token); 
       localStorage.setItem('accessToken', Token);
 
       navigate('/inputInfo');

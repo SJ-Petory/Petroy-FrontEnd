@@ -12,6 +12,7 @@ function InputInfo() {
     const token = urlParams.get('token');
 
     if (token) {
+      console.log('토큰: ', token); 
       setAccessToken(token);
     } else {
       console.error('액세스 토큰이 쿼리 파라미터에서 발견되지 않았습니다.');
