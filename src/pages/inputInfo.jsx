@@ -26,19 +26,19 @@ function InputInfo() {
       },
       body: JSON.stringify({ email, phone }),
     })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('정보를 추가하는데 실패했습니다. 서버에서 오류가 발생했습니다.');
-        }
-        return response.json();
-      })
-      .then(data => {
-        navigate('/mainPage');
-      })
-      .catch(error => {
-        setError(error.message);
-        console.error('정보를 추가하는데 실패했습니다. :', error);
-      });
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('정보를 추가하는데 실패했습니다. 서버에서 오류가 발생했습니다.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      navigate('/mainPage');
+    })
+    .catch(error => {
+      setError(error.message);
+      console.error('정보를 추가하는데 실패했습니다. :', error);
+    });
   };
 
   return (
