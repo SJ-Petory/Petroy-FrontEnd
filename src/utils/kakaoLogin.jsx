@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function KakaoLogin() {
@@ -29,15 +29,7 @@ function KakaoLogin() {
     };
   }, [KAKAO_KEY]);
 
-  const loginWithKakao = () => {
-    if (window.Kakao) {
-      window.Kakao.Auth.authorize({
-        redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback', 
-      });
-    }
-  };
-
-  const handleLoginCallback = () => {
+  const handleLoginCallback = useCallback(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
 
@@ -55,11 +47,19 @@ function KakaoLogin() {
         }
       });
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     handleLoginCallback();
-  }, []);
+  }, [handleLoginCallback]);
+
+  const loginWithKakao = () => {
+    if (window.Kakao) {
+      window.Kakao.Auth.authorize({
+        redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback', 
+      });
+    }
+  };
 
   return (
     <div>
