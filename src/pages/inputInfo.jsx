@@ -44,6 +44,7 @@ function InputInfo() {
         }, 
         {
           headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`
           }
         }
