@@ -1,9 +1,7 @@
-import React, { useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
 
 function KakaoLogin() {
   const KAKAO_KEY = '2a92f1c96bf764ce19e3fb25542b01be';
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!KAKAO_KEY) {
@@ -18,45 +16,20 @@ function KakaoLogin() {
     script.async = true;
     script.onload = () => {
       if (window.Kakao) {
-        window.Kakao.init(KAKAO_KEY);
+        window.Kakao.init(KAKAO_KEY); 
         window.Kakao.isInitialized();
       }
     };
-    document.body.appendChild(script);
 
     return () => {
       document.body.removeChild(script);
     };
   }, [KAKAO_KEY]);
 
-  const handleLoginCallback = useCallback(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-
-    if (code) {
-      window.Kakao.Auth.login({
-        success: function(authObj) {
-          const { access_token } = authObj;
-          // 액세스 토큰을 로컬 스토리지에 저장하거나 다른 방식으로 전달
-          localStorage.setItem('kakaoAccessToken', access_token);
-          // 정보 입력 페이지로 리디렉션
-          navigate('/inputInfo');
-        },
-        fail: function(err) {
-          console.error('카카오 로그인 실패:', err);
-        }
-      });
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    handleLoginCallback();
-  }, [handleLoginCallback]);
-
   const loginWithKakao = () => {
     if (window.Kakao) {
       window.Kakao.Auth.authorize({
-        redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback', 
+        redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback',
       });
     }
   };
