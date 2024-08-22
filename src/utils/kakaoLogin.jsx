@@ -44,11 +44,11 @@ function KakaoLogin() {
 
   const handleSubmitEmail = () => {
     if (isEmailValid) {
-      sessionStorage.setItem('kakaoUserEmail', email);
+      const encodedEmail = encodeURIComponent(email);
 
       if (window.Kakao) {
         window.Kakao.Auth.authorize({
-          redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback',
+          redirectUri: `http://43.202.195.199:8080/oauth/kakao/callback?email=${encodedEmail}`,
         });
       }
     } else {
