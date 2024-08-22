@@ -7,7 +7,7 @@ function KakaoCallback() {
 
     useEffect(() => {
       if (code) {
-        const email = localStorage.getItem('kakaoUserEmail');
+        const email = sessionStorage.getItem('kakaoUserEmail');
 
         if (!email) {
           console.error('이메일이 세션 스토리지에 없습니다.');
@@ -26,8 +26,7 @@ function KakaoCallback() {
           if (data.success) {
             alert("카카오 로그인 성공");
   
-            // 로컬로 변경
-            localStorage.removeItem('kakaoUserEmail');
+            sessionStorage.removeItem('kakaoUserEmail');
           } else {
             alert("카카오 로그인 실패 : " + data.message);
           }
