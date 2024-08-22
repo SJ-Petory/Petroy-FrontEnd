@@ -14,12 +14,15 @@ function KakaoCallback() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ code, email }), 
+          body: JSON.stringify({ code, email }),  
         })
         .then(response => response.json())
         .then(data => {
           if (data.success) {
             alert("카카오 로그인 성공");
+            console.log("전송된 이메일:", email);
+            console.log("서버에서 받은 이메일:", data.email);
+
             localStorage.removeItem('kakaoUserEmail');
           } else {
             alert("카카오 로그인 실패 : " + data.message);
