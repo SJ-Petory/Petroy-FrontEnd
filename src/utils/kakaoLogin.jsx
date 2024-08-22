@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function KakaoLogin() {
   const KAKAO_KEY = '2a92f1c96bf764ce19e3fb25542b01be';
-  const [userData, setUserData] = useState({ email: '', phone: '' });
-  const [accessToken, setAccessToken] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!KAKAO_KEY) {
@@ -33,7 +32,7 @@ function KakaoLogin() {
   const loginWithKakao = () => {
     if (window.Kakao) {
       window.Kakao.Auth.authorize({
-        redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback',
+        redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback', 
       });
     }
   };
@@ -41,35 +40,20 @@ function KakaoLogin() {
   const handleLoginCallback = () => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
-    
+
     if (code) {
       window.Kakao.Auth.login({
         success: function(authObj) {
-          setAccessToken(authObj.access_token);
+          const { access_token } = authObj;
+          // 액세스 토큰을 로컬 스토리지에 저장하거나 다른 방식으로 전달
+          localStorage.setItem('kakaoAccessToken', access_token);
+          // 정보 입력 페이지로 리디렉션
+          navigate('/inputInfo');
         },
         fail: function(err) {
           console.error('카카오 로그인 실패:', err);
         }
       });
-    }
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!accessToken) {
-      console.error('액세스 토큰이 없습니다.');
-      return;
-    }
-
-    try {
-      await axios.post('http://43.202.195.199:8080/oauth/kakao/extraInfo', {
-        accessToken,
-        email: userData.email,
-        phone: userData.phone,
-      });
-      alert('서버로 데이터 전송 성공');
-    } catch (error) {
-      console.error('서버 전송 실패:', error);
     }
   };
 
@@ -86,30 +70,6 @@ function KakaoLogin() {
           alt="Kakao login button" 
         />
       </button>
-      
-      <form onSubmit={handleSubmit}>
-        <label>
-          이메일 :
-          <input 
-            type="email" 
-            value={userData.email}
-            onChange={(e) => setUserData({ ...userData, email: e.target.value })}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          전화번호 :
-          <input 
-            type="tel" 
-            value={userData.phone}
-            onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
-            required
-          />
-        </label>
-        <br />
-        <button type="submit">전송</button>
-      </form>
     </div>
   );
 }
