@@ -1,20 +1,23 @@
 import { useLocation } from 'react-router-dom'; 
 import React, { useEffect } from 'react';
 
+
 function KakaoCallback() {
     const location = useLocation(); 
     const code = new URLSearchParams(location.search).get('code');
-    const email = localStorage.getItem('email');
-    const phone = localStorage.getItem('phone');
+    // const email = localStorage.getItem('email');
+    // const phone = localStorage.getItem('phone');
+
+    const data = { email :"wlgns5041@naver.com", phone :'01056645041'}
 
     useEffect(() => {
-        if (code && email && phone) {
+        if (code) {
             fetch('http://43.202.195.199:8080/oauth/kakao/callback', {
                 method: 'GET', 
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, phone }),  
+                body: JSON.stringify( data ),  
             })
             .then(response => response.json())
             .then(data => {
@@ -30,7 +33,7 @@ function KakaoCallback() {
                 console.error('에러 :', error);
             });
         }
-    }, [code, email, phone]);
+    }, [code, data]);
 
     return (
         <div>
