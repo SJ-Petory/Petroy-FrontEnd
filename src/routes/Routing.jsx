@@ -7,12 +7,14 @@ import MainPage from '../pages/mainPage.jsx';
 import MyPage from '../pages/myPage.jsx';
 import PetPage from '../pages/petPage.jsx';  
 import KakaoCallback from '../utils/kakaoCallback.jsx'; 
+import InputInfo from '../pages/inputInfo.jsx';
 
 const Routing = () => {
 
 	return (
 		<Routes>
             <Route path='/login' element={<LoginPage/>} />
+			<Route path='/inputInfo' element={<InputInfo/>} />
             <Route path='/signUp' element={<SignUpPage/>} />
 			<Route path='/oauth/kakao/callback' element={<KakaoCallback />} /> 
 			<Route path='/mainPage' element={<MainPage/>} />
