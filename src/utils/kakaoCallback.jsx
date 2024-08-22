@@ -5,13 +5,12 @@ function Callback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    
     const urlParams = new URLSearchParams(window.location.search);
-    const Token = urlParams.get('token');
+    const token = urlParams.get('token');
 
-    if (Token) {
-      console.log('토큰: ', Token); 
-      localStorage.setItem('accessToken', Token);
+    if (token) {
+      console.log('토큰 :', token);
+      localStorage.setItem('accessToken', token);
 
       navigate('/inputInfo');
     } else {
