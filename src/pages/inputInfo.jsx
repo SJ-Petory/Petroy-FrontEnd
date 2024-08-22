@@ -18,7 +18,7 @@ function InputInfo() {
       return;
     }
 
-    fetch('http://43.202.195.199:8080/', {
+    fetch('http://43.202.195.199:8080/oauth/kakao/extraInfo', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
