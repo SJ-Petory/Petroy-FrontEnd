@@ -26,6 +26,7 @@ function KakaoCallback() {
           if (data.success) {
             alert("카카오 로그인 성공");
   
+            // 로컬로 변경
             localStorage.removeItem('kakaoUserEmail');
           } else {
             alert("카카오 로그인 실패 : " + data.message);
