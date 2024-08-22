@@ -12,7 +12,7 @@ function Callback() {
       console.log('토큰 :', token);
       localStorage.setItem('accessToken', token);
 
-      navigate('/inputInfo');
+      navigate('/InputInfo');
     } else {
       console.error('액세스 토큰이 쿼리 파라미터에서 발견되지 않았습니다.');
     }
