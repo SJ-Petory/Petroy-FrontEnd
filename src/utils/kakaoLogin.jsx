@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import KakaoEmailInput from '../components/commons/kakaoEmailInput';
 
 function KakaoLogin() {
   const KAKAO_KEY = '2a92f1c96bf764ce19e3fb25542b01be';
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     if (!KAKAO_KEY) {
@@ -27,8 +29,14 @@ function KakaoLogin() {
     };
   }, [KAKAO_KEY]);
 
+  const handleEmailChange = (email) => {
+    setEmail(email);
+  };
+
   const loginWithKakao = () => {
     if (window.Kakao) {
+      localStorage.setItem('kakaoUserEmail', email);
+
       window.Kakao.Auth.authorize({
         redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback',
       });
@@ -37,6 +45,7 @@ function KakaoLogin() {
 
   return (
     <div>
+      <KakaoEmailInput onEmailChange={handleEmailChange} />
       <button id="kakao-login-btn" onClick={loginWithKakao} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
         <img 
           src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" 
