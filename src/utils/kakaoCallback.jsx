@@ -7,7 +7,12 @@ function KakaoCallback() {
 
     useEffect(() => {
       if (code) {
-        const email = localStorage.getItem('kakaoUserEmail');
+        const email = sessionStorage.getItem('kakaoUserEmail');
+
+        if (!email) {
+          console.error('이메일이 세션 스토리지에 없습니다.');
+          return;
+        }
 
         fetch('http://43.202.195.199:8080/oauth/kakao/callback', {
           method: 'POST', 
@@ -20,10 +25,8 @@ function KakaoCallback() {
         .then(data => {
           if (data.success) {
             alert("카카오 로그인 성공");
-            console.log("전송된 이메일:", email);
-            console.log("서버에서 받은 이메일:", data.email);
-
-            localStorage.removeItem('kakaoUserEmail');
+  
+            sessionStorage.removeItem('kakaoUserEmail');
           } else {
             alert("카카오 로그인 실패 : " + data.message);
           }
