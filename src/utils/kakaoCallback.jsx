@@ -10,7 +10,7 @@ function KakaoCallback() {
     useEffect(() => {
         if (code && email && phone) {
             fetch('http://43.202.195.199:8080/oauth/kakao/callback', {
-                method: 'POST', 
+                method: 'GET', 
                 headers: {
                     'Content-Type': 'application/json',
                 },
