@@ -17,7 +17,8 @@ const MyPage = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-
+        const storedImageUrl = localStorage.getItem('userImageUrl');
+    
         if (token) {
             const fetchData = async () => {
                 try {
@@ -26,17 +27,20 @@ const MyPage = () => {
                         fetchMemberPets(token),
                         fetchMemberPosts(token)
                     ]);
-                    
+    
                     setUserInfo(userResponse);
                     setPets(petsResponse?.content || []);
                     setPosts(postsResponse?.content || []);
+                    if (storedImageUrl) {
+                        setUserInfo((prev) => ({ ...prev, image: storedImageUrl }));
+                    }
                 } catch (error) {
                     console.error('데이터를 불러오는데 실패했습니다:', error);
                 } finally {
                     setLoading(false);
                 }
             };
-
+    
             fetchData();
         } else {
             console.error('토큰이 없습니다');
@@ -123,6 +127,7 @@ const MyPage = () => {
 
                     if (result.success) {
                         setUserInfo((prev) => ({ ...prev, image: result.imageUrl }));
+                        localStorage.setItem('userImageUrl', result.imageUrl);
                         alert('이미지 업로드 성공');
                     } else {
                         alert(result.message || '이미지 업로드 실패');
