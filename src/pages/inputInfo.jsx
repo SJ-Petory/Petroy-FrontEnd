@@ -37,7 +37,7 @@ function InputInfo() {
     }
 
     try {
-      await axios.post('http://43.202.195.199:8080/oauth/kakao/extraInfo', 
+      const response = await axios.post('http://43.202.195.199:8080/oauth/kakao/extraInfo', 
         {
           email: userData.email,
           phone: userData.phone,
@@ -51,6 +51,10 @@ function InputInfo() {
       );
       alert('서버로 데이터 전송 성공');
       
+      const data = await response.json();
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+
       navigate('/mainPage');
     } catch (error) {
       console.error('서버 전송 실패:', error);
