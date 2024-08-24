@@ -50,7 +50,7 @@ const MyPage = () => {
                 const response = await fetch(`${API_BASE_URL}/members`, {
                     method: 'PATCH',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `${token}`,
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ name: newName })
@@ -76,7 +76,7 @@ const MyPage = () => {
                 const response = await fetch(`${API_BASE_URL}/members`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `${token}`,
                     }
                 });
 
@@ -106,7 +106,7 @@ const MyPage = () => {
                 const response = await fetch(`${API_BASE_URL}/members/image`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `${token}`,
                         // 'Content-Type': 'multipart/form-data' 
                     },
                     body: formData
