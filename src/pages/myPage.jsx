@@ -11,8 +11,9 @@ const MyPage = () => {
     const [posts, setPosts] = useState([]);
     const [newName, setNewName] = useState('');
     const [loading, setLoading] = useState(true);
+    const [selectedImage, setSelectedImage] = useState(null); 
 
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
@@ -49,7 +50,7 @@ const MyPage = () => {
                 const response = await fetch(`${API_BASE_URL}/members`, {
                     method: 'PATCH',
                     headers: {
-                        'Authorization': `${token}`,
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ name: newName })
@@ -75,7 +76,7 @@ const MyPage = () => {
                 const response = await fetch(`${API_BASE_URL}/members`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `${token}`,
+                        'Authorization': `Bearer ${token}`,
                     }
                 });
 
@@ -95,8 +96,43 @@ const MyPage = () => {
         }
     };
 
+    const handleImageUpload = async () => {
+        const token = localStorage.getItem('accessToken');
+        if (token && selectedImage) {
+            const formData = new FormData();
+            formData.append('multipartFiles', selectedImage);
+    
+            try {
+                const response = await fetch(`${API_BASE_URL}/members/image`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        // 'Content-Type': 'multipart/form-data' 
+                    },
+                    body: formData
+                });
+    
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('이미지 업로드 중 오류 발생:', errorText);
+                } else {
+                    const result = await response.json();
+                    if (result.success) {
+                        setUserInfo((prev) => ({ ...prev, image: URL.createObjectURL(selectedImage) }));
+                        alert('이미지 업로드 성공');
+                    } else {
+                        alert(result.message || '이미지 업로드 실패');
+                    }
+                }
+            } catch (error) {
+                console.error('이미지 업로드 중 오류 발생:', error);
+            }
+        }
+    };
+    
+
     const handleMainPageRedirect = () => {
-        navigate('/mainPage'); 
+        navigate('/mainPage');
     };
 
     if (loading) return <p>잠시만 기다려주세요...</p>;
@@ -107,16 +143,27 @@ const MyPage = () => {
                 <h2>내 정보</h2>
                 <p><strong>이름 :</strong> {userInfo.name}</p>
                 <p><strong>전화번호 :</strong> {userInfo.phone}</p>
-                <p><strong>회원 사진 :</strong> {userInfo.image ? <img src={userInfo.image} alt="Profile" /> : '등록된 사진이 없어요'}</p>
+                <p><strong>회원 사진 :</strong> {userInfo.image ? <img src={userInfo.image} alt="Profile" className="myPage-img" /> : '등록된 사진이 없어요'}</p>
+                
                 <input
                     type="text"
                     placeholder="변경 이름"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
+                    className="myPage-input"
                 />
-                <button onClick={handleNameChange}>이름 수정</button>
-                <button onClick={handleAccountDelete}>회원 탈퇴</button>
-                <button onClick={handleMainPageRedirect}>메인 페이지로 이동</button>
+                <button onClick={handleNameChange} className="myPage-button">이름 수정</button>
+
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setSelectedImage(e.target.files[0])}
+                    className="myPage-input"
+                />
+                <button onClick={handleImageUpload} className="myPage-button">이미지 수정</button>
+
+                <button onClick={handleAccountDelete} className="myPage-button">회원 탈퇴</button>
+                <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지로 이동</button>
             </div>
 
             <div className="pets">
@@ -125,7 +172,7 @@ const MyPage = () => {
                     {pets.map((pet) => (
                         <li key={pet.petId}>
                             <p><strong>펫 이름 :</strong> {pet.name}</p>
-                            <p><strong>펫 사진 :</strong> {pet.image ? <img src={pet.image} alt={pet.name} /> : '등록된 사진이 없어요'}</p>
+                            <p><strong>펫 사진 :</strong> {pet.image ? <img src={pet.image} alt={pet.name} className="myPage-img" /> : '등록된 사진이 없어요'}</p>
                         </li>
                     ))}
                 </ul>
