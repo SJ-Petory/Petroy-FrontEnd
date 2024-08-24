@@ -100,14 +100,14 @@ const MyPage = () => {
         const token = localStorage.getItem('accessToken');
         if (token && selectedImage) {
             const formData = new FormData();
-            formData.append('image', selectedImage); 
+            formData.append('image', selectedImage);
     
             try {
                 const response = await fetch(`${API_BASE_URL}/members/image`, {
-                    method: 'PATCH', 
+                    method: 'PATCH',
                     headers: {
                         'Authorization': `${token}`,
-                        //'Content-Type': 'multipart/form-data' 
+                        //'Content-Type': 'multipart/form-data'
                     },
                     body: formData
                 });
@@ -116,9 +116,14 @@ const MyPage = () => {
                     const errorText = await response.text();
                     console.error('이미지 업로드 중 오류 발생:', errorText);
                 } else {
-                    const result = await response.json();
+                    const resultText = await response.text(); 
+                    const result = {
+                        success: true,
+                        imageUrl: resultText 
+                    };
+    
                     if (result.success) {
-                        setUserInfo((prev) => ({ ...prev, image: URL.createObjectURL(selectedImage) }));
+                        setUserInfo((prev) => ({ ...prev, image: result.imageUrl }));
                         alert('이미지 업로드 성공');
                     } else {
                         alert(result.message || '이미지 업로드 실패');
@@ -129,6 +134,7 @@ const MyPage = () => {
             }
         }
     }
+    
     
 
     const handleMainPageRedirect = () => {
