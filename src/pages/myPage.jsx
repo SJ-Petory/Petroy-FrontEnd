@@ -11,7 +11,7 @@ const MyPage = () => {
     const [posts, setPosts] = useState([]);
     const [newName, setNewName] = useState('');
     const [loading, setLoading] = useState(true);
-    const [selectedImage, setSelectedImage] = useState(null); 
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ const MyPage = () => {
                     setPets(petsResponse?.content || []);
                     setPosts(postsResponse?.content || []);
                 } catch (error) {
-                    console.error('데이터를 불러오는데 실패했습니다. :', error);
+                    console.error('데이터를 불러오는데 실패했습니다:', error);
                 } finally {
                     setLoading(false);
                 }
@@ -59,10 +59,10 @@ const MyPage = () => {
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('이름을 수정하는 중 오류 발생:', errorText);
+                } else {
+                    setUserInfo((prev) => ({ ...prev, name: newName }));
+                    setNewName('');
                 }
-
-                setUserInfo((prev) => ({ ...prev, name: newName }));
-                setNewName('');
             } catch (error) {
                 console.error('이름을 수정하는 중 오류 발생:', error);
             }
@@ -83,13 +83,13 @@ const MyPage = () => {
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('회원 탈퇴 중 오류 발생:', errorText);
+                } else {
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+
+                    alert('회원 탈퇴에 성공했습니다.');
+                    window.location.href = '/';
                 }
-
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-
-                alert('회원 탈퇴에 성공했습니다.');
-                window.location.href = '/';
             } catch (error) {
                 console.error('회원 탈퇴 중 오류 발생:', error);
             }
@@ -107,7 +107,6 @@ const MyPage = () => {
                     method: 'PATCH',
                     headers: {
                         'Authorization': `${token}`,
-                        //'Content-Type': 'multipart/form-data'
                     },
                     body: formData
                 });
@@ -116,12 +115,12 @@ const MyPage = () => {
                     const errorText = await response.text();
                     console.error('이미지 업로드 중 오류 발생:', errorText);
                 } else {
-                    const resultText = await response.text(); 
+                    const resultText = await response.text();
                     const result = {
                         success: true,
-                        imageUrl: resultText 
+                        imageUrl: resultText
                     };
-    
+
                     if (result.success) {
                         setUserInfo((prev) => ({ ...prev, image: result.imageUrl }));
                         alert('이미지 업로드 성공');
@@ -134,8 +133,6 @@ const MyPage = () => {
             }
         }
     }
-    
-    
 
     const handleMainPageRedirect = () => {
         navigate('/mainPage');
