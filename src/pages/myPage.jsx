@@ -100,35 +100,35 @@ const MyPage = () => {
         const token = localStorage.getItem('accessToken');
         if (token && selectedImage) {
             const formData = new FormData();
-            formData.append('image', selectedImage);
-
+            formData.append('image', selectedImage); 
+    
             try {
                 const response = await fetch(`${API_BASE_URL}/members/image`, {
-                    method: 'PATCH',
+                    method: 'PATCH', 
                     headers: {
                         'Authorization': `${token}`,
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'multipart/form-data' 
                     },
                     body: formData
                 });
-
-                const result = await response.json();
-
-                if (response.ok) {
+    
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('이미지 업로드 중 오류 발생:', errorText);
+                } else {
+                    const result = await response.json();
                     if (result.success) {
-                        setUserInfo((prev) => ({ ...prev, image: result.data }));
+                        setUserInfo((prev) => ({ ...prev, image: URL.createObjectURL(selectedImage) }));
                         alert('이미지 업로드 성공');
                     } else {
                         alert(result.message || '이미지 업로드 실패');
                     }
-                } else {
-                    alert('서버 응답 오류');
                 }
             } catch (error) {
                 console.error('이미지 업로드 중 오류 발생:', error);
             }
         }
-    };
+    }
     
 
     const handleMainPageRedirect = () => {
