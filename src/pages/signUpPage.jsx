@@ -11,8 +11,7 @@ function SignUpPage() {
         name: '',
         email: '',
         password: '',
-        phone: '',
-        image: null
+        phone: ''
     });
 
     // 각종 폼 유효성 검사 상태 
@@ -38,12 +37,11 @@ function SignUpPage() {
 
     // 양식 필드 변경 처리 (필드 속성 : name, value : 제출 값)
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
+        const { name, value } = e.target;
 
         setFormData((prevData) => ({
-            ...prevData, // 이전 입력 계속 저장 (formDate)
-
-            [name]: files ? files[0] : value // 파일 입력 필드에서는 파일, 그 외에는 value 속성 저장
+            ...prevData, // 이전 입력 계속 저장 (formData)
+            [name]: value // 파일 입력 필드는 제거됨
         }));
         
         // name 필드일 때 메시지 출력
@@ -56,7 +54,7 @@ function SignUpPage() {
         if (name === 'email') {
             setEmailChecked(false);
     
-            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); //정규 표현식
+            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); // 정규 표현식
             if (!emailValid) {
                 setEmailError('이메일 형식을 확인해 주세요.');
             } else {
@@ -184,19 +182,15 @@ function SignUpPage() {
         }
 
         // FormData 객체
-        const data = new FormData();
+        const data = {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            phone: formData.phone
+        };
 
-        // 객체에 각 필드 추가
-        data.append('name', formData.name);
-        data.append('email', formData.email);
-        data.append('password', formData.password);
-        data.append('phone', formData.phone);
-        if (formData.image) {
-            data.append('image', formData.image);
-        }
-
-        try { //FormData 객체 전송
-            const response = await axios.post(`${API_BASE_URL}/members`, formData, {
+        try { // FormData 객체 전송
+            const response = await axios.post(`${API_BASE_URL}/members`, data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -289,16 +283,6 @@ function SignUpPage() {
                             placeholder='010-1234-5678'
                             required
                             value={formData.phone}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="signUpFormGroup">
-                        <label htmlFor="image">프로필 사진</label>
-                        <input 
-                            type="file" 
-                            id="image" 
-                            name="image" 
-                            accept="image/*" 
                             onChange={handleChange}
                         />
                     </div>
