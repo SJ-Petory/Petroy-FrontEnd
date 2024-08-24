@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 function KakaoLogin() {
-  const KAKAO_KEY = '2a92f1c96bf764ce19e3fb25542b01be';
+  const KAKAO_KEY = process.env.REACT_APP_KAKAO_KEY;
 
   useEffect(() => {
     if (!KAKAO_KEY) {
@@ -39,7 +39,7 @@ function KakaoLogin() {
     if (window.Kakao) {
       console.log('카카오 로그인 요청 중');
       window.Kakao.Auth.authorize({
-        redirectUri: 'http://43.202.195.199:8080/oauth/kakao/callback',
+        redirectUri: `${process.env.REACT_APP_API_URL}/oauth/kakao/callback`,
       });
     } else {
       console.error('카카오 로그인 요청 실패');

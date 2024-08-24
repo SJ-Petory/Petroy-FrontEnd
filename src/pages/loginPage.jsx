@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/loginPage.css';
-import KakaoLogin from '../utils/kakaoLogin.jsx'
+import KakaoLogin from '../utils/kakaoLogin.jsx';
 
-const API_BASE_URL = 'http://43.202.195.199:8080';
+const API_BASE_URL = process.env.REACT_APP_API_URL; 
 
 function LoginPage() {
     const navigate = useNavigate();
