@@ -49,9 +49,11 @@ function InputInfo() {
           }
         }
       );
-      alert('서버로 데이터 전송 성공');
+
+      const data = response.data;
+
+      alert('카카오 회원가입 성공');
       
-      const data = await response.json();
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
 
