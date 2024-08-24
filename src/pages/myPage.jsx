@@ -107,7 +107,7 @@ const MyPage = () => {
                     method: 'PATCH', 
                     headers: {
                         'Authorization': `${token}`,
-                        'Content-Type': 'multipart/form-data' 
+                        //'Content-Type': 'multipart/form-data' 
                     },
                     body: formData
                 });
