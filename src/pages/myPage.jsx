@@ -106,7 +106,7 @@ const MyPage = () => {
                 const response = await fetch(`${API_BASE_URL}/members/image`, {
                     method: 'PATCH', 
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `${token}`,
                         // 'Content-Type': 'multipart/form-data' // Content-Type 헤더는 FormData를 사용할 때 자동으로 설정됩니다.
                     },
                     body: formData
