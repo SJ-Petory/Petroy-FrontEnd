@@ -100,14 +100,14 @@ const MyPage = () => {
         const token = localStorage.getItem('accessToken');
         if (token && selectedImage) {
             const formData = new FormData();
-            formData.append('multipartFiles', selectedImage);
+            formData.append('image', selectedImage); 
     
             try {
                 const response = await fetch(`${API_BASE_URL}/members/image`, {
-                    method: 'POST',
+                    method: 'PATCH', 
                     headers: {
-                        'Authorization': `${token}`,
-                        // 'Content-Type': 'multipart/form-data' 
+                        'Authorization': `Bearer ${token}`,
+                        // 'Content-Type': 'multipart/form-data' // Content-Type 헤더는 FormData를 사용할 때 자동으로 설정됩니다.
                     },
                     body: formData
                 });
@@ -128,7 +128,7 @@ const MyPage = () => {
                 console.error('이미지 업로드 중 오류 발생:', error);
             }
         }
-    };
+    }
     
 
     const handleMainPageRedirect = () => {
