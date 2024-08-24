@@ -30,38 +30,40 @@ function InputInfo() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     if (!accessToken) {
       console.error('액세스 토큰이 없습니다.');
       return;
     }
-
+  
     try {
-      const response = await axios.post('http://43.202.195.199:8080/oauth/kakao/extraInfo', 
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/oauth/kakao/extraInfo`,
         {
           email: userData.email,
           phone: userData.phone,
-        }, 
+        },
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `${accessToken}`
-          }
+            Authorization: `${accessToken}`,
+          },
         }
       );
-
+  
       const data = response.data;
-
+  
       alert('카카오 회원가입 성공');
-      
+  
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
-
+  
       navigate('/mainPage');
     } catch (error) {
       console.error('서버 전송 실패:', error);
     }
   };
+  
 
   return (
     <div>

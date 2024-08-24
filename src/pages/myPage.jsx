@@ -3,7 +3,7 @@ import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../servic
 import { useNavigate } from 'react-router-dom';
 import '../styles/myPage.css';
 
-const API_BASE_URL = 'http://43.202.195.199:8080';
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const MyPage = () => {
     const [userInfo, setUserInfo] = useState({});

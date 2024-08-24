@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/signUpPage.css';
 
-const API_BASE_URL = 'http://43.202.195.199:8080';
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function SignUpPage() {
     const navigate = useNavigate(); // 사용자 페이지 이동 관리
