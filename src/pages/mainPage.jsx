@@ -16,6 +16,10 @@ function MainPage() {
         navigate('/petPage');
     };
 
+    const handleFreindClick = () => {
+        navigate('/friendPage');
+    };
+
     useEffect(() => {
         const token = localStorage.getItem('accessToken'); // 토큰 가져옴    
 
@@ -41,6 +45,7 @@ function MainPage() {
             <CalendarComponent />
             <button type="button" onClick={handleMyPageClick}>마이페이지</button>
             <button type="button" onClick={handlePetClick}>펫</button>
+            <button type="button" onClick={handleFreindClick}>친구</button>
         </div>
     );
 }

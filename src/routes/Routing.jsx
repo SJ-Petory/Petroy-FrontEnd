@@ -7,6 +7,7 @@ import MainPage from '../pages/mainPage.jsx';
 import MyPage from '../pages/myPage.jsx';
 import PetPage from '../pages/petPage.jsx';  
 import InputInfo from '../pages/inputInfo.jsx';
+import FriendPage from '../pages/friendPage.jsx';
 
 const Routing = () => {
 
@@ -18,6 +19,7 @@ const Routing = () => {
 			<Route path='/mainPage' element={<MainPage/>} />
 			<Route path='/myPage' element={<MyPage/>} />
 			<Route path='/petPage' element={<PetPage/>} />
+			<Route path='/friendPage' element={<FriendPage/>} /> 
 			<Route path='/' element={<HomePage/>} />
             
 		</Routes>
