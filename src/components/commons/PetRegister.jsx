@@ -139,7 +139,7 @@ const PetRegister = ({ onClose }) => {
                             onChange={handleChange}
                         />
                     </div>
-                    <button type="submit" disabled={loading}>
+                    <button type="submit" className="petRegister-submit-button" disabled={loading}>
                         {loading ? '등록 중...' : '등록'}
                     </button>
                     {error && <p className="petRegister-error">{error}</p>}

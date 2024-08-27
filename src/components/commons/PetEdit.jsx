@@ -35,7 +35,7 @@ const PetEdit = ({ pet, onClose, onUpdate }) => {
         try {
             const response = await axios.put(`${API_BASE_URL}/pets/${pet.petId}`, petInfo, {
                 headers: {
-                    'Authorization': `${token}`,
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             });
@@ -129,7 +129,7 @@ const PetEdit = ({ pet, onClose, onUpdate }) => {
                             onChange={handleChange}
                         />
                     </div>
-                    <button type="submit" disabled={loading}>
+                    <button type="submit" className="petEdit-submit-button" disabled={loading}>
                         {loading ? '수정 중...' : '수정하기'}
                     </button>
                     {error && <p className="petEdit-error">{error}</p>}
