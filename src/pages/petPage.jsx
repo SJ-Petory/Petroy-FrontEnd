@@ -78,7 +78,7 @@ const PetPage = () => {
 
     return (
         <div className="petPage">
-            <h1>반려동물 관리 페이지</h1>
+            <h1>펫 페이지임</h1>
             <button onClick={handleOpenModal}>펫 등록하기</button>
             <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지</button>
 
