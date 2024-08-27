@@ -11,7 +11,7 @@ const FriendSearch = ({ onSearchResults, onSearchError }) => {
 
     const handleSearch = async () => {
         if (!keyword.trim()) {
-            onSearchError('친구의 이름이나 메일를 입력해 주세요.');
+            onSearchError('검색어를 입력해 주세요.');
             return;
         }
 
@@ -23,7 +23,7 @@ const FriendSearch = ({ onSearchResults, onSearchError }) => {
             const response = await axios.get(`${API_BASE_URL}/friends`, {
                 params: { keyword },
                 headers: {
-                    'Authorization': `${token}`,
+                    'Authorization': `Bearer ${token}`,
                 },
             });
             onSearchResults(response.data.members);
