@@ -1,4 +1,3 @@
-// src/pages/FriendPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FriendSearch from '../components/commons/FriendSearch.jsx';
@@ -24,15 +23,17 @@ const FriendPage = () => {
 
     return (
         <div className="friendPage">
-            <h1>친구 페이지</h1>
-            <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지</button>
+            <h1>친구 페이지임</h1>
+            <button onClick={handleMainPageRedirect} className="friendPage-button">메인 페이지</button>
 
-            <FriendSearch 
-                onSearchResults={handleSearchResults}
-                onSearchError={handleSearchError}
-            />
+            <div className="searchContainer">
+                <FriendSearch 
+                    onSearchResults={handleSearchResults}
+                    onSearchError={handleSearchError}
+                />
 
-            {error && <p className="error">{error}</p>}
+                {error && <p className="error">{error}</p>}
+            </div>
 
             {friends.length > 0 ? (
                 <div className="friendsList">

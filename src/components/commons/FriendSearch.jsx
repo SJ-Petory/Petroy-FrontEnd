@@ -1,3 +1,4 @@
+// src/components/FriendSearch.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../../styles/friendSearch.css';
@@ -10,7 +11,7 @@ const FriendSearch = ({ onSearchResults, onSearchError }) => {
 
     const handleSearch = async () => {
         if (!keyword.trim()) {
-            onSearchError('이름이나 메일을 입력해 주세요.');
+            onSearchError('친구의 이름이나 메일를 입력해 주세요.');
             return;
         }
 
@@ -22,7 +23,7 @@ const FriendSearch = ({ onSearchResults, onSearchError }) => {
             const response = await axios.get(`${API_BASE_URL}/friends`, {
                 params: { keyword },
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `${token}`,
                 },
             });
             onSearchResults(response.data.members);
@@ -35,16 +36,18 @@ const FriendSearch = ({ onSearchResults, onSearchError }) => {
     };
 
     return (
-        <div className="searchContainer">
-            <input
-                type="text"
-                placeholder="이름이나 이메일로 검색"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-            />
-            <button onClick={handleSearch} className="search-button" disabled={loading}>
-                {loading ? '검색 중...' : '검색'}
-            </button>
+        <div className="searchBox">
+            <div className="searchContent">
+                <input
+                    type="text"
+                    placeholder="이름이나 이메일로 검색"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                />
+                <button onClick={handleSearch} className="search-button" disabled={loading}>
+                    {loading ? '검색 중...' : '검색'}
+                </button>
+            </div>
         </div>
     );
 };
