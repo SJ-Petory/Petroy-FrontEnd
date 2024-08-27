@@ -23,8 +23,8 @@ const FriendPage = () => {
 
     return (
         <div className="friendPage">
-            <h1>친구 페이지</h1>
-            <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지</button>
+            <h1>친구 페이지임</h1>
+            <button onClick={handleMainPageRedirect} className="friendPage-button">메인 페이지</button>
 
             <div className="searchContainer">
                 <FriendSearch 
