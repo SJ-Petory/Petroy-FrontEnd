@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PetRegister from '../components/commons/PetRegister.jsx';
 import PetEdit from '../components/commons/PetEdit.jsx';
+import DeletePet from '../components/commons/DeletePet.jsx'; 
 import { fetchMemberPets } from '../services/tokenService.jsx';
 import '../styles/petPage.css';
 
 const PetPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [pets, setPets] = useState([]);
     const [selectedPet, setSelectedPet] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -53,8 +55,21 @@ const PetPage = () => {
         setShowEditModal(false);
     };
 
+    const handleOpenDeleteModal = (pet) => {
+        setSelectedPet(pet);
+        setShowDeleteModal(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setShowDeleteModal(false);
+    };
+
     const handleUpdatePet = (updatedPet) => {
         setPets(pets.map(p => p.petId === updatedPet.petId ? updatedPet : p));
+    };
+
+    const handleDeleteSuccess = () => {
+        setPets(pets.filter(p => p.petId !== selectedPet.petId));
     };
 
     const handleMainPageRedirect = () => {
@@ -75,6 +90,13 @@ const PetPage = () => {
                     onUpdate={handleUpdatePet}
                 />
             )}
+            {showDeleteModal && (
+                <DeletePet
+                    pet={selectedPet}
+                    onClose={handleCloseDeleteModal}
+                    onDeleteSuccess={handleDeleteSuccess}
+                />
+            )}
 
             {loading ? (
                 <p>로딩 중...</p>
@@ -92,6 +114,7 @@ const PetPage = () => {
                             <p>성별: {pet.gender === 'male' ? '남자' : '여자'}</p>
                             <p>메모: {pet.memo}</p>
                             <button onClick={() => handleOpenEditModal(pet)}>펫 수정</button>
+                            <button onClick={() => handleOpenDeleteModal(pet)} className="deleteButton">펫 삭제</button>
                         </div>
                     ))}
                 </div>
