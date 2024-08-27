@@ -166,7 +166,7 @@ const MyPage = () => {
                 <button onClick={handleImageUpload} className="myPage-button">이미지 수정</button>
 
                 <button onClick={handleAccountDelete} className="myPage-button">회원 탈퇴</button>
-                <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지로 이동</button>
+                <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지</button>
             </div>
 
             <div className="pets">
