@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../../styles/PetPage.css';
+import '../../styles/petPage.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
