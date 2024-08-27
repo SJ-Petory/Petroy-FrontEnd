@@ -48,6 +48,40 @@
     margin-top: 10px;
 }
 
+.petsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.petCard {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    width: 250px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.petImage {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.petCard h2 {
+    margin-top: 10px;
+    font-size: 1.5em;
+}
+
+.petCard p {
+    margin: 5px 0;
+}
+
+
+/* ----------------------------------------------------------- 등록 모달 ----------------------------------------------------------- */
+
 .modal {
     position: fixed;
     z-index: 1000;
@@ -81,3 +115,4 @@
     text-decoration: none;
     cursor: pointer;
 }
+
