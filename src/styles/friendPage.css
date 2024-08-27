@@ -1,8 +1,10 @@
 .friendPage {
+    display: flex;
     padding: 20px;
+    align-items: flex-start;
 }
 
-.friendPage-button {
+.myPage-button {
     padding: 10px 20px;
     font-size: 16px;
     background-color: #007bff;
@@ -10,6 +12,18 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.searchContainer {
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
 }
 
 .error {
@@ -22,6 +36,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    margin-top: 20px;
 }
 
 .friendCard {

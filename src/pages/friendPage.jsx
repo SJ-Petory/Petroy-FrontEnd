@@ -23,8 +23,8 @@ const FriendPage = () => {
 
     return (
         <div className="friendPage">
-            <h1>친구 페이지임</h1>
-            <button onClick={handleMainPageRedirect} className="friendPage-button">메인 페이지</button>
+            <h1>친구 페이지</h1>
+            <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지</button>
 
             <div className="searchContainer">
                 <FriendSearch 
@@ -33,20 +33,18 @@ const FriendPage = () => {
                 />
 
                 {error && <p className="error">{error}</p>}
-            </div>
 
-            {friends.length > 0 ? (
-                <div className="friendsList">
-                    {friends.map(friend => (
-                        <div key={friend.id} className="friendCard">
-                            <img src={friend.image} alt={friend.name} className="friendImage" />
-                            <h2>{friend.name}</h2>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <p>검색된 친구가 없습니다.</p>
-            )}
+                {friends.length > 0 && (
+                    <div className="friendsList">
+                        {friends.map(friend => (
+                            <div key={friend.id} className="friendCard">
+                                <img src={friend.image} alt={friend.name} className="friendImage" />
+                                <h2>{friend.name}</h2>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
