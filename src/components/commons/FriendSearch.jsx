@@ -1,4 +1,3 @@
-// src/components/FriendSearch.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../../styles/friendSearch.css';
