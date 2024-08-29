@@ -35,7 +35,7 @@ const PetEdit = ({ pet, onClose, onUpdate }) => {
         try {
             const response = await axios.put(`${API_BASE_URL}/pets/${pet.petId}`, petInfo, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `${token}`,
                     'Content-Type': 'application/json',
                 },
             });
