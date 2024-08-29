@@ -24,14 +24,14 @@ const FriendSearch = () => {
             const response = await axios.get(`${API_BASE_URL}/friends/keyword`, {
                 params: { keyword },
                 headers: {
-                    'Authorization': `${token}`,
+                    'Authorization': `${token}`, 
                 },
             });
 
             console.log(response.data);
 
-            if (response.data && Array.isArray(response.data.members)) {
-                setSearchResults(response.data.members);
+            if (response.data && Array.isArray(response.data.content)) {
+                setSearchResults(response.data.content);
             } else {
                 setSearchResults([]);
             }
