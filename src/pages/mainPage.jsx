@@ -1,24 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../styles/mainPage.css';
 import { fetchCurrentMember } from '../services/tokenService.jsx';
 import CalendarComponent from '../components/commons/CalendarComponent';
+import NavBar from '../components/commons/NavBar.jsx';
 
 function MainPage() {
     const [memberName, setMemberName] = useState('');
-    const navigate = useNavigate();
-
-    const handleMyPageClick = () => {
-        navigate('/myPage');
-    };
-
-    const handlePetClick = () => {
-        navigate('/petPage');
-    };
-
-    const handleFreindClick = () => {
-        navigate('/friendPage');
-    };
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken'); // 토큰 가져옴    
@@ -41,11 +28,9 @@ function MainPage() {
 
     return (
         <div className="main-page">
+            <NavBar title="메인페이지" />
             <h1>안녕하세요, {memberName}님!</h1>
             <CalendarComponent />
-            <button type="button" onClick={handleMyPageClick}>마이페이지</button>
-            <button type="button" onClick={handlePetClick}>펫</button>
-            <button type="button" onClick={handleFreindClick}>친구</button>
         </div>
     );
 }

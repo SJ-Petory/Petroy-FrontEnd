@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FriendSearch from '../components/commons/FriendSearch.jsx';
 import '../styles/friendPage.css';
+import NavBar from '../components/commons/NavBar.jsx';
 
 const FriendPage = () => {
     const [friends, setFriends] = useState([]);
@@ -23,6 +24,7 @@ const FriendPage = () => {
 
     return (
         <div className="friendPage">
+            <NavBar title="친구" />
             <h1>친구 페이지임</h1>
             <button onClick={handleMainPageRedirect} className="friendPage-button">메인 페이지</button>
 
