@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../../styles/friendSearch.css';
-import { FriendRequest } from '../commons/FriendRequest.jsx'
+import FriendRequest from '../commons/FriendRequest.jsx'
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
