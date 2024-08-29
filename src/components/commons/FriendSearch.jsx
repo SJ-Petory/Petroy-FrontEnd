@@ -24,11 +24,10 @@ const FriendSearch = () => {
             const response = await axios.get(`${API_BASE_URL}/friends/keyword`, {
                 params: { keyword },
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `${token}`,
                 },
             });
 
-            // 응답 데이터 확인
             console.log(response.data);
 
             if (response.data && Array.isArray(response.data.members)) {
@@ -60,17 +59,17 @@ const FriendSearch = () => {
             {error && <div className="error-message">{error}</div>}
             <div className="search-results">
                 {searchResults.length > 0 ? (
-                    <ul>
+                      <ul>
                         {searchResults.map((member) => (
                             <li key={member.id}>
-                                {member.name} - {member.email}
+                             {member.name} - {member.email}
                             </li>
-                        ))}
+                         ))}
                     </ul>
-                ) : (
-                    !loading && <p>검색 결과가 없습니다.</p>
-                )}
-            </div>
+                        ) : (
+                     !loading && <p>검색 결과가 없습니다.</p>
+                     )}
+             </div>
         </div>
     );
 };
