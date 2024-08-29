@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../../styles/friendSearch.css';
+import { FriendRequest } from '../commons/FriendRequest.jsx'
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -12,7 +13,7 @@ const FriendSearch = () => {
 
     const handleSearch = async () => {
         if (!keyword.trim()) {
-            setError('검색어를 입력해 주세요.');
+            setError('이름이나 이메일을 입력해 주세요.');
             return;
         }
 
@@ -24,11 +25,9 @@ const FriendSearch = () => {
             const response = await axios.get(`${API_BASE_URL}/friends/keyword`, {
                 params: { keyword },
                 headers: {
-                    'Authorization': `${token}`, 
+                    'Authorization': `${token}`,
                 },
             });
-
-            console.log(response.data);
 
             if (response.data && Array.isArray(response.data.content)) {
                 setSearchResults(response.data.content);
@@ -61,9 +60,17 @@ const FriendSearch = () => {
                 {searchResults.length > 0 ? (
                     <ul>
                         {searchResults.map((member) => (
-                            <li key={member.id}>
-                                {member.name}
-                                {member.image && <img src={member.image} alt={`${member.name} 프로필`} />}
+                            <li key={member.id} className="search-result-item">
+                                <div className="search-result-info">
+                                    <span>{member.name}</span>
+                                    {member.image && <img className='friend-search-image' src={member.image} alt={`${member.name} 프로필`} />}
+                                </div>
+                                <button
+                                    className="send-request-button"
+                                    onClick={() => FriendRequest(member.id)}
+                                >
+                                    친구 요청
+                                </button>
                             </li>
                         ))}
                     </ul>
