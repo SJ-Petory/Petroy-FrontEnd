@@ -63,7 +63,7 @@ const FriendSearch = () => {
                             <li key={member.id} className="search-result-item">
                                 <div className="search-result-info">
                                     <span>{member.name}</span>
-                                    {member.image && <img className='friend-search-image' src={member.image} alt={`${member.name} 프로필`} />}
+                                    {member.image && <img src={member.image} alt={`${member.name} 프로필`} />}
                                 </div>
                                 <button
                                     className="send-request-button"

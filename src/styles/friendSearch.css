@@ -56,7 +56,7 @@
 }
 
 
-.friend-search-image {
-    max-width: 100px;
-    max-height: 100px;
+.search-result-info img {
+    width: 100px; 
+    height: 100px; 
 }
