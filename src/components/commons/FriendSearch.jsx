@@ -7,7 +7,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL;
 const FriendSearch = () => {
     const [keyword, setKeyword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [searchResults, setSearchResults] = useState([]);
+    const [searchResults, setSearchResults] = useState([]); 
     const [error, setError] = useState('');
 
     const handleSearch = async () => {
@@ -27,7 +27,7 @@ const FriendSearch = () => {
                     'Authorization': `${token}`,
                 },
             });
-            setSearchResults(response.data.members);
+            setSearchResults(response.data.members || []); 
         } catch (err) {
             setError('친구 검색 중 오류 발생');
             console.error(err);
