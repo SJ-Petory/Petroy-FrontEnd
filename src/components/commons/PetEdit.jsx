@@ -66,19 +66,23 @@ const PetEdit = ({ pet, onClose, onUpdate }) => {
                             onChange={handleChange}
                             required
                         >
-                            <option value="강아지">강아지</option>
-                            <option value="고양이">고양이</option>
+                            <option value="DOG">강아지</option>
+                            <option value="CAT">고양이</option>
                         </select>
                     </div>
                     <div className="petEdit-form-group">
                         <label>품종:</label>
-                        <input
+                        <select
                             type="text"
                             name="breed"
                             value={petInfo.breed}
                             onChange={handleChange}
                             required
-                        />
+                            >
+                            <option value="">선택</option>
+                            <option value="치와와">치와와</option>
+                            <option value="진돗개">진돗개</option>
+                            </select>
                     </div>
                     <div className="petEdit-form-group">
                         <label>이름:</label>
