@@ -1,13 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import FriendSearch from '../components/commons/FriendSearch.jsx';
 import '../styles/friendPage.css';
 import NavBar from '../components/commons/NavBar.jsx';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 const FriendPage = () => {
     const [friends, setFriends] = useState([]);
+    const [requests, setRequests] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchFriendsAndRequests = async () => {
+            const token = localStorage.getItem('accessToken');
+
+            try {
+                const friendsResponse = await axios.get(`${API_BASE_URL}/friends?state=ACCEPT`, {
+                    headers: {
+                        'Authorization': `${token}`,
+                    },
+                });
+
+                const requestsResponse = await axios.get(`${API_BASE_URL}/friends?state=WAIT`, {
+                    headers: {
+                        'Authorization': `${token}`,
+                    },
+                });
+
+                setFriends(friendsResponse.data.friends || []);
+                setRequests(requestsResponse.data.friends || []);
+            } catch (err) {
+                setError('목록을 불러오는 중 오류가 발생했습니다.');
+                console.error(err);
+            }
+        };
+
+        fetchFriendsAndRequests();
+    }, []);
 
     const handleMainPageRedirect = () => {
         navigate('/mainPage');
@@ -20,6 +52,33 @@ const FriendPage = () => {
     const handleSearchError = (errorMessage) => {
         setError(errorMessage);
         setFriends([]);
+    };
+
+    const handleRequestAction = async (memberId, action) => {
+        const token = localStorage.getItem('accessToken');
+        try {
+            const response = await axios.post(
+                `${API_BASE_URL}/friends/${memberId}`,
+                { state: action },
+                {
+                    headers: {
+                        'Authorization': `${token}`,
+                    },
+                }
+            );
+
+            if (response.data && response.data.success) {
+                if (action === 'ACCEPTED') {
+                    const acceptedFriend = requests.find((request) => request.id === memberId);
+                    setFriends([...friends, acceptedFriend]);
+                }
+
+                setRequests(requests.filter((request) => request.id !== memberId));
+            }
+        } catch (err) {
+            setError('요청을 처리하는 중 오류가 발생했습니다.');
+            console.error(err);
+        }
     };
 
     return (
@@ -36,16 +95,49 @@ const FriendPage = () => {
 
                 {error && <p className="error">{error}</p>}
 
-                {friends.length > 0 && (
-                    <div className="friendsList">
-                        {friends.map(friend => (
-                            <div key={friend.id} className="friendCard">
-                                <img src={friend.image} alt={friend.name} className="friendImage" />
-                                <h2>{friend.name}</h2>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                <div className="friendsListContainer">
+                    <h2>친구 목록</h2>
+                    {friends.length > 0 ? (
+                        <div className="friendsList">
+                            {friends.map(friend => (
+                                <div key={friend.id} className="friendCard">
+                                    <img src={friend.image} alt={friend.name} className="friendImage" />
+                                    <h2>{friend.name}</h2>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p>친구가 없습니다.</p>
+                    )}
+                </div>
+
+                <div className="requestsListContainer">
+                    <h2>친구 요청 목록</h2>
+                    {requests.length > 0 ? (
+                        <div className="friendsList">
+                            {requests.map(request => (
+                                <div key={request.id} className="friendCard">
+                                    <img src={request.image} alt={request.name} className="friendImage" />
+                                    <h2>{request.name}</h2>
+                                    <button 
+                                        onClick={() => handleRequestAction(request.id, 'ACCEPTED')} 
+                                        className="accept-button"
+                                    >
+                                        수락
+                                    </button>
+                                    <button 
+                                        onClick={() => handleRequestAction(request.id, 'REJECTED')} 
+                                        className="reject-button"
+                                    >
+                                        거절
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p>친구 요청이 없습니다.</p>
+                    )}
+                </div>
             </div>
         </div>
     );
