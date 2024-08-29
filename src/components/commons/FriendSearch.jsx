@@ -19,7 +19,7 @@ const FriendSearch = ({ onSearchResults, onSearchError }) => {
 
         try {
             const token = localStorage.getItem('accessToken');
-            const response = await axios.get(`${API_BASE_URL}/friends`, {
+            const response = await axios.get(`${API_BASE_URL}/friends/keyword`, {
                 params: { keyword },
                 headers: {
                     'Authorization': `${token}`,
