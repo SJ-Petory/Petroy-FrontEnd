@@ -26,7 +26,7 @@ const DeletePet = ({ pet, onClose, onDeleteSuccess }) => {
             const token = localStorage.getItem('accessToken');
             await axios.delete(`${API_BASE_URL}/pets/${pet.petId}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `${token}`,
                 },
             });
             onDeleteSuccess(); 

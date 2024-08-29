@@ -22,7 +22,7 @@ const FriendSearch = ({ onSearchResults, onSearchError }) => {
             const response = await axios.get(`${API_BASE_URL}/friends`, {
                 params: { keyword },
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `${token}`,
                 },
             });
             onSearchResults(response.data.members);
