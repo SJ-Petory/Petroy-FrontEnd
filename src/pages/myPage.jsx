@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../services/tokenService.jsx';
 import { useNavigate } from 'react-router-dom';
 import '../styles/myPage.css';
+import NavBar from '../components/commons/NavBar.jsx';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -142,6 +143,7 @@ const MyPage = () => {
 
     return (
         <div className="myPage">
+            <NavBar title="마이페이지" />
             <div className="userInfo">
                 <h2>내 정보</h2>
                 <p><strong>이름 :</strong> {userInfo.name}</p>

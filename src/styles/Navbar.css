@@ -1,0 +1,37 @@
+.nav-bar {
+    position: relative;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.sidebar-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid #ddd;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

@@ -5,6 +5,7 @@ import PetEdit from '../components/commons/PetEdit.jsx';
 import DeletePet from '../components/commons/DeletePet.jsx'; 
 import { fetchMemberPets } from '../services/tokenService.jsx';
 import '../styles/petPage.css';
+import NavBar from '../components/commons/NavBar.jsx';
 
 const PetPage = () => {
     const [showModal, setShowModal] = useState(false);
@@ -78,6 +79,7 @@ const PetPage = () => {
 
     return (
         <div className="petPage">
+            <NavBar title="펫 관리" />
             <h1>펫 페이지임</h1>
             <button onClick={handleOpenModal}>펫 등록하기</button>
             <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지</button>
