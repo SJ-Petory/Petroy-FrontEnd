@@ -4,18 +4,20 @@ import '../../styles/friendSearch.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-const FriendSearch = ({ onSearchResults, onSearchError }) => {
+const FriendSearch = () => {
     const [keyword, setKeyword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [searchResults, setSearchResults] = useState([]);
+    const [error, setError] = useState('');
 
     const handleSearch = async () => {
         if (!keyword.trim()) {
-            onSearchError('검색어를 입력해 주세요.');
+            setError('검색어를 입력해 주세요.');
             return;
         }
 
         setLoading(true);
-        onSearchError(null);
+        setError('');
 
         try {
             const token = localStorage.getItem('accessToken');
@@ -25,9 +27,9 @@ const FriendSearch = ({ onSearchResults, onSearchError }) => {
                     'Authorization': `${token}`,
                 },
             });
-            onSearchResults(response.data.members);
+            setSearchResults(response.data.members);
         } catch (err) {
-            onSearchError('친구 검색 중 오류 발생');
+            setError('친구 검색 중 오류 발생');
             console.error(err);
         } finally {
             setLoading(false);
@@ -46,6 +48,20 @@ const FriendSearch = ({ onSearchResults, onSearchError }) => {
                 <button onClick={handleSearch} className="search-button" disabled={loading}>
                     {loading ? '검색 중...' : '검색'}
                 </button>
+            </div>
+            {error && <div className="error-message">{error}</div>}
+            <div className="search-results">
+                {searchResults.length > 0 ? (
+                    <ul>
+                        {searchResults.map((member) => (
+                            <li key={member.id}>
+                                {member.name} - {member.email}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    !loading && <p>검색 결과가 없습니다.</p>
+                )}
             </div>
         </div>
     );
