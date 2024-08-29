@@ -16,30 +16,34 @@ const FriendPage = () => {
     useEffect(() => {
         const fetchFriendsAndRequests = async () => {
             const token = localStorage.getItem('accessToken');
-
+    
             try {
-                const friendsResponse = await axios.get(`${API_BASE_URL}/friends?state=ACCEPT`, {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
-                });
-
-                const requestsResponse = await axios.get(`${API_BASE_URL}/friends?state=WAIT`, {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
-                });
-
-                setFriends(friendsResponse.data.friends || []);
-                setRequests(requestsResponse.data.friends || []);
+                const fetchStatus = async (status) => {
+                    const response = await axios.get(`${API_BASE_URL}/friends/status`, {
+                        params: { status },
+                        headers: {
+                            'Authorization': `${token}`,
+                        },
+                    });
+                    return response.data.friends || [];
+                };
+    
+                const [friends, requests] = await Promise.all([
+                    fetchStatus('ACCEPTED'),
+                    fetchStatus('PENDING'),
+                ]);
+    
+                setFriends(friends);
+                setRequests(requests);
             } catch (err) {
                 setError('목록을 불러오는 중 오류가 발생했습니다.');
                 console.error(err);
             }
         };
-
+    
         fetchFriendsAndRequests();
     }, []);
+    
 
     const handleMainPageRedirect = () => {
         navigate('/mainPage');
@@ -59,7 +63,7 @@ const FriendPage = () => {
         try {
             const response = await axios.post(
                 `${API_BASE_URL}/friends/${memberId}`,
-                { state: action },
+                { status: action },
                 {
                     headers: {
                         'Authorization': `${token}`,
