@@ -7,7 +7,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL;
 const FriendSearch = () => {
     const [keyword, setKeyword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [searchResults, setSearchResults] = useState([]); 
+    const [searchResults, setSearchResults] = useState([]);
     const [error, setError] = useState('');
 
     const handleSearch = async () => {
@@ -24,10 +24,18 @@ const FriendSearch = () => {
             const response = await axios.get(`${API_BASE_URL}/friends/keyword`, {
                 params: { keyword },
                 headers: {
-                    'Authorization': `${token}`,
+                    'Authorization': `Bearer ${token}`,
                 },
             });
-            setSearchResults(response.data.members || []); 
+
+            // 응답 데이터 확인
+            console.log(response.data);
+
+            if (response.data && Array.isArray(response.data.members)) {
+                setSearchResults(response.data.members);
+            } else {
+                setSearchResults([]);
+            }
         } catch (err) {
             setError('친구 검색 중 오류 발생');
             console.error(err);
