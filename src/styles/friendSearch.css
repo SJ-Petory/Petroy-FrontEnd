@@ -34,3 +34,29 @@
     background-color: #6c757d;
     cursor: not-allowed;
 }
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.send-request-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.send-request-button:hover {
+    background-color: #0056b3;
+}
+
+
+.friend-search-image {
+    max-width: 100px;
+    max-height: 100px;
+}
