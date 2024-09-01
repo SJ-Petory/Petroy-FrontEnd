@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../services/tokenService.jsx';
-import { useNavigate } from 'react-router-dom';
 import '../styles/myPage.css';
 import NavBar from '../components/commons/NavBar.jsx';
 import defaultProfilePic from '../assets/DefaultImage.png'
@@ -14,8 +13,6 @@ const MyPage = () => {
     const [newName, setNewName] = useState('');
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
@@ -136,10 +133,6 @@ const MyPage = () => {
         }
     }
 
-    const handleMainPageRedirect = () => {
-        navigate('/mainPage');
-    };
-
     if (loading) return <p>잠시만 기다려주세요...</p>;
 
     return (
@@ -174,7 +167,6 @@ const MyPage = () => {
                 <button onClick={handleImageUpload} className="myPage-button">이미지 수정</button>
 
                 <button onClick={handleAccountDelete} className="myPage-button">회원 탈퇴</button>
-                <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지</button>
             </div>
 
             <div className="pets">

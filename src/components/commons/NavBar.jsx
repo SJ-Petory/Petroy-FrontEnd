@@ -22,7 +22,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import ForumIcon from '@mui/icons-material/Forum';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday'; // Import CalendarTodayIcon
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'; 
 import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
