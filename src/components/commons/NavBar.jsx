@@ -264,7 +264,6 @@ export default function NavBar({ title }) {
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 onClick={() => {
-                  // Add navigation paths for '커뮤니티', '알림', '설정' here
                 }}
                 sx={[
                   {
