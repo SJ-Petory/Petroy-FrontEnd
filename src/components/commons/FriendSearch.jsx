@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import '../../styles/friendSearch.css';
 import FriendRequest from '../commons/FriendRequest.jsx'
+import defaultProfilePic from '../../assets/DefaultImage.png'
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -63,7 +64,11 @@ const FriendSearch = () => {
                             <li key={member.id} className="search-result-item">
                                 <div className="search-result-info">
                                     <span>{member.name}</span>
-                                    {member.image && <img src={member.image} alt={`${member.name} 프로필`} />}
+                                    <img
+                                        src={member.image || defaultProfilePic}
+                                        alt={`${member.name} 프로필`}
+                                        className="profile-image"
+                                    />
                                 </div>
                                 <button
                                     className="send-request-button"

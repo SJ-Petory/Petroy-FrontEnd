@@ -22,6 +22,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import ForumIcon from '@mui/icons-material/Forum';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'; // Import CalendarTodayIcon
 import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -152,7 +153,55 @@ export default function NavBar({ title }) {
         </DrawerHeader>
         <Divider />
         <List>
-          {['마이페이지', '펫', '친구'].map((text, index) => (
+          <ListItem key="홈 & 캘린더" disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              onClick={() => handleNavigation('/mainPage')}
+              sx={[
+                {
+                  minHeight: 48,
+                  px: 2.5,
+                },
+                open
+                  ? {
+                      justifyContent: 'initial',
+                    }
+                  : {
+                      justifyContent: 'center',
+                    },
+              ]}
+            >
+              <ListItemIcon
+                sx={[
+                  {
+                    minWidth: 0,
+                    justifyContent: 'center',
+                  },
+                  open
+                    ? {
+                        mr: 3,
+                      }
+                    : {
+                        mr: 'auto',
+                      },
+                ]}
+              >
+                <CalendarTodayIcon />  {/* Only Calendar icon */}
+              </ListItemIcon>
+              <ListItemText
+                primary="홈 & 캘린더"
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
+          {['마이페이지', '펫', '친구'].map((text) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 onClick={() => {
@@ -211,11 +260,11 @@ export default function NavBar({ title }) {
         </List>
         <Divider />
         <List>
-          {['커뮤니티', '알림', '설정'].map((text, index) => (
+          {['커뮤니티', '알림', '설정'].map((text) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 onClick={() => {
-                  // 여기에 커뮤니티와 알림, 설정에 대한 이동 경로를 추가할 수 있습니다.
+                  // Add navigation paths for '커뮤니티', '알림', '설정' here
                 }}
                 sx={[
                   {

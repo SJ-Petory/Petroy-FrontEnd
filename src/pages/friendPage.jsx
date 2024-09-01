@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import FriendSearch from '../components/commons/FriendSearch.jsx';
 import '../styles/friendPage.css';
 import NavBar from '../components/commons/NavBar.jsx';
+import defaultProfilePic from '../assets/DefaultImage.png'
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -104,12 +105,16 @@ const FriendPage = () => {
                 {error && <p className="error">{error}</p>}
 
                 <div className="friendsListContainer">
-                    <h2>친구 목록</h2>
+                <h2>친구 목록</h2>
                     {friends.length > 0 ? (
                         <div className="friendsList">
                             {friends.map(friend => (
                                 <div key={friend.id} className="friendCard">
-                                    <img src={friend.image} alt={friend.name} className="friendImage" />
+                                    <img 
+                                        src={friend.image || defaultProfilePic} 
+                                        alt={friend.name} 
+                                        className="friendImage" 
+                                    />
                                     <h2>{friend.name}</h2>
                                 </div>
                             ))}
@@ -125,7 +130,11 @@ const FriendPage = () => {
                         <div className="friendsList">
                             {requests.map(request => (
                                 <div key={request.id} className="friendCard">
-                                    <img src={request.image} alt={request.name} className="friendImage" />
+                                    <img 
+                                        src={request.image || defaultProfilePic} 
+                                        alt={request.name} 
+                                        className="friendImage" 
+                                    />
                                     <h2>{request.name}</h2>
                                     <button 
                                         onClick={() => handleRequestAction(request.id, 'ACCEPTED')} 
