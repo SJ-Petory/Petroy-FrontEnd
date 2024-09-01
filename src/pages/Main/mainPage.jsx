@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/mainPage.css';
-import { fetchCurrentMember } from '../services/tokenService.jsx';
-import CalendarComponent from '../components/commons/CalendarComponent';
-import NavBar from '../components/commons/NavBar.jsx';
+import '../../styles/Main/mainPage.css';
+import { fetchCurrentMember } from '../../services/tokenService.jsx';
+import CalendarComponent from '../../components/commons/calendarComponent.jsx';
+import NavBar from '../../components/commons/navBar.jsx';
 
 function MainPage() {
     const [memberName, setMemberName] = useState('');
