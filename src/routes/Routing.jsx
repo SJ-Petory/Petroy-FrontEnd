@@ -9,7 +9,6 @@ import PetPage from '../pages/Pet/PetPage.jsx';
 import FriendPage from '../pages/Friend/FriendPage.jsx';
 
 const Routing = () => {
-
 	return (
 		<Routes>
             <Route path='/login' element={<LoginPage/>} />
