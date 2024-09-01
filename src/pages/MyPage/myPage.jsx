@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../../services/tokenService.jsx';
 import '../../styles/MyPage/myPage.css';
-import NavBar from '../../components/commons/navBar.jsx';
+import NavBar from '../../components/commons/NavBar.jsx';
 import defaultProfilePic from '../../assets/defaultImage.png'
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;

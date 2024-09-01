@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import FriendSearch from '../../components/Friend/friendSearch.jsx';
-import NavBar from '../../components/commons/navBar.jsx';
+import NavBar from '../../components/commons/NavBar.jsx';
 import defaultProfilePic from '../../assets/defaultImage.png'
 import '../../styles/Friend/friendPage.css';
 

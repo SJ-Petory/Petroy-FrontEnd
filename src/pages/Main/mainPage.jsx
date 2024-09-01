@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/Main/mainPage.css';
 import { fetchCurrentMember } from '../../services/tokenService.jsx';
 import CalendarComponent from '../../components/commons/CalendarComponent.jsx';
-import NavBar from '../../components/commons/navBar.jsx';
+import NavBar from '../../components/commons/NavBar.jsx';
 
 function MainPage() {
     const [memberName, setMemberName] = useState('');
