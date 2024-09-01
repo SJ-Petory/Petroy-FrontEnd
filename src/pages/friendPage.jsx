@@ -25,8 +25,8 @@ const FriendPage = () => {
                             'Authorization': `${token}`,
                         },
                     });
-                    return response.data.friends || [];
-                };
+                    return response.data.content || []; 
+                };                
     
                 const [friends, requests] = await Promise.all([
                     fetchStatus('ACCEPTED'),
