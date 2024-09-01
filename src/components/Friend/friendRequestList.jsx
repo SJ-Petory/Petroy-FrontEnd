@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FriendList from './friendList.jsx';
+import FriendList from './FriendList.jsx';
 
 const FriendRequestsList = ({ requests, onRequestAction }) => {
     const handleAccept = (id) => onRequestAction(id, 'ACCEPTED');

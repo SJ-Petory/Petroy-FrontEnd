@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import PetRegister from '../../components/Pet/petRegister.jsx';
-import PetEdit from '../../components/Pet/petEdit.jsx';
-import DeletePet from '../../components/Pet/deletePet.jsx'; 
-import { fetchMemberPets } from '../../services/tokenService.jsx';
+import PetRegister from '../../components/Pet/PetRegister.jsx';
+import PetEdit from '../../components/Pet/PetEdit.jsx';
+import DeletePet from '../../components/Pet/DeletePet.jsx'; 
+import { fetchMemberPets } from '../../services/TokenService.jsx';
 import NavBar from '../../components/commons/NavBar.jsx';
-import '../../styles/Pet/petPage.css';
+import '../../styles/Pet/PetPage.css';
 
 const PetPage = () => {
     const [showModal, setShowModal] = useState(false);

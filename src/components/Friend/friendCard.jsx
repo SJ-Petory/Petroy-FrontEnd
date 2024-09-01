@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import defaultProfilePic from '../../assets/DefaultImage.png';
-import '../../styles/Friend/friendCard.css'; 
+import '../../styles/Friend/FriendCard.css'; 
 
 const FriendCard = ({ id, name, image, onAccept, onReject }) => {
     return (
