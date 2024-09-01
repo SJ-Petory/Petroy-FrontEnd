@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/loginPage.css';
-import KakaoLogin from '../utils/kakaoLogin.jsx';
+import '../../styles/Login/loginPage.css';
+import KakaoLogin from '../../utils/kakaoLogin.jsx';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL; 
 

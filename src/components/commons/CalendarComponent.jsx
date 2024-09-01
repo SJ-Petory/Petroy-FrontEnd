@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import '../../styles/Calendar.css';
+import '../../styles/calendar.css';
 
 const ScheduleComponent = ({ selectedDate }) => {
     return (
