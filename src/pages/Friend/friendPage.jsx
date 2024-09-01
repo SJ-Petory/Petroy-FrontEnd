@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import FriendSearch from '../../components/Friend/friendSearch.jsx';
 import NavBar from '../../components/commons/NavBar.jsx';
-import defaultProfilePic from '../../assets/defaultImage.png'
+import defaultProfilePic from '../../assets/DefaultImage.png'
 import '../../styles/Friend/friendPage.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
