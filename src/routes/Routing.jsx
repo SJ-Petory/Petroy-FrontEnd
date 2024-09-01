@@ -1,12 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
-import HomePage from '../pages/Home/homePage.jsx';
-import LoginPage from '../pages/Login/loginPage.jsx';
-import SignUpPage from '../pages/SignUp/signUpPage.jsx';
-import InputInfo from '../pages/SignUp/inputInfo.jsx';
-import MainPage from '../pages/Main/mainPage.jsx';
-import MyPage from '../pages/MyPage/myPage.jsx';
-import PetPage from '../pages/Pet/petPage.jsx';  
-import FriendPage from '../pages/Friend/friendPage.jsx';
+import HomePage from '../pages/Home/HomePage.jsx';
+import LoginPage from '../pages/Login/LoginPage.jsx';
+import SignUpPage from '../pages/SignUp/SignUpPage.jsx';
+import InputInfo from '../pages/SignUp/InputInfo.jsx';
+import MainPage from '../pages/Main/MainPage.jsx';
+import MyPage from '../pages/MyPage/MyPage.jsx';
+import PetPage from '../pages/Pet/PetPage.jsx';  
+import FriendPage from '../pages/Friend/FriendPage.jsx';
 
 const Routing = () => {
 

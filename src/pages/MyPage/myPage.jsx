@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../../services/tokenService.jsx';
-import '../../styles/MyPage/myPage.css';
+import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../../services/TokenService.jsx';
+import '../../styles/MyPage/MyPage.css';
 import NavBar from '../../components/commons/NavBar.jsx';
 import defaultProfilePic from '../../assets/DefaultImage.png'
 
