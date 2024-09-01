@@ -56,13 +56,14 @@ const FriendPage = () => {
     const handleRequestAction = async (memberId, action) => {
         const token = localStorage.getItem('accessToken');
         try {
-            await axios.post(
+            await axios.patch(
                 `${API_BASE_URL}/friends/${memberId}`,
                 {}, 
                 {
                     headers: {
                         'Authorization': `${token}`, 
                     },
+                    params: { status: action }, 
                 }
             );
     
@@ -73,7 +74,6 @@ const FriendPage = () => {
     
             setRequests(requests.filter((request) => request.id !== memberId));
         } catch (err) {
-            
             if (err.response && err.response.data && err.response.data.errorMessage) {
                 setError(`오류: ${err.response.data.errorMessage}`);
             } else {
