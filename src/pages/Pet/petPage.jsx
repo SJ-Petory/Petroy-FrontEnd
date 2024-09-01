@@ -3,7 +3,7 @@ import PetRegister from '../../components/Pet/petRegister.jsx';
 import PetEdit from '../../components/Pet/petEdit.jsx';
 import DeletePet from '../../components/Pet/deletePet.jsx'; 
 import { fetchMemberPets } from '../../services/tokenService.jsx';
-import NavBar from '../../components/commons/navBar.jsx';
+import NavBar from '../../components/commons/NavBar.jsx';
 import '../../styles/Pet/petPage.css';
 
 const PetPage = () => {
