@@ -18,7 +18,7 @@ const FriendPage = () => {
     
             try {
                 const fetchStatus = async (status) => {
-                    const response = await axios.get(`${API_BASE_URL}/friends/status`, {
+                    const response = await axios.get(`${API_BASE_URL}/friends/process`, {
                         params: { status },
                         headers: {
                             'Authorization': `${token}`,
