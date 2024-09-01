@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import PetRegister from '../components/commons/PetRegister.jsx';
 import PetEdit from '../components/commons/PetEdit.jsx';
 import DeletePet from '../components/commons/DeletePet.jsx'; 
@@ -15,7 +14,6 @@ const PetPage = () => {
     const [selectedPet, setSelectedPet] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const loadPets = async () => {
@@ -73,16 +71,11 @@ const PetPage = () => {
         setPets(pets.filter(p => p.petId !== selectedPet.petId));
     };
 
-    const handleMainPageRedirect = () => {
-        navigate('/mainPage');
-    };
-
     return (
         <div className="petPage">
             <NavBar title="펫 관리" />
             <h1>펫 페이지임</h1>
             <button onClick={handleOpenModal}>펫 등록하기</button>
-            <button onClick={handleMainPageRedirect} className="myPage-button">메인 페이지</button>
 
             {showModal && <PetRegister onClose={handleCloseModal} />}
             {showEditModal && (
