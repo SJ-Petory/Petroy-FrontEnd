@@ -3,6 +3,7 @@ import { fetchCurrentMember, fetchMemberPets, fetchMemberPosts } from '../servic
 import { useNavigate } from 'react-router-dom';
 import '../styles/myPage.css';
 import NavBar from '../components/commons/NavBar.jsx';
+import defaultProfilePic from '../assets/DefaultImage.png'
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -148,7 +149,12 @@ const MyPage = () => {
                 <h2>내 정보</h2>
                 <p><strong>이름 :</strong> {userInfo.name}</p>
                 <p><strong>전화번호 :</strong> {userInfo.phone}</p>
-                <p><strong>회원 사진 :</strong> {userInfo.image ? <img src={userInfo.image} alt="Profile" className="myPage-img" /> : '등록된 사진이 없어요'}</p>
+                <p><strong>회원 사진 :</strong> 
+                    {userInfo.image 
+                        ? <img src={userInfo.image} alt="Profile" className="myPage-img" />
+                        : <img src={defaultProfilePic} alt="Default Profile" className="myPage-img" />
+                    }
+                </p>
                 
                 <input
                     type="text"
