@@ -61,29 +61,33 @@ const FriendPage = () => {
     const handleRequestAction = async (memberId, action) => {
         const token = localStorage.getItem('accessToken');
         try {
-            const response = await axios.post(
+            await axios.post(
                 `${API_BASE_URL}/friends/${memberId}`,
-                { status: action },
+                {}, 
                 {
                     headers: {
-                        'Authorization': `${token}`,
+                        'Authorization': `${token}`, 
                     },
                 }
             );
-
-            if (response.data && response.data.success) {
-                if (action === 'ACCEPTED') {
-                    const acceptedFriend = requests.find((request) => request.id === memberId);
-                    setFriends([...friends, acceptedFriend]);
-                }
-
-                setRequests(requests.filter((request) => request.id !== memberId));
+    
+            if (action === 'ACCEPTED') {
+                const acceptedFriend = requests.find((request) => request.id === memberId);
+                setFriends([...friends, acceptedFriend]);
             }
+    
+            setRequests(requests.filter((request) => request.id !== memberId));
         } catch (err) {
-            setError('요청을 처리하는 중 오류가 발생했습니다.');
+            
+            if (err.response && err.response.data && err.response.data.errorMessage) {
+                setError(`오류: ${err.response.data.errorMessage}`);
+            } else {
+                setError('요청을 처리하는 중 오류가 발생했습니다.');
+            }
             console.error(err);
         }
     };
+    
 
     return (
         <div className="friendPage">
