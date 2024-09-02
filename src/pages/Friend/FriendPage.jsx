@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import FriendSearch from '../../components/Friend/FriendSearch.jsx';
 import NavBar from '../../components/commons/NavBar.jsx';
+import FriendDetail from '../../components/Friend/FriendDetail.jsx';
 import defaultProfilePic from '../../assets/DefaultImage.png'
 import '../../styles/Friend/FriendPage.css';
 
@@ -11,6 +12,7 @@ const FriendPage = () => {
     const [friends, setFriends] = useState([]);
     const [requests, setRequests] = useState([]);
     const [error, setError] = useState(null);
+    const [selectedFriendId, setSelectedFriendId] = useState(null);
 
     useEffect(() => {
         const fetchFriendsAndRequests = async () => {
@@ -42,16 +44,6 @@ const FriendPage = () => {
     
         fetchFriendsAndRequests();
     }, []);
-    
-
-    const handleSearchResults = (results) => {
-        setFriends(results);
-    };
-
-    const handleSearchError = (errorMessage) => {
-        setError(errorMessage);
-        setFriends([]);
-    };
 
     const handleRequestAction = async (memberId, action) => {
         const token = localStorage.getItem('accessToken');
@@ -83,6 +75,23 @@ const FriendPage = () => {
         }
     };
     
+
+    const handleSearchResults = (results) => {
+        setFriends(results);
+    };
+
+    const handleSearchError = (errorMessage) => {
+        setError(errorMessage);
+        setFriends([]);
+    };
+
+    const handleFriendClick = (memberId) => {
+        setSelectedFriendId(memberId);
+    };
+
+    const closeModal = () => {
+        setSelectedFriendId(null);
+    };
 
     return (
         <div className="friendPage">
@@ -149,8 +158,15 @@ const FriendPage = () => {
                     )}
                 </div>
             </div>
+            {selectedFriendId && (
+                <FriendDetail 
+                    memberId={selectedFriendId} 
+                    onClose={closeModal} 
+                />
+            )}
         </div>
     );
 };
+
 
 export default FriendPage;
