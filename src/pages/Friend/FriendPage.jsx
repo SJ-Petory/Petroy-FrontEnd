@@ -96,7 +96,7 @@ const FriendPage = () => {
     return (
         <div className="friendPage">
             <NavBar title="친구" />
-            <h1>친구 페이지임</h1>
+            <h1>친구 페이지</h1>
 
             <div className="searchContainer">
                 <FriendSearch 
@@ -107,11 +107,15 @@ const FriendPage = () => {
                 {error && <p className="error">{error}</p>}
 
                 <div className="friendsListContainer">
-                <h2>친구 목록</h2>
+                    <h2>친구 목록</h2>
                     {friends.length > 0 ? (
                         <div className="friendsList">
                             {friends.map(friend => (
-                                <div key={friend.id} className="friendCard">
+                                <div 
+                                    key={friend.id} 
+                                    className="friendCard"
+                                    onClick={() => handleFriendClick(friend.id)} // Attach click handler
+                                >
                                     <img 
                                         src={friend.image || defaultProfilePic} 
                                         alt={friend.name} 
@@ -131,7 +135,10 @@ const FriendPage = () => {
                     {requests.length > 0 ? (
                         <div className="friendsList">
                             {requests.map(request => (
-                                <div key={request.id} className="friendCard">
+                                <div 
+                                    key={request.id} 
+                                    className="friendCard"
+                                >
                                     <img 
                                         src={request.image || defaultProfilePic} 
                                         alt={request.name} 
@@ -158,6 +165,7 @@ const FriendPage = () => {
                     )}
                 </div>
             </div>
+
             {selectedFriendId && (
                 <FriendDetail 
                     memberId={selectedFriendId} 
@@ -167,6 +175,5 @@ const FriendPage = () => {
         </div>
     );
 };
-
 
 export default FriendPage;
