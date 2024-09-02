@@ -26,16 +26,16 @@ const FriendPage = () => {
                             'Authorization': `${token}`,
                         },
                     });
-                    return response.data || []; 
+                    return response.data.content || []; 
                 };                
     
-                const [friends, requests] = await Promise.all([
+                const [friendsData, requestsData] = await Promise.all([
                     fetchStatus('ACCEPTED'),
                     fetchStatus('PENDING'),
                 ]);
     
-                setFriends(friends);
-                setRequests(requests);
+                setFriends(friendsData);
+                setRequests(requestsData);
             } catch (err) {
                 setError('목록을 불러오는 중 오류가 발생했습니다.');
                 console.error(err);
@@ -61,7 +61,9 @@ const FriendPage = () => {
     
             if (action === 'ACCEPTED') {
                 const acceptedFriend = requests.find((request) => request.id === memberId);
-                setFriends([...friends, acceptedFriend]);
+                if (acceptedFriend) {
+                    setFriends([...friends, acceptedFriend]);
+                }
             }
     
             setRequests(requests.filter((request) => request.id !== memberId));
@@ -113,7 +115,7 @@ const FriendPage = () => {
                                 <div 
                                     key={friend.id} 
                                     className="friendCard"
-                                    onClick={() => handleFriendClick(friend.id)} 
+                                    onClick={() => handleFriendClick(friend.id)}
                                 >
                                     <img 
                                         src={friend.image || defaultProfilePic} 
