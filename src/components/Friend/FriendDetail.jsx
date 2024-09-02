@@ -21,7 +21,11 @@ const FriendDetail = ({ memberId, onClose }) => {
                 });
                 setFriendDetail(response.data);
             } catch (error) {
-                setError(error.response?.data?.errorMessage || '친구 상세 정보를 불러오는 중 오류가 발생했습니다.');
+                if (error.response && error.response.data) {
+                    setError(error.response.data.errorMessage || '친구 상세 정보를 불러오는 중 오류가 발생했습니다.');
+                } else {
+                    setError('친구 상세 정보를 불러오는 중 오류가 발생했습니다.');
+                }
             }
         };
 
@@ -41,12 +45,20 @@ const FriendDetail = ({ memberId, onClose }) => {
                 ) : (
                     <div className="modal-body">
                         <h2>{friendDetail.name}</h2>
-                        <img src={friendDetail.image || defaultProfilePic} alt={friendDetail.name} className="friend-detail-image" />
+                        <img 
+                            src={friendDetail.image || defaultProfilePic} 
+                            alt={friendDetail.name} 
+                            className="friend-detail-image" 
+                        />
                         <h3>내가 등록한 펫</h3>
                         <ul>
                             {friendDetail.myPets.map(pet => (
                                 <li key={pet.id}>
-                                    <img src={pet.petImage || defaultProfilePic} alt={pet.name} className="pet-image" />
+                                    <img 
+                                        src={pet.petImage || defaultProfilePic} 
+                                        alt={pet.name} 
+                                        className="pet-image" 
+                                    />
                                     {pet.name}
                                 </li>
                             ))}
@@ -55,7 +67,11 @@ const FriendDetail = ({ memberId, onClose }) => {
                         <ul>
                             {friendDetail.careGivePets.map(pet => (
                                 <li key={pet.id}>
-                                    <img src={pet.petImage || defaultProfilePic} alt={pet.name} className="pet-image" />
+                                    <img 
+                                        src={pet.petImage || defaultProfilePic} 
+                                        alt={pet.name} 
+                                        className="pet-image" 
+                                    />
                                     {pet.name}
                                 </li>
                             ))}
