@@ -26,7 +26,7 @@ const FriendPage = () => {
                             'Authorization': `${token}`,
                         },
                     });
-                    return response.data.content || []; 
+                    return response.data || []; 
                 };                
     
                 const [friends, requests] = await Promise.all([
@@ -113,7 +113,7 @@ const FriendPage = () => {
                                 <div 
                                     key={friend.id} 
                                     className="friendCard"
-                                    onClick={() => handleFriendClick(friend.id)} // Attach click handler
+                                    onClick={() => handleFriendClick(friend.id)} 
                                 >
                                     <img 
                                         src={friend.image || defaultProfilePic} 
