@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import defaultProfilePic from '../../assets/DefaultImage.png';
+import '../../styles/Friend/FriendDetail.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -10,7 +11,7 @@ const FriendDetail = ({ memberId, onClose }) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchFriendDetail = async () => {
+        const getFriendDetail = async () => {
             const token = localStorage.getItem('accessToken');
             try {
                 const response = await axios.get(`${API_BASE_URL}/friends/${memberId}`, {
@@ -19,87 +20,55 @@ const FriendDetail = ({ memberId, onClose }) => {
                     },
                 });
                 setFriendDetail(response.data);
-            } catch (err) {
-                if (err.response && err.response.data) {
-                    setError(err.response.data.errorMessage);
-                } else {
-                    setError('친구 정보를 불러오는 중 오류가 발생했습니다.');
-                }
-                console.error(err);
+            } catch (error) {
+                setError(error.response?.data?.errorMessage || '친구 상세 정보를 불러오는 중 오류가 발생했습니다.');
             }
         };
 
-        fetchFriendDetail();
+        getFriendDetail();
     }, [memberId]);
 
-    if (!friendDetail) {
-        return (
-            <div className="modal">
-                <div className="modal-content">
-                    {error ? <p>{error}</p> : <p>Loading...</p>}
-                    <button onClick={onClose}>닫기</button>
-                </div>
-            </div>
-        );
+    if (!friendDetail && !error) {
+        return <div className="modal">로딩 중...</div>;
     }
 
     return (
-        <div className="modal">
+        <div className="modal-overlay">
             <div className="modal-content">
-                <div className="friend-info">
-                    <img 
-                        src={friendDetail.image || defaultProfilePic} 
-                        alt={friendDetail.name} 
-                        className="friend-detail-image" 
-                    />
-                    <h2>{friendDetail.name}</h2>
-                </div>
-                <div className="friend-pets">
-                    <h3>내가 돌보미로 등록한 펫</h3>
-                    {friendDetail.myPets.length > 0 ? (
+                <button className="modal-close-button" onClick={onClose}>X</button>
+                {error ? (
+                    <div className="modal-error">{error}</div>
+                ) : (
+                    <div className="modal-body">
+                        <h2>{friendDetail.name}</h2>
+                        <img src={friendDetail.image || defaultProfilePic} alt={friendDetail.name} className="friend-detail-image" />
+                        <h3>내가 등록한 펫</h3>
                         <ul>
-                            {friendDetail.myPets.map((pet) => (
+                            {friendDetail.myPets.map(pet => (
                                 <li key={pet.id}>
-                                    <img 
-                                        src={pet.petImage} 
-                                        alt={pet.name} 
-                                        className="pet-image" 
-                                    />
-                                    <span>{pet.name}</span>
+                                    <img src={pet.petImage || defaultProfilePic} alt={pet.name} className="pet-image" />
+                                    {pet.name}
                                 </li>
                             ))}
                         </ul>
-                    ) : (
-                        <p>등록된 펫이 없습니다.</p>
-                    )}
-                </div>
-                <div className="friend-pets">
-                    <h3>친구가 돌보미로 등록된 펫</h3>
-                    {friendDetail.careGivePets.length > 0 ? (
+                        <h3>돌보미로 등록된 펫</h3>
                         <ul>
-                            {friendDetail.careGivePets.map((pet) => (
+                            {friendDetail.careGivePets.map(pet => (
                                 <li key={pet.id}>
-                                    <img 
-                                        src={pet.petImage} 
-                                        alt={pet.name} 
-                                        className="pet-image" 
-                                    />
-                                    <span>{pet.name}</span>
+                                    <img src={pet.petImage || defaultProfilePic} alt={pet.name} className="pet-image" />
+                                    {pet.name}
                                 </li>
                             ))}
                         </ul>
-                    ) : (
-                        <p>돌보미로 등록된 펫이 없습니다.</p>
-                    )}
-                </div>
-                <button onClick={onClose} className="close-button">닫기</button>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
 
 FriendDetail.propTypes = {
-    memberId: PropTypes.string.isRequired,
+    memberId: PropTypes.number.isRequired,
     onClose: PropTypes.func.isRequired,
 };
 
