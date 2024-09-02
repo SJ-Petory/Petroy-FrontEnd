@@ -3,7 +3,7 @@ import axios from 'axios';
 import FriendSearch from '../../components/Friend/FriendSearch.jsx';
 import NavBar from '../../components/commons/NavBar.jsx';
 import FriendDetail from '../../components/Friend/FriendDetail.jsx';
-import defaultProfilePic from '../../assets/DefaultImage.png'
+import defaultProfilePic from '../../assets/DefaultImage.png';
 import '../../styles/Friend/FriendPage.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
@@ -74,7 +74,6 @@ const FriendPage = () => {
             console.error(err);
         }
     };
-    
 
     const handleSearchResults = (results) => {
         setFriends(results);
