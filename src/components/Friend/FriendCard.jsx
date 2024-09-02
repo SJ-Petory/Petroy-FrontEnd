@@ -35,7 +35,7 @@ const FriendCard = ({ id, name, image, onAccept, onReject }) => {
 };
 
 FriendCard.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     image: PropTypes.string,
     onAccept: PropTypes.func,
