@@ -86,16 +86,16 @@ const PetRegister = ({ onClose }) => {
                 });
 
                 if (response.status === 200) {
-                    alert('Pet registration successful');
+                    alert('펫 등록 성공');
                     onClose();
                 } else {
-                    setError('Failed to register pet');
+                    setError('펫 등록 실패');
                 }
             } else {
-                setError('No token available');
+                setError('토큰이 존재하지 않습니다');
             }
         } catch (err) {
-            setError('Failed to communicate with server');
+            setError('서버와의 응답이 실패했습니다');
         } finally {
             setLoading(false);
         }
@@ -168,8 +168,8 @@ const PetRegister = ({ onClose }) => {
                             required
                         >
                             <option value="">선택</option>
-                            <option value="male">남자</option>
-                            <option value="female">여자</option>
+                            <option value="MALE">남자</option>
+                            <option value="FEMALE">여자</option>
                         </select>
                     </div>
                     <div className="petRegister-form-group">
@@ -190,7 +190,7 @@ const PetRegister = ({ onClose }) => {
                         />
                     </div>
                     <button type="submit" className="petRegister-submit-button" disabled={loading}>
-                        {loading ? 'Registering...' : 'Register'}
+                        {loading ? '등록 중...' : '등록'}
                     </button>
                     {error && <p className="petRegister-error">{error}</p>}
                 </form>
