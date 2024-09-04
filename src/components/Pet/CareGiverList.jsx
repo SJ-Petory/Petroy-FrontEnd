@@ -14,6 +14,12 @@ const CareGiverList = () => {
         const fetchCareGiverList = async () => {
             const token = localStorage.getItem('accessToken');
 
+            if (!token) {
+                setError('토큰이 없습니다.');
+                setLoading(false);
+                return;
+            }
+
             try {
                 const response = await axios.get(`${API_BASE_URL}/pets/caregiver`, {
                     headers: {
@@ -22,12 +28,15 @@ const CareGiverList = () => {
                 });
 
                 if (response.data.success) {
-                    setPets(response.data.data || []);
+                    setPets(response.data.data.content || []);
                 } else {
                     setError(response.data.errorMessage || '반려동물 목록을 불러오는 중 오류가 발생했습니다.');
                 }
             } catch (err) {
-                setError('API 호출 중 오류가 발생했습니다.');
+                const errorMessage = err.response && err.response.data
+                    ? err.response.data.errorMessage || 'API 호출 중 오류가 발생했습니다.'
+                    : 'API 호출 중 오류가 발생했습니다.';
+                setError(errorMessage);
                 console.error(err);
             } finally {
                 setLoading(false);
