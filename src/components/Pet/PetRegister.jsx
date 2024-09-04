@@ -6,8 +6,8 @@ const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const PetRegister = ({ onClose }) => {
     const [petInfo, setPetInfo] = useState({
-        species: '',
-        breed: '',
+        speciesId: '',
+        breedId: '',
         name: '',
         age: '',
         gender: '',
@@ -20,21 +20,18 @@ const PetRegister = ({ onClose }) => {
     // const [speciesOptions, setSpeciesOptions] = useState([]);
     // const [breedOptions, setBreedOptions] = useState([]);
 
-
     // useEffect(() => {
-    //     // 종과 품종 데이터를 불러오는 함수
+    //     // Fetch species and breed options
     //     const fetchOptions = async () => {
     //         try {
-    //             // 종 데이터 가져오기
     //             const speciesResponse = await axios.get(`${API_BASE_URL}/pets/species`);
     //             setSpeciesOptions(speciesResponse.data);
 
-    //             // 품종 데이터 가져오기
     //             const breedResponse = await axios.get(`${API_BASE_URL}/pets/breeds`);
     //             setBreedOptions(breedResponse.data);
 
     //         } catch (err) {
-    //             setError('종 및 품종 데이터 가져오기 실패');
+    //             setError('Failed to fetch species and breed data');
     //         }
     //     };
 
@@ -56,7 +53,7 @@ const PetRegister = ({ onClose }) => {
         const { name, value } = e.target;
         setPetInfo((prev) => ({
             ...prev,
-            [name]: name === 'age' ? value : Number(value),
+            [name]: name === 'age' ? value : value, 
         }));
     };
 
@@ -66,9 +63,13 @@ const PetRegister = ({ onClose }) => {
         setError(null);
 
         const formattedPetInfo = {
-            ...petInfo,
-            breed: Number(petInfo.breed),
-            species: Number(petInfo.species),
+            speciesId: Number(petInfo.speciesId),
+            breedId: Number(petInfo.breedId),
+            name: petInfo.name,
+            age: Number(petInfo.age),
+            gender: petInfo.gender, 
+            image: petInfo.image,
+            memo: petInfo.memo,
         };
 
         try {
@@ -83,16 +84,16 @@ const PetRegister = ({ onClose }) => {
                 });
 
                 if (response.status === 200) {
-                    alert('반려동물 등록 성공');
+                    alert('Pet registration successful');
                     onClose();
                 } else {
-                    setError('반려동물 등록에 실패했습니다.');
+                    setError('Failed to register pet');
                 }
             } else {
-                setError('토큰이 없습니다.');
+                setError('No token available');
             }
         } catch (err) {
-            setError('서버와의 통신에 실패했습니다.');
+            setError('Failed to communicate with server');
         } finally {
             setLoading(false);
         }
@@ -102,17 +103,17 @@ const PetRegister = ({ onClose }) => {
         <div className="petRegister-modal-overlay">
             <div className="petRegister-modal-content">
                 <span className="petRegister-close" onClick={onClose}>&times;</span>
-                <h1>반려동물 등록</h1>
+                <h1>Register Pet</h1>
                 <form onSubmit={handleSubmit}>
                     <div className="petRegister-form-group">
-                        <label>종:</label>
+                        <label>Species:</label>
                         <select
-                            name="species"
-                            value={petInfo.species}
+                            name="speciesId"
+                            value={petInfo.speciesId}
                             onChange={handleChange}
                             required
                         >
-                            <option value="">선택</option>
+                            <option value="">Select</option>
                             {speciesOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
                                     {option.label}
@@ -121,14 +122,14 @@ const PetRegister = ({ onClose }) => {
                         </select>
                     </div>
                     <div className="petRegister-form-group">
-                        <label>품종:</label>
+                        <label>Breed:</label>
                         <select
-                            name="breed"
-                            value={petInfo.breed}
+                            name="breedId"
+                            value={petInfo.breedId}
                             onChange={handleChange}
                             required
                         >
-                            <option value="">선택</option>
+                            <option value="">Select</option>
                             {breedOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
                                     {option.label}
@@ -137,7 +138,7 @@ const PetRegister = ({ onClose }) => {
                         </select>
                     </div>
                     <div className="petRegister-form-group">
-                        <label>이름:</label>
+                        <label>Name:</label>
                         <input
                             type="text"
                             name="name"
@@ -147,7 +148,7 @@ const PetRegister = ({ onClose }) => {
                         />
                     </div>
                     <div className="petRegister-form-group">
-                        <label>나이:</label>
+                        <label>Age:</label>
                         <input
                             type="number"
                             name="age"
@@ -157,20 +158,20 @@ const PetRegister = ({ onClose }) => {
                         />
                     </div>
                     <div className="petRegister-form-group">
-                        <label>성별:</label>
+                        <label>Gender:</label>
                         <select
                             name="gender"
                             value={petInfo.gender}
                             onChange={handleChange}
                             required
                         >
-                            <option value="">선택</option>
-                            <option value="BOY">남자</option>
-                            <option value="GIRL">여자</option>
+                            <option value="">Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
                         </select>
                     </div>
                     <div className="petRegister-form-group">
-                        <label>이미지 URL:</label>
+                        <label>Image URL:</label>
                         <input
                             type="text"
                             name="image"
@@ -179,7 +180,7 @@ const PetRegister = ({ onClose }) => {
                         />
                     </div>
                     <div className="petRegister-form-group">
-                        <label>메모:</label>
+                        <label>Memo:</label>
                         <textarea
                             name="memo"
                             value={petInfo.memo}
@@ -187,7 +188,7 @@ const PetRegister = ({ onClose }) => {
                         />
                     </div>
                     <button type="submit" className="petRegister-submit-button" disabled={loading}>
-                        {loading ? '등록 중...' : '등록'}
+                        {loading ? 'Registering...' : 'Register'}
                     </button>
                     {error && <p className="petRegister-error">{error}</p>}
                 </form>
