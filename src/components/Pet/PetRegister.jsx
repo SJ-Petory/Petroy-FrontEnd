@@ -62,6 +62,8 @@ const PetRegister = ({ onClose }) => {
         setLoading(true);
         setError(null);
 
+        console.log(formattedPetInfo); 
+
         const formattedPetInfo = {
             speciesId: Number(petInfo.speciesId),
             breedId: Number(petInfo.breedId),
@@ -103,17 +105,17 @@ const PetRegister = ({ onClose }) => {
         <div className="petRegister-modal-overlay">
             <div className="petRegister-modal-content">
                 <span className="petRegister-close" onClick={onClose}>&times;</span>
-                <h1>Register Pet</h1>
+                <h1>펫 등록</h1>
                 <form onSubmit={handleSubmit}>
                     <div className="petRegister-form-group">
-                        <label>Species:</label>
+                        <label>종:</label>
                         <select
                             name="speciesId"
                             value={petInfo.speciesId}
                             onChange={handleChange}
                             required
                         >
-                            <option value="">Select</option>
+                            <option value="">선택</option>
                             {speciesOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
                                     {option.label}
@@ -122,14 +124,14 @@ const PetRegister = ({ onClose }) => {
                         </select>
                     </div>
                     <div className="petRegister-form-group">
-                        <label>Breed:</label>
+                        <label>품종:</label>
                         <select
                             name="breedId"
                             value={petInfo.breedId}
                             onChange={handleChange}
                             required
                         >
-                            <option value="">Select</option>
+                            <option value="">선택</option>
                             {breedOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
                                     {option.label}
@@ -138,7 +140,7 @@ const PetRegister = ({ onClose }) => {
                         </select>
                     </div>
                     <div className="petRegister-form-group">
-                        <label>Name:</label>
+                        <label>이름:</label>
                         <input
                             type="text"
                             name="name"
@@ -148,7 +150,7 @@ const PetRegister = ({ onClose }) => {
                         />
                     </div>
                     <div className="petRegister-form-group">
-                        <label>Age:</label>
+                        <label>나이:</label>
                         <input
                             type="number"
                             name="age"
@@ -158,20 +160,20 @@ const PetRegister = ({ onClose }) => {
                         />
                     </div>
                     <div className="petRegister-form-group">
-                        <label>Gender:</label>
+                        <label>성별:</label>
                         <select
                             name="gender"
                             value={petInfo.gender}
                             onChange={handleChange}
                             required
                         >
-                            <option value="">Select</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
+                            <option value="">선택</option>
+                            <option value="male">남자</option>
+                            <option value="female">여자</option>
                         </select>
                     </div>
                     <div className="petRegister-form-group">
-                        <label>Image URL:</label>
+                        <label>이미지 URL:</label>
                         <input
                             type="text"
                             name="image"
@@ -180,7 +182,7 @@ const PetRegister = ({ onClose }) => {
                         />
                     </div>
                     <div className="petRegister-form-group">
-                        <label>Memo:</label>
+                        <label>메모:</label>
                         <textarea
                             name="memo"
                             value={petInfo.memo}
