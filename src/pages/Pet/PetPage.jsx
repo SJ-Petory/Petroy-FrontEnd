@@ -4,6 +4,7 @@ import PetEdit from '../../components/Pet/PetEdit.jsx';
 import DeletePet from '../../components/Pet/DeletePet.jsx'; 
 import AssignCareGiver from '../../components/Pet/AssignCareGiver.jsx'; 
 import { assignCareGiver } from '../../services/CareService.jsx'; 
+import CareGiverList from '../../components/Pet/CareGiverList.jsx'; 
 import { fetchMemberPets } from '../../services/TokenService.jsx';
 import NavBar from '../../components/commons/NavBar.jsx';
 import '../../styles/Pet/PetPage.css';
@@ -12,7 +13,7 @@ const PetPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showAssignModal, setShowAssignModal] = useState(false); 
+    const [showAssignModal, setShowAssignModal] = useState(false);
     const [pets, setPets] = useState([]);
     const [selectedPet, setSelectedPet] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -100,7 +101,7 @@ const PetPage = () => {
             const response = await assignCareGiver(selectedPet.petId, careGiverId, token);
     
             if (response.status === 200) {
-                console.log(`돌보미 ${careGiverId} 등록 성공!`);
+                alert(`돌보미 등록 성공!`);
             } else {
                 console.error('돌보미 등록 실패');
                 setError('돌보미 등록에 실패했습니다.');
@@ -116,7 +117,12 @@ const PetPage = () => {
             <NavBar title="펫 관리" />
             <button onClick={handleOpenModal}>펫 등록하기</button>
 
-            {showModal && <PetRegister onClose={handleCloseModal} onRegisterSuccess={handleRegisterSuccess} />}
+            {showModal && 
+                <PetRegister 
+                    onClose={handleCloseModal} 
+                    onRegisterSuccess={handleRegisterSuccess} 
+                    />
+            }
             {showEditModal && (
                 <PetEdit
                     pet={selectedPet}
@@ -138,6 +144,8 @@ const PetPage = () => {
                     onAssignCareGiver={handleAssignCareGiver}
                 />
             )}
+
+            <CareGiverList />
 
             {loading ? (
                 <p>로딩 중...</p>
