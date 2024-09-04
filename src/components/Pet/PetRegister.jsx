@@ -31,7 +31,7 @@ const PetRegister = ({ onClose }) => {
     //             setBreedOptions(breedResponse.data);
 
     //         } catch (err) {
-    //             setError('Failed to fetch species and breed data');
+    //             setError('species와 breeds 데이터를 가져오지 못했습니다');
     //         }
     //     };
 
