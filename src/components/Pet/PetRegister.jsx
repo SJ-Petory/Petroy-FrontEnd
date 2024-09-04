@@ -62,8 +62,6 @@ const PetRegister = ({ onClose }) => {
         setLoading(true);
         setError(null);
 
-        console.log(formattedPetInfo); 
-
         const formattedPetInfo = {
             speciesId: Number(petInfo.speciesId),
             breedId: Number(petInfo.breedId),
@@ -73,6 +71,8 @@ const PetRegister = ({ onClose }) => {
             image: petInfo.image,
             memo: petInfo.memo,
         };
+
+        console.log(formattedPetInfo); 
 
         try {
             const token = localStorage.getItem('accessToken');
