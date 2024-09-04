@@ -17,9 +17,33 @@ const PetRegister = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // const [speciesOptions, setSpeciesOptions] = useState([]);
+    // const [breedOptions, setBreedOptions] = useState([]);
+
+
+    // useEffect(() => {
+    //     // 종과 품종 데이터를 불러오는 함수
+    //     const fetchOptions = async () => {
+    //         try {
+    //             // 종 데이터 가져오기
+    //             const speciesResponse = await axios.get(`${API_BASE_URL}/pets/species`);
+    //             setSpeciesOptions(speciesResponse.data);
+
+    //             // 품종 데이터 가져오기
+    //             const breedResponse = await axios.get(`${API_BASE_URL}/pets/breeds`);
+    //             setBreedOptions(breedResponse.data);
+
+    //         } catch (err) {
+    //             setError('종 및 품종 데이터 가져오기 실패');
+    //         }
+    //     };
+
+    //     fetchOptions();
+    // }, []);
+
     const speciesOptions = [
-        { value: 'DOG', label: '강아지' },
-        { value: 'CAT', label: '고양이' },
+        { value: 1, label: '강아지' },
+        { value: 2, label: '고양이' },
     ];
 
     const breedOptions = [
@@ -40,6 +64,9 @@ const PetRegister = ({ onClose }) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+
+        console.log(petInfo);
+        console.log(petInfo.breed);
     
         if (!petInfo.species || !petInfo.breed) {
             setError('종과 품종을 선택해야 합니다.');
