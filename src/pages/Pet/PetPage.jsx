@@ -22,7 +22,12 @@ const PetPage = () => {
             if (token) {
                 try {
                     const response = await fetchMemberPets(token);
-                    setPets(response?.content || []);
+
+                    if (response && response.content) {
+                        setPets(response.content);
+                    } else {
+                        setError('펫 정보를 불러오는 중 오류 발생');
+                    }
                 } catch (error) {
                     setError('반려동물 정보를 불러오는 중 오류 발생');
                     console.error(error);
@@ -31,6 +36,7 @@ const PetPage = () => {
                 }
             } else {
                 setError('토큰이 없습니다.');
+                setLoading(false);
             }
         };
 
@@ -105,7 +111,7 @@ const PetPage = () => {
                             <p>종: {pet.species}</p>
                             <p>품종: {pet.breed}</p>
                             <p>나이: {pet.age}세</p>
-                            <p>성별: {pet.gender === 'male' ? '남자' : '여자'}</p>
+                            <p>성별: {pet.gender === 'BOY' ? '남자' : '여자'}</p>
                             <p>메모: {pet.memo}</p>
                             <button onClick={() => handleOpenEditModal(pet)}>펫 수정</button>
                             <button onClick={() => handleOpenDeleteModal(pet)} className="deleteButton">펫 삭제</button>
