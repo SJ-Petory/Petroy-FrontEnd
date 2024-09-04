@@ -16,7 +16,7 @@ const PetRegister = ({ onClose }) => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
+    
     // const [speciesOptions, setSpeciesOptions] = useState([]);
     // const [breedOptions, setBreedOptions] = useState([]);
 
@@ -56,7 +56,7 @@ const PetRegister = ({ onClose }) => {
         const { name, value } = e.target;
         setPetInfo((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: name === 'age' ? value : Number(value),
         }));
     };
 
@@ -65,26 +65,23 @@ const PetRegister = ({ onClose }) => {
         setLoading(true);
         setError(null);
 
-        console.log(petInfo);
-        console.log(petInfo.breed);
-    
-        if (!petInfo.species || !petInfo.breed) {
-            setError('종과 품종을 선택해야 합니다.');
-            setLoading(false);
-            return;
-        }
-    
+        const formattedPetInfo = {
+            ...petInfo,
+            breed: Number(petInfo.breed),
+            species: Number(petInfo.species),
+        };
+
         try {
             const token = localStorage.getItem('accessToken');
-    
+
             if (token) {
-                const response = await axios.post(`${API_BASE_URL}/pets`, petInfo, {
+                const response = await axios.post(`${API_BASE_URL}/pets`, formattedPetInfo, {
                     headers: {
                         'Authorization': `${token}`,
                         'Content-Type': 'application/json',
                     },
                 });
-    
+
                 if (response.status === 200) {
                     alert('반려동물 등록 성공');
                     onClose();
