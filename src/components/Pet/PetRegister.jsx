@@ -23,8 +23,9 @@ const PetRegister = ({ onClose }) => {
     ];
 
     const breedOptions = [
-        { value: '치와와', label: '치와와' },
-        { value: '진돗개', label: '진돗개' }
+        { value: 1, label: '치와와' },
+        { value: 2, label: '포메라니안' },
+        { value: 3, label: '진돗개' }
     ];
 
     const handleChange = (e) => {
@@ -72,7 +73,6 @@ const PetRegister = ({ onClose }) => {
             setLoading(false);
         }
     };
-    
 
     return (
         <div className="petRegister-modal-overlay">
