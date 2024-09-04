@@ -21,25 +21,46 @@ const DeletePet = ({ pet, onClose, onDeleteSuccess }) => {
             setError('반려동물의 이름을 정확히 입력해주세요.');
             return;
         }
-
+    
         setLoading(true); // 로딩 시작
         setError(null); // 오류 초기화
-
+    
         try {
             const token = localStorage.getItem('accessToken'); // 로컬 스토리지에서 액세스 토큰 가져오기
-            await axios.delete(`${API_BASE_URL}/pets/${pet.petId}`, {
+    
+            // 액세스 토큰이 없을 경우
+            if (!token) {
+                setError('액세스 토큰이 존재하지 않습니다.');
+                return;
+            }
+    
+            // DELETE 요청을 보내는 부분
+            const response = await axios.delete(`${API_BASE_URL}/pets/${pet.petId}`, {
                 headers: {
                     'Authorization': `${token}`, 
                 },
             });
-            onDeleteSuccess(); // 삭제 성공 시 호출되는 콜백 함수
-            onClose(); // 모달을 닫는 콜백 함수
+    
+            // 서버의 응답 상태 코드가 200인지 확인
+            if (response.status === 200) {
+                alert('펫 삭제 성공');
+                onDeleteSuccess(); // 삭제 성공 시 호출되는 콜백 함수
+                onClose(); // 모달을 닫는 콜백 함수
+            } else {
+                setError('펫 삭제에 실패했습니다.'); // 실패 시 오류 메시지 설정
+            }
         } catch (err) {
-            setError('서버와의 통신에 실패했습니다.'); // 오류 메시지 설정
+            // 오류의 상태 코드에 따라 적절한 오류 메시지 설정
+            if (err.response && err.response.status === 400) {
+                setError('자신의 반려동물만 접근이 가능합니다.'); // 400 오류 처리
+            } else {
+                setError('서버와의 통신에 실패했습니다.'); // 일반적인 오류 처리
+            }
         } finally {
             setLoading(false); // 로딩 종료
         }
     };
+    
 
     return (
         <div className="deletePetModal-overlay"> 
