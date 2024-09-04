@@ -78,7 +78,7 @@ const PetEdit = ({ pet, onClose, onUpdate }) => {
             const token = localStorage.getItem('accessToken');
 
             if (token) {
-                const response = await axios.put(`${API_BASE_URL}/pets/${pet.petId}`, formattedPetInfo, {
+                const response = await axios.patch(`${API_BASE_URL}/pets/${pet.petId}`, formattedPetInfo, {
                     headers: {
                         'Authorization': `${token}`,
                         'Content-Type': 'application/json',

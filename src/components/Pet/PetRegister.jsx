@@ -4,7 +4,7 @@ import '../../styles/Pet/PetRegister.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-const PetRegister = ({ onClose }) => {
+const PetRegister = ({ onClose, onRegisterSuccess }) => {
     const [petInfo, setPetInfo] = useState({
         speciesId: '',
         breedId: '',
@@ -87,6 +87,7 @@ const PetRegister = ({ onClose }) => {
 
                 if (response.status === 200) {
                     alert('펫 등록 성공');
+                    onRegisterSuccess(response.data); 
                     onClose();
                 } else {
                     setError('펫 등록 실패');

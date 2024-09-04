@@ -77,12 +77,16 @@ const PetPage = () => {
         setPets(pets.filter(p => p.petId !== selectedPet.petId));
     };
 
+    const handleRegisterSuccess = (newPet) => {
+        setPets([...pets, newPet]);
+    };
+
     return (
         <div className="petPage">
             <NavBar title="펫 관리" />
             <button onClick={handleOpenModal}>펫 등록하기</button>
 
-            {showModal && <PetRegister onClose={handleCloseModal} />}
+            {showModal && <PetRegister onClose={handleCloseModal} onRegisterSuccess={handleRegisterSuccess} />}
             {showEditModal && (
                 <PetEdit
                     pet={selectedPet}
