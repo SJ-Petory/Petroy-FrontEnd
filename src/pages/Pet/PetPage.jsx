@@ -3,6 +3,7 @@ import PetRegister from '../../components/Pet/PetRegister.jsx';
 import PetEdit from '../../components/Pet/PetEdit.jsx';
 import DeletePet from '../../components/Pet/DeletePet.jsx'; 
 import AssignCareGiver from '../../components/Pet/AssignCareGiver.jsx'; 
+import { assignCareGiver } from '../../services/CareService.jsx'; 
 import { fetchMemberPets } from '../../services/TokenService.jsx';
 import NavBar from '../../components/commons/NavBar.jsx';
 import '../../styles/Pet/PetPage.css';
@@ -88,29 +89,19 @@ const PetPage = () => {
         setShowAssignModal(true);
     };
 
+    const handleCloseAssignModal = () => {
+        setShowAssignModal(false);
+    };
+
     const handleAssignCareGiver = async (careGiverId) => {
         const token = localStorage.getItem('accessToken');
     
         try {
-
-            const response = await axios.post(
-                `${API_BASE_URL}/pets/${selectedPet.petId}`,
-                {}, 
-                {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
-                    params: { memberId: careGiverId },
-                }
-            );
+            const response = await assignCareGiver(selectedPet.petId, careGiverId, token);
     
             if (response.status === 200) {
-                // 성공 시 돌보미 등록 처리
                 console.log(`돌보미 ${careGiverId} 등록 성공!`);
-                onAssignCareGiver(careGiverId); // 부모 컴포넌트에 등록 성공 알림
-                onClose(); // 모달 닫기
             } else {
-                // 실패 시 에러 처리
                 console.error('돌보미 등록 실패');
                 setError('돌보미 등록에 실패했습니다.');
             }
