@@ -111,7 +111,7 @@ const PetPage = () => {
                             <p>종: {pet.species}</p>
                             <p>품종: {pet.breed}</p>
                             <p>나이: {pet.age}세</p>
-                            <p>성별: {pet.gender === 'BOY' ? '남자' : '여자'}</p>
+                            <p>성별: {pet.gender === 'MALE' ? '남자' : '여자'}</p>
                             <p>메모: {pet.memo}</p>
                             <button onClick={() => handleOpenEditModal(pet)}>펫 수정</button>
                             <button onClick={() => handleOpenDeleteModal(pet)} className="deleteButton">펫 삭제</button>
