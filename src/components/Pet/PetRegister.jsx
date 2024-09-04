@@ -23,8 +23,8 @@ const PetRegister = ({ onClose }) => {
     ];
 
     const breedOptions = [
-        { value: 'CHI', label: '치와와' },
-        { value: 'JINDO', label: '진돗개' },
+        { value: '치와와', label: '치와와' },
+        { value: '진돗개', label: '진돗개' }
     ];
 
     const handleChange = (e) => {
@@ -39,10 +39,16 @@ const PetRegister = ({ onClose }) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
-
+    
+        if (!petInfo.species || !petInfo.breed) {
+            setError('종과 품종을 선택해야 합니다.');
+            setLoading(false);
+            return;
+        }
+    
         try {
             const token = localStorage.getItem('accessToken');
-
+    
             if (token) {
                 const response = await axios.post(`${API_BASE_URL}/pets`, petInfo, {
                     headers: {
@@ -50,7 +56,7 @@ const PetRegister = ({ onClose }) => {
                         'Content-Type': 'application/json',
                     },
                 });
-
+    
                 if (response.status === 200) {
                     alert('반려동물 등록 성공');
                     onClose();
@@ -66,6 +72,7 @@ const PetRegister = ({ onClose }) => {
             setLoading(false);
         }
     };
+    
 
     return (
         <div className="petRegister-modal-overlay">
