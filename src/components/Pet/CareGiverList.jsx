@@ -27,19 +27,15 @@ const CareGiverList = () => {
                     },
                 });
 
-                console.log('API 응답:', response); 
-
-                if (response.data.success) {
-                    setPets(response.data.data.content || []);
+                if (response.status === 200) {
+                    setPets(response.data.content || []);
                 } else {
                     setError(response.data.errorMessage || '반려동물 목록을 불러오는 중 오류가 발생했습니다.');
                 }
             } catch (err) {
-                const errorMessage = err.response && err.response.data
-                    ? err.response.data.errorMessage || 'API 호출 중 오류가 발생했습니다.'
-                    : 'API 호출 중 오류가 발생했습니다.';
+                const errorMessage = err.response?.data?.errorMessage || 'API 호출 중 오류가 발생했습니다.';
                 setError(errorMessage);
-                console.error(err);
+                console.error('API 호출 오류:', err);
             } finally {
                 setLoading(false);
             }
