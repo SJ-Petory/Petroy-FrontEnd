@@ -27,6 +27,8 @@ const CareGiverList = () => {
                     },
                 });
 
+                console.log('API 응답:', response); 
+
                 if (response.data.success) {
                     setPets(response.data.data.content || []);
                 } else {
