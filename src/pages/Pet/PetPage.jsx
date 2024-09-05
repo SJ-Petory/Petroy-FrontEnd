@@ -3,7 +3,6 @@ import PetRegister from '../../components/Pet/PetRegister.jsx';
 import PetEdit from '../../components/Pet/PetEdit.jsx';
 import DeletePet from '../../components/Pet/DeletePet.jsx'; 
 import AssignCareGiver from '../../components/Pet/AssignCareGiver.jsx'; 
-import { assignCareGiver } from '../../services/CareService.jsx'; 
 import CareGiverList from '../../components/Pet/CareGiverList.jsx'; 
 import { fetchMemberPets } from '../../services/TokenService.jsx';
 import NavBar from '../../components/commons/NavBar.jsx';
@@ -94,22 +93,11 @@ const PetPage = () => {
         setShowAssignModal(false);
     };
 
-    const handleAssignCareGiver = async (careGiverId) => {
-        const token = localStorage.getItem('accessToken');
-    
-        try {
-            const response = await assignCareGiver(selectedPet.petId, careGiverId, token);
-    
-            if (response.status === 200) {
-                alert(`돌보미 등록 성공!`);
-            } else {
-                console.error('돌보미 등록 실패');
-                setError('돌보미 등록에 실패했습니다.');
-            }
-        } catch (error) {
-            console.error('API 호출 중 오류 발생', error);
-            setError('돌보미 등록 중 오류가 발생했습니다.');
-        }
+    const handleAssignCareGiver = (careGiverId) => {
+        setPets(pets.map(pet => 
+            pet.petId === selectedPet.petId ? { ...pet, careGiverId } : pet
+        ));
+        alert(`돌보미 등록 성공!`);
     };
 
     return (
