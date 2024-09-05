@@ -185,7 +185,7 @@ export default function NavBar({ title }) {
                       },
                 ]}
               >
-                <CalendarTodayIcon />  {/* Only Calendar icon */}
+                <CalendarTodayIcon />  
               </ListItemIcon>
               <ListItemText
                 primary="홈 & 캘린더"
@@ -208,6 +208,7 @@ export default function NavBar({ title }) {
                   if (text === '마이페이지') handleNavigation('/myPage');
                   if (text === '펫') handleNavigation('/petPage');
                   if (text === '친구') handleNavigation('/friendPage');
+                  if (text === '커뮤니티') handleNavigation('/communityPage');
                 }}
                 sx={[
                   {
@@ -241,6 +242,7 @@ export default function NavBar({ title }) {
                   {text === '마이페이지' && <PersonIcon />}
                   {text === '펫' && <PetsIcon />}
                   {text === '친구' && <GroupIcon />}
+                  {text === '커뮤니티' && <ForumIcon />}
                 </ListItemIcon>
                 <ListItemText
                   primary={text}
@@ -260,7 +262,7 @@ export default function NavBar({ title }) {
         </List>
         <Divider />
         <List>
-          {['커뮤니티', '알림', '설정'].map((text) => (
+          {['알림', '설정'].map((text) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 onClick={() => {
@@ -294,7 +296,6 @@ export default function NavBar({ title }) {
                         },
                   ]}
                 >
-                  {text === '커뮤니티' && <ForumIcon />}
                   {text === '알림' && <NotificationsIcon />}
                   {text === '설정' && <SettingsIcon />}
                 </ListItemIcon>
