@@ -140,8 +140,9 @@ const PetPage = () => {
             ) : error ? (
                 <p className="error">{error}</p>
             ) : pets.length > 0 ? (
+                <div className="petsSection">
+                <h2 className="petsListHeader">내 반려동물 목록</h2>
                 <div className="petsList">
-                    <h2 className="petsListHeader">내 반려동물 목록</h2>
                     {pets.map((pet) => (
                         <div key={pet.petId} className="petCard">
                             <img src={pet.image} alt={pet.name} className="petImage" />
@@ -156,6 +157,7 @@ const PetPage = () => {
                             <button onClick={() => handleOpenAssignModal(pet)} className="assignButton">돌보미 등록</button>
                         </div>
                     ))}
+                    </div>
                 </div>
             ) : (
                 <p>등록된 반려동물이 없습니다.</p>
