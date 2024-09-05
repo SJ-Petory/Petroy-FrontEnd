@@ -48,6 +48,10 @@
     margin-top: 10px;
 }
 
+.petsSection {
+    padding: 20px;
+}
+
 .petsList {
     display: flex;
     flex-wrap: wrap;
