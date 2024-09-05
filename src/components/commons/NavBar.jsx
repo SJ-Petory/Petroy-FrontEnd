@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { fetchCurrentMember } from '../../services/TokenService.jsx'; 
+import { useState, useEffect } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -107,7 +109,25 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function NavBar({ title }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [memberName, setMemberName] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    
+    if (token) {
+      const getMemberData = async () => {
+        const memberData = await fetchCurrentMember(token);
+        if (memberData && memberData.name) {
+          setMemberName(memberData.name);
+        } else {
+          console.error('회원 정보를 찾을 수 없습니다');
+        }
+      };
+
+      getMemberData();
+    }
+  }, []);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -142,6 +162,9 @@ export default function NavBar({ title }) {
           </IconButton>
           <Typography variant="h6" noWrap component="div">
             {title}
+          </Typography>
+          <Typography variant="h6" sx={{ marginLeft: 'auto' }}>
+            {memberName && `${memberName}님`}
           </Typography>
         </Toolbar>
       </AppBar>
