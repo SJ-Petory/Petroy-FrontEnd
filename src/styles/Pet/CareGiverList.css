@@ -11,15 +11,17 @@
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    width: 1000px;
 }
 
 .careGiverPetCard {
     border: 1px solid #ddd;
+    padding: 20px;
     border-radius: 8px;
-    padding: 10px;
-    width: 200px;
+    width: 250px;
     text-align: center;
-    background-color: #e18181;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .careGiverPetImage {
