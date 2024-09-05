@@ -201,7 +201,7 @@ export default function NavBar({ title }) {
               />
             </ListItemButton>
           </ListItem>
-          {['마이페이지', '펫', '친구'].map((text) => (
+          {['마이페이지', '펫', '친구', '커뮤니티'].map((text) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 onClick={() => {
