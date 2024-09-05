@@ -34,34 +34,34 @@ const AssignCareGiver = ({ pet, onClose, onAssignCareGiver }) => {
         fetchFriends();
     }, []);
 
-    const handleAssign = async (careGiverId) => {
-        const token = localStorage.getItem('accessToken');
+    // const handleAssign = async (careGiverId) => {
+    //     const token = localStorage.getItem('accessToken');
 
-        try {
-            const response = await axios.post(
-                `${API_BASE_URL}/pets/${pet.petId}`, 
-                {}, 
-                {
-                    headers: {
-                        'Authorization': `${token}`,
-                    },
-                    params: { memberId: careGiverId },
-                }
-            );
+    //     try {
+    //         const response = await axios.post(
+    //             `${API_BASE_URL}/pets/${pet.petId}`, 
+    //             {}, 
+    //             {
+    //                 headers: {
+    //                     'Authorization': `${token}`,
+    //                 },
+    //                 params: { memberId: careGiverId },
+    //             }
+    //         );
 
-            if (response.status === 200) {
-                onAssignCareGiver(careGiverId);
-                onClose();
-            }
-        } catch (err) {
-            if (err.response && err.response.data) {
-                setError(err.response.data.errorMessage || '오류가 발생했습니다.');
-            } else {
-                setError('오류가 발생했습니다.');
-            }
-            console.error(err);
-        }
-    };
+    //         if (response.status === 200) {
+    //             onAssignCareGiver(careGiverId);
+    //             onClose();
+    //         }
+    //     } catch (err) {
+    //         if (err.response && err.response.data) {
+    //             setError(err.response.data.errorMessage || '오류가 발생했습니다.');
+    //         } else {
+    //             setError('오류가 발생했습니다.');
+    //         }
+    //         console.error(err);
+    //     }
+    // };
 
     return (
         <div className="assignCareGiverModal">
