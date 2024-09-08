@@ -16,7 +16,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     noticeYn: false,
     noticeAt: 1,
     priority: 'LOW',
-    petId: [],
+    petId: [], // Ensure this is initialized as an empty array
     customRepeat: {
       frequency: 'DAY',
       interval: 1,
@@ -96,8 +96,8 @@ const ScheduleModal = ({ onClose, pets }) => {
       ...(formData.repeatType === 'CUSTOM' && { 
         customRepeat: {
           ...formData.customRepeat,
-          daysOfWeek: formData.customRepeat.frequency === 'WEEK' ? formData.customRepeat.daysOfWeek : undefined, // 주간일 때만 daysOfWeek 보내기
-          daysOfMonth: formData.customRepeat.frequency === 'MONTH' ? formData.customRepeat.daysOfMonth : undefined, // 월간일 때만 daysOfMonth 보내기
+          daysOfWeek: formData.customRepeat.frequency === 'WEEK' ? formData.customRepeat.daysOfWeek : undefined, 
+          daysOfMonth: formData.customRepeat.frequency === 'MONTH' ? formData.customRepeat.daysOfMonth : undefined, 
         }
       }),
       noticeYn: formData.noticeYn,
@@ -153,7 +153,8 @@ const ScheduleModal = ({ onClose, pets }) => {
               value={formData.content}
               onChange={handleChange}
             />
-             <label>반려동물
+          </label>
+          <label>반려동물
             <select
               name="petId"
               multiple
@@ -169,7 +170,6 @@ const ScheduleModal = ({ onClose, pets }) => {
                 </option>
               ))}
             </select>
-          </label>
           </label>
           <label>일정 시작 시간
             <input
