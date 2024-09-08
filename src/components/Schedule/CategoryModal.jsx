@@ -15,7 +15,9 @@ const CategoryModal = ({ isOpen, onRequestClose }) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/schedules/category`,
                 { name: categoryName },
-                { headers: { Authorization: `${token}` } }
+                { headers: 
+                    { Authorization: `${token}` } 
+                }
             );
             if (response.status === 200) {
                 alert('일정 카테고리가 생성되었습니다.');
