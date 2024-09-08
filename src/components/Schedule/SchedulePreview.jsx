@@ -32,25 +32,29 @@ const formatDateTime = (dateTime) => {
     }[priority] || '낮음';
   
     const repeatDescription = () => {
-      if (repeatType === 'BASIC') {
-        return `매일 ${formattedStartDate}에 반복`;
-      } else if (repeatType === 'CUSTOM') {
-        const { frequency, interval, daysOfWeek, daysOfMonth } = customRepeat;
-        let frequencyDescription = '';
-  
-        if (frequency === 'DAY') {
-          frequencyDescription = `${interval}일 간격으로`;
-        } else if (frequency === 'WEEK') {
-          frequencyDescription = `${interval}주 간격으로 ${daysOfWeek.join(', ')} 요일마다 일정이 반복`;
-        } else if (frequency === 'MONTH') {
-          frequencyDescription = `${interval}달 간격으로 ${daysOfMonth.join(', ')}일에 일정이 반복`;
-        } else if (frequency === 'YEAR') {
-          frequencyDescription = `${interval}년 간격으로 일정이 반복`;
+        if (repeatType === 'BASIC') {
+          switch (repeatCycle) {
+            case 'DAILY':
+              return '매일 해당 시각에 일정이 반복됩니다.';
+            case 'WEEKLY':
+              return '매주 해당 시각에 일정이 반복됩니다.';
+            case 'MONTHLY':
+              return '매달 해당 시각에 일정이 반복됩니다.';
+            default:
+              return '반복 주기 없음';
+          }
+        } else if (repeatType === 'CUSTOM') {
+          const { frequency, interval, daysOfWeek, daysOfMonth } = customRepeat;
+          if (frequency === 'WEEK') {
+            return `${interval}주 간격으로 ${daysOfWeek.join(', ')} 요일마다 일정이 반복됩니다.`;
+          } else if (frequency === 'MONTH') {
+            return `${interval}개월 간격으로 매달 ${daysOfMonth.join(', ')}일에 일정이 반복됩니다.`;
+          } else if (frequency === 'YEAR') {
+            return `${interval}년 간격으로 일정이 반복됩니다.`; 
+          }
         }
-  
-        return frequencyDescription;
-      }
-    };
+        return '';
+      };
   
     return (
       <div className="schedule-preview">
