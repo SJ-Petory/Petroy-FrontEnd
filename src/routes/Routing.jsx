@@ -1,21 +1,25 @@
 import { Route, Routes } from 'react-router-dom';
-
-import HomePage from '../pages/homePage.jsx';
-import LoginPage from '../pages/loginPage.jsx';
-import SignUpPage from '../pages/signUpPage.jsx';
-import MainPage from '../pages/mainPage.jsx';
-import MyPage from '../pages/myPage.jsx';
-import KakaoCallback from '../utils/kakaoCallback.jsx'; 
+import HomePage from '../pages/Home/HomePage.jsx';
+import LoginPage from '../pages/Login/LoginPage.jsx';
+import SignUpPage from '../pages/SignUp/SignUpPage.jsx';
+import InputInfo from '../pages/SignUp/InputInfo.jsx';
+import MainPage from '../pages/Main/MainPage.jsx';
+import MyPage from '../pages/MyPage/MyPage.jsx';
+import PetPage from '../pages/Pet/PetPage.jsx';  
+import FriendPage from '../pages/Friend/FriendPage.jsx';
+import CommunityPage from '../pages/Community/CommunityPage.jsx';
 
 const Routing = () => {
-
 	return (
 		<Routes>
             <Route path='/login' element={<LoginPage/>} />
+			<Route path='/inputInfo' element={<InputInfo/>} />
             <Route path='/signUp' element={<SignUpPage/>} />
-			<Route path='/oauth/kakao/callback' element={<KakaoCallback />} /> 
 			<Route path='/mainPage' element={<MainPage/>} />
 			<Route path='/myPage' element={<MyPage/>} />
+			<Route path='/petPage' element={<PetPage/>} />
+			<Route path='/friendPage' element={<FriendPage/>} /> 
+			<Route path='/communityPage' element={<CommunityPage/>} /> 
 			<Route path='/' element={<HomePage/>} />
             
 		</Routes>
@@ -23,3 +27,4 @@ const Routing = () => {
 };
 
 export default Routing;
+

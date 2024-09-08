@@ -1,0 +1,27 @@
+.friendCard {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: 300px; 
+}
+
+.friendInfo {
+    flex: 1;
+    text-align: left;
+    margin-right: 10px; 
+}
+
+.friendName {
+    margin: 0;
+    font-size: 18px;
+}
+
+.friendImage {
+    width: 100px;
+    height: 100px;
+}

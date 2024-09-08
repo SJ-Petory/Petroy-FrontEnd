@@ -1,0 +1,12 @@
+.main-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    padding-top: 80px;
+}
+
+.main-page .calendar-wrapper {
+    width: 100%; 
+    margin-left: 50%;
+}
