@@ -1,0 +1,106 @@
+.schedule-modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .schedule-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 100%;
+    position: relative;
+  }
+  
+  .schedule-modal-content h2 {
+    margin: 0 0 15px 0;
+  }
+  
+  .schedule-modal-content label {
+    display: block;
+    margin: 10px 0;
+  }
+  
+  .schedule-modal-content input,
+  .schedule-modal-content select,
+  .schedule-modal-content textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .schedule-modal-content textarea {
+    resize: vertical;
+  }
+  
+  .schedule-modal-save-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .schedule-modal-close-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .day-buttons-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    overflow: auto; 
+    max-height: 300px; 
+  }
+  
+  .day-button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+  }
+  
+  .day-button.selected {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  .month-container {
+    margin-bottom: 20px;
+  }
+  
+  .day-button {
+    padding: 5px 10px;
+    margin: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #fff;
+  }
+  
+  .day-button.selected {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  
+  .month-container h3 {
+    margin: 0;
+  }
+  
