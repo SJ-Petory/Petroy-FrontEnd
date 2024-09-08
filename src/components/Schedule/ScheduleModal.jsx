@@ -40,7 +40,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     const { name, value, type, checked } = e.target;
 
     if (name.startsWith('customRepeat.')) {
-      const [key, subKey] = name.split('.');
+      const [, subKey] = name.split('.');
 
       setFormData(prevData => ({
         ...prevData,
@@ -83,9 +83,9 @@ const ScheduleModal = ({ onClose, pets }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const token = localStorage.getItem('accessToken');
-
+  
     const requestData = {
       categoryId: formData.categoryId,
       title: formData.title,
@@ -96,8 +96,8 @@ const ScheduleModal = ({ onClose, pets }) => {
       ...(formData.repeatType === 'CUSTOM' && { 
         customRepeat: {
           ...formData.customRepeat,
-          daysOfWeek: formData.customRepeat.daysOfWeek,
-          daysOfMonth: formData.customRepeat.daysOfMonth,
+          daysOfWeek: formData.customRepeat.frequency === 'WEEK' ? formData.customRepeat.daysOfWeek : undefined, // 주간일 때만 daysOfWeek 보내기
+          daysOfMonth: formData.customRepeat.frequency === 'MONTH' ? formData.customRepeat.daysOfMonth : undefined, // 월간일 때만 daysOfMonth 보내기
         }
       }),
       noticeYn: formData.noticeYn,
@@ -105,7 +105,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       priority: formData.priority,
       petId: formData.petId,
     };
-
+  
     try {
       const response = await axios.post(`${API_BASE_URL}/schedules`, requestData, {
         headers: {
@@ -113,7 +113,7 @@ const ScheduleModal = ({ onClose, pets }) => {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (response.status === 200) {
         alert('일정이 생성되었습니다.');
         onClose();
@@ -225,33 +225,33 @@ const ScheduleModal = ({ onClose, pets }) => {
                   min="1"
                 />
                 {formData.customRepeat.frequency === 'WEEK' && (
-                <div className="day-buttons-container">
-                  {['일', '월', '화', '수', '목', '금', '토'].map(day => (
-                    <button
-                      key={day}
-                      type="button"
-                      className={`day-button ${formData.customRepeat.daysOfWeek.includes(day) ? 'selected' : ''}`}
-                      onClick={() => handleDayClick(day)}
-                    >
-                      {day}
-                    </button>
-                  ))}
-                </div>
-              )}
-              {formData.customRepeat.frequency === 'MONTH' && (
-                <div className="day-buttons-container">
-                  {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
-                    <button
-                      key={day}
-                      type="button"
-                      className={`day-button ${formData.customRepeat.daysOfMonth.includes(day) ? 'selected' : ''}`}
-                      onClick={() => handleDayOfMonthClick(day)}
-                    >
-                      {day}
-                    </button>
-                  ))}
-                </div>
-              )}
+                  <div className="day-buttons-container">
+                    {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
+                      <button
+                        key={day} 
+                        type="button"
+                        className={`day-button ${formData.customRepeat.daysOfWeek.includes(day) ? 'selected' : ''}`}
+                        onClick={() => handleDayClick(day)}
+                      >
+                        {day}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {formData.customRepeat.frequency === 'MONTH' && (
+                  <div className="day-buttons-container">
+                    {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                      <button
+                        key={day} 
+                        type="button"
+                        className={`day-button ${formData.customRepeat.daysOfMonth.includes(day) ? 'selected' : ''}`}
+                        onClick={() => handleDayOfMonthClick(day)}
+                      >
+                        {day}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <label>일정 종료 시각
                   <input
                     type="datetime-local"
