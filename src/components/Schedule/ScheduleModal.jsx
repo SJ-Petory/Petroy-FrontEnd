@@ -16,7 +16,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     noticeYn: false,
     noticeAt: 1,
     priority: 'LOW',
-    petId: [], // Ensure this is initialized as an empty array
+    petId: [], 
     customRepeat: {
       frequency: 'DAY',
       interval: 1,

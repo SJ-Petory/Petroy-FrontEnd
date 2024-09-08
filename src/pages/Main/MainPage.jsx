@@ -39,7 +39,6 @@ function MainPage() {
         };
 
         loadPets();
-        console.log(pets);
     }, []);
 
     const openCategoryModal = () => setIsCategoryModalOpen(true);
