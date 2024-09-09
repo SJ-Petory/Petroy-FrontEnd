@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../styles/Main/ScheduleModal.css';
-import SchedulePreview from '../../components/Schedule/SchedulePreview.jsx'
+import SchedulePreview from '../../components/Schedule/SchedulePreview.jsx';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -26,6 +26,10 @@ const ScheduleModal = ({ onClose, pets }) => {
     }
   });
 
+  const [careGiverPets, setCareGiverPets] = useState([]);
+  const [loadingCareGiverPets, setLoadingCareGiverPets] = useState(true);
+  const [errorCareGiverPets, setErrorCareGiverPets] = useState(null);
+
   useEffect(() => {
     const now = new Date();
     const koreanTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -34,6 +38,40 @@ const ScheduleModal = ({ onClose, pets }) => {
       ...prevData,
       scheduleAt: localDateTime,
     }));
+  }, []);
+
+  useEffect(() => {
+    const fetchCareGiverPets = async () => {
+      const token = localStorage.getItem('accessToken');
+
+      if (!token) {
+        setErrorCareGiverPets('로그인이 필요합니다');
+        setLoadingCareGiverPets(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`${API_BASE_URL}/pets/caregiver`, {
+          headers: {
+            'Authorization': `${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setCareGiverPets(response.data.content || []);
+        } else {
+          setErrorCareGiverPets(response.data.errorMessage || '돌보미 반려동물 목록을 불러오는 중 오류가 발생했습니다.');
+        }
+      } catch (err) {
+        const errorMessage = err.response?.data?.errorMessage || 'API 호출 중 오류가 발생했습니다.';
+        setErrorCareGiverPets(errorMessage);
+        console.error('API 호출 오류:', err);
+      } finally {
+        setLoadingCareGiverPets(false);
+      }
+    };
+
+    fetchCareGiverPets();
   }, []);
 
   const handleChange = (e) => {
@@ -103,7 +141,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       noticeYn: formData.noticeYn,
       noticeAt: formData.noticeAt,
       priority: formData.priority,
-      petId: formData.petId,
+      petId: [...formData.petId, ...formData.careGiverPetId], 
     };
   
     try {
@@ -122,6 +160,15 @@ const ScheduleModal = ({ onClose, pets }) => {
       const { data } = error.response;
       alert(data.errorMessage || '일정 생성 중 오류가 발생했습니다.');
     }
+  };
+
+  const handleCareGiverPetChange = (petId) => {
+    setFormData(prevData => ({
+      ...prevData,
+      careGiverPetId: prevData.careGiverPetId.includes(petId)
+        ? prevData.careGiverPetId.filter(id => id !== petId)
+        : [...prevData.careGiverPetId, petId]
+    }));
   };
 
   return (
@@ -170,6 +217,26 @@ const ScheduleModal = ({ onClose, pets }) => {
                 </option>
               ))}
             </select>
+          </label>
+          <label>돌보미 반려동물
+            {loadingCareGiverPets ? (
+              <p>로딩 중...</p>
+            ) : errorCareGiverPets ? (
+              <p className="error">{errorCareGiverPets}</p>
+            ) : (
+              careGiverPets.map(pet => (
+                <div key={pet.petId} className="careGiverPetItem">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={formData.careGiverPetId.includes(pet.petId)}
+                      onChange={() => handleCareGiverPetChange(pet.petId)}
+                    />
+                    {pet.name} ({pet.breed})
+                  </label>
+                </div>
+              ))
+            )}
           </label>
           <label>일정 시작 시간
             <input

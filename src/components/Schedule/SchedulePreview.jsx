@@ -29,7 +29,7 @@ const sortDaysOfMonth = (daysOfMonth) => {
   return daysOfMonth.sort((a, b) => a - b);
 };
 
-const SchedulePreview = ({ formData }) => {
+const SchedulePreview = ({ formData, caregiverPets }) => {
   const {
     categoryId, title, content, scheduleAt, repeatType, repeatCycle, customRepeat,
     noticeYn, noticeAt, priority, petId
@@ -70,18 +70,21 @@ const SchedulePreview = ({ formData }) => {
     return '';
   };
 
+  const allPets = [...petId, ...(caregiverPets || [])];
+  const petList = allPets.length > 0 ? `${allPets.join(', ')}` : '반려동물을 선택해주세요';
+
   return (
     <div className="schedule-preview">
       <h3>일정 생성 미리보기</h3>
       <div className="schedule-preview-content">
         <h5>카테고리</h5>
-        <p>{categoryId ? categoryId : '카테고리가 선택되지 않았습니다.'}</p>
+        <p>{categoryId ? categoryId : '카테고리를 선택해주세요'}</p>
         <h5>제목</h5>
         <p>{title}</p>
         <h5>내용</h5>
         <p>{content}</p>
         <h5>선택 반려동물</h5>
-        <p>{petId.length > 0 ? `선택된 반려동물: ${petId.join(', ')}` : '반려동물이 선택되지 않았습니다.'}</p>
+        <p>{petList}</p>
         <h5>일정 시작</h5>
         <p>{formattedStartDate}</p>
         <h5>반복 주기</h5>
@@ -89,7 +92,7 @@ const SchedulePreview = ({ formData }) => {
         <h5>일정 종료</h5>
         <p>{formattedEndDate}</p>
         <h5>알림 설정</h5>
-        <p>{noticeYn ? `해당 일정 ${noticeAt} 분 전에 알림을 설정` : ''}</p>
+        <p>{noticeYn ? `해당 일정 ${noticeAt}분 전에 알림을 설정` : ''}</p>
         <h5>우선 순위</h5>
         <p>{priorityText}</p>
       </div>
