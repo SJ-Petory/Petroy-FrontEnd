@@ -55,11 +55,51 @@
 }
 
 .pet-info-list {
+    display: flex;
+    flex-direction: column;
     margin-top: 20px;
     background-color: #ffffff;
+    width: 80%;
+    border-radius: 8px; 
+}
+
+.my-pets, .care-giver-pets {
+    margin-bottom: 20px;
+}
+
+.my-pets h3, .care-giver-pets h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.pet-info-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.pet-info-content {
+    flex-grow: 1; 
 }
 
 .pet-info-list p {
     margin: 5px 0;
 }
 
+.pet-checkbox {
+    width: 10px; 
+    height: 10px; 
+    margin-left: 10px; 
+    cursor: pointer; 
+    accent-color: #007bff; 
+}
+
+.pet-checkbox:hover {
+    background-color: #e0e0e0; 
+}
+
+.pet-checkbox:focus {
+    outline: 2px solid #007bff; 
+    outline-offset: 2px;
+}

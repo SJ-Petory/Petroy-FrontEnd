@@ -4,12 +4,16 @@ import NavBar from '../../components/commons/NavBar.jsx';
 import CategoryModal from '../../components/Schedule/CategoryModal.jsx';
 import ScheduleModal from '../../components/Schedule/ScheduleModal.jsx';
 import { fetchMemberPets } from '../../services/TokenService.jsx';
+import axios from 'axios';
 import '../../styles/Main/MainPage.css';
+
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function MainPage() {
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
     const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
     const [pets, setPets] = useState([]);
+    const [careGiverPets, setCareGiverPets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedPets, setSelectedPets] = useState(new Set());
@@ -29,17 +33,42 @@ function MainPage() {
                 } catch (error) {
                     setError('네트워크 오류가 발생했습니다. 나중에 다시 시도해 주세요.');
                     console.error('반려동물 정보를 불러오는 중 오류 발생:', error);
-                } finally {
-                    setLoading(false);
                 }
             } else {
                 setError('로그인이 필요합니다.');
                 alert('로그인이 필요합니다');
-                setLoading(false);
+            }
+        };
+
+        const loadCareGiverPets = async () => {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                try {
+                    const response = await axios.get(`${API_BASE_URL}/pets/caregiver`, {
+                        headers: {
+                            'Authorization': `${token}`,
+                        },
+                    });
+
+                    if (response.status === 200) {
+                        setCareGiverPets(response.data.content || []);
+                    } else {
+                        setError(response.data.errorMessage || '돌보미 반려동물 목록을 불러오는 중 오류가 발생했습니다.');
+                    }
+                } catch (err) {
+                    const errorMessage = err.response?.data?.errorMessage || 'API 호출 중 오류가 발생했습니다.';
+                    setError(errorMessage);
+                    console.error('API 호출 오류:', err);
+                }
+            } else {
+                setError('로그인이 필요합니다.');
+                alert('로그인이 필요합니다');
             }
         };
 
         loadPets();
+        loadCareGiverPets();
+        setLoading(false);
     }, []);
 
     const openCategoryModal = () => setIsCategoryModalOpen(true);
@@ -76,19 +105,48 @@ function MainPage() {
                 {loading && <p>로딩 중...</p>}
                 {error && <p className="error">{error}</p>}
                 
-                {!loading && !error && pets.length > 0 && (
+                {!loading && !error && (
                     <div className="pet-info-list">
-                        <h3>반려동물 목록</h3>
-                        {pets.map((pet) => (
-                            <div key={pet.petId} className="pet-info-item">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedPets.has(pet.petId)}
-                                    onChange={() => handleCheckboxChange(pet.petId)}
-                                />
-                                <strong>{pet.name}</strong> ({pet.breed})
-                            </div>
-                        ))}
+                        <div className="my-pets">
+                            <h3>내 반려동물</h3>
+                            {pets.length > 0 ? (
+                                pets.map((pet) => (
+                                    <div key={pet.petId} className="pet-info-item">
+                                        <div className="pet-info-content">
+                                            <strong>{pet.name}</strong> ({pet.breed})
+                                        </div>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedPets.has(pet.petId)}
+                                            onChange={() => handleCheckboxChange(pet.petId)}
+                                            className="pet-checkbox"
+                                        />
+                                    </div>
+                                ))
+                            ) : (
+                                <p>등록된 반려동물이 없습니다.</p>
+                            )}
+                        </div>
+                        <div className="care-giver-pets">
+                            <h3>돌보미 반려동물</h3>
+                            {careGiverPets.length > 0 ? (
+                                careGiverPets.map((pet) => (
+                                    <div key={pet.petId} className="care-giver-pet-item">
+                                        <div className="pet-info-content">
+                                            <strong>{pet.name}</strong> ({pet.breed})
+                                        </div>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedPets.has(pet.petId)}
+                                            onChange={() => handleCheckboxChange(pet.petId)}
+                                            className="pet-checkbox"
+                                        />
+                                    </div>
+                                ))
+                            ) : (
+                                <p>돌보미로 등록된 반려동물이 없습니다.</p>
+                            )}
+                        </div>
                     </div>
                 )}
             </div>
