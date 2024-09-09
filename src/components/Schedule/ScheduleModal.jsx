@@ -114,6 +114,15 @@ const ScheduleModal = ({ onClose, pets }) => {
     }));
   };
 
+  const handlePetSelectionChange = (petId) => {
+    setFormData(prevData => ({
+      ...prevData,
+      petId: prevData.petId.includes(petId)
+        ? prevData.petId.filter(id => id !== petId)
+        : [...prevData.petId, petId]
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -190,21 +199,21 @@ const ScheduleModal = ({ onClose, pets }) => {
             />
           </label>
           <label>반려동물
-            <select
-              name="petId"
-              multiple
-              value={formData.petId}
-              onChange={(e) => setFormData({
-                ...formData,
-                petId: Array.from(e.target.selectedOptions, option => Number(option.value))
-              })}
-            >
+            <div className="pets-checkbox-container">
               {allPets.map(pet => (
-                <option key={pet.petId} value={pet.petId}>
-                  {pet.name} ({pet.species}, {pet.breed})
-                </option>
+                <div key={pet.petId} className="pet-checkbox">
+                  <input
+                    type="checkbox"
+                    id={`pet-${pet.petId}`}
+                    checked={formData.petId.includes(pet.petId)}
+                    onChange={() => handlePetSelectionChange(pet.petId)}
+                  />
+                  <label htmlFor={`pet-${pet.petId}`}>
+                    {pet.name} ({pet.species}, {pet.breed})
+                  </label>
+                </div>
               ))}
-            </select>
+            </div>
           </label>
           <label>일정 시작
             <input
@@ -263,7 +272,7 @@ const ScheduleModal = ({ onClose, pets }) => {
                   <div className="day-buttons-container">
                     {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
                       <button
-                        key={day} 
+                        key={day}
                         type="button"
                         className={`day-button ${formData.customRepeat.daysOfWeek.includes(day) ? 'selected' : ''}`}
                         onClick={() => handleDayClick(day)}
@@ -277,7 +286,7 @@ const ScheduleModal = ({ onClose, pets }) => {
                   <div className="day-buttons-container">
                     {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
                       <button
-                        key={day} 
+                        key={day}
                         type="button"
                         className={`day-button ${formData.customRepeat.daysOfMonth.includes(day) ? 'selected' : ''}`}
                         onClick={() => handleDayOfMonthClick(day)}

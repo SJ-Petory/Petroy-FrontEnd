@@ -29,7 +29,7 @@ const sortDaysOfMonth = (daysOfMonth) => {
   return daysOfMonth.sort((a, b) => a - b);
 };
 
-const SchedulePreview = ({ formData, caregiverPets }) => {
+const SchedulePreview = ({ formData, pets, caregiverPets }) => {
   const {
     categoryId, title, content, scheduleAt, repeatType, repeatCycle, customRepeat,
     noticeYn, noticeAt, priority, petId
@@ -77,8 +77,14 @@ const SchedulePreview = ({ formData, caregiverPets }) => {
     }
   }, [repeatType]);
 
-  const allPets = [...petId, ...(caregiverPets || [])];
-  const petList = allPets.length > 0 ? `${allPets.join(', ')}` : '반려동물을 선택해주세요';
+  const allPets = [...pets, ...caregiverPets];
+  
+  const getPetNames = (petIds) => {
+    const petMap = new Map(allPets.map(pet => [pet.petId, pet.name]));
+    return petIds.map(id => petMap.get(id)).filter(name => name).join(', ') || '반려동물을 선택해주세요';
+  };
+
+  const petList = getPetNames(petId);
 
   return (
     <div className="schedule-preview">
