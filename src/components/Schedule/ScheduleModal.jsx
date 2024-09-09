@@ -16,7 +16,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     noticeYn: false,
     noticeAt: 1,
     priority: 'LOW',
-    petId: [], 
+    petId: [],
     customRepeat: {
       frequency: 'DAY',
       interval: 1,
@@ -171,6 +171,8 @@ const ScheduleModal = ({ onClose, pets }) => {
     }));
   };
 
+  const allPets = [...pets, ...careGiverPets];
+
   return (
     <div className="schedule-modal-container">
       <div className="schedule-modal-content">
@@ -211,7 +213,7 @@ const ScheduleModal = ({ onClose, pets }) => {
                 petId: Array.from(e.target.selectedOptions, option => Number(option.value))
               })}
             >
-              {pets.map(pet => (
+              {allPets.map(pet => (
                 <option key={pet.petId} value={pet.petId}>
                   {pet.name} ({pet.species}, {pet.breed})
                 </option>
@@ -229,7 +231,7 @@ const ScheduleModal = ({ onClose, pets }) => {
                   <label>
                     <input
                       type="checkbox"
-                      checked={formData.careGiverPetId.includes(pet.petId)}
+                      checked={formData.careGiverPetId?.includes(pet.petId) || false}
                       onChange={() => handleCareGiverPetChange(pet.petId)}
                     />
                     {pet.name} ({pet.breed})
@@ -319,37 +321,35 @@ const ScheduleModal = ({ onClose, pets }) => {
                     ))}
                   </div>
                 )}
-                <label>일정 종료 시각
-                  <input
-                    type="datetime-local"
-                    name="customRepeat.endDate"
-                    value={formData.customRepeat.endDate}
-                    onChange={handleChange}
-                  />
-                </label>
+              </label>
+              <label>종료 날짜
+                <input
+                  type="date"
+                  name="customRepeat.endDate"
+                  value={formData.customRepeat.endDate}
+                  onChange={handleChange}
+                />
               </label>
             </>
           )}
-          <label>알림 여부
+          <label>알림
             <input
               type="checkbox"
               name="noticeYn"
               checked={formData.noticeYn}
               onChange={handleChange}
             />
+            <input
+              type="number"
+              name="noticeAt"
+              value={formData.noticeAt}
+              onChange={handleChange}
+              placeholder="알림 시간(분)"
+              disabled={!formData.noticeYn}
+              min="1"
+            />
           </label>
-          {formData.noticeYn && (
-            <label>알림 시간 (분 전)
-              <input
-                type="number"
-                name="noticeAt"
-                value={formData.noticeAt}
-                onChange={handleChange}
-                min="1"
-              />
-            </label>
-          )}
-          <label>우선순위
+          <label>우선 순위
             <select
               name="priority"
               value={formData.priority}
@@ -360,13 +360,14 @@ const ScheduleModal = ({ onClose, pets }) => {
               <option value="HIGH">높음</option>
             </select>
           </label>
-          <button type="submit" className="schedule-modal-save-button">저장</button>
-          <button type="button" onClick={onClose} className="schedule-modal-close-button">닫기</button>
+          <button type="submit">일정 저장</button>
+          <button type="button" onClick={onClose}>취소</button>
         </form>
+        <SchedulePreview formData={formData} />
       </div>
-      <SchedulePreview formData={formData} />
     </div>
   );
 };
 
 export default ScheduleModal;
+
