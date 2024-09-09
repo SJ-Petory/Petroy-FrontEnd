@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../../styles/Main/SchedulePreview.css';
 
 const formatDateTime = (dateTime) => {
@@ -47,28 +47,35 @@ const SchedulePreview = ({ formData, caregiverPets }) => {
     if (repeatType === 'BASIC') {
       switch (repeatCycle) {
         case 'DAILY':
-          return '매일 해당 시각에 일정이 반복됩니다.';
+          return '매일 해당 시각에 일정이 반복됩니다';
         case 'WEEKLY':
-          return '매주 해당 시각에 일정이 반복됩니다.';
+          return '매주 해당 시각에 일정이 반복됩니다';
         case 'MONTHLY':
-          return '매달 해당 시각에 일정이 반복됩니다.';
+          return '매달 해당 시각에 일정이 반복됩니다';
         default:
           return '반복 주기 없음';
       }
     } else if (repeatType === 'CUSTOM') {
       const { frequency, interval, daysOfWeek, daysOfMonth } = customRepeat;
-      if (frequency === 'WEEK') {
+      if (frequency === 'DAY') {
+        return `${interval}일 간격으로 일정이 반복됩니다`;
+      } else if (frequency === 'WEEK') {
         const sortedDaysOfWeek = sortDaysOfWeek(daysOfWeek); 
-        return `${interval}주 간격으로 ${sortedDaysOfWeek.join(', ')} 요일마다 일정이 반복됩니다.`;
+        return `${interval}주 간격으로 ${sortedDaysOfWeek.join(', ')} 요일마다 일정이 반복됩니다`;
       } else if (frequency === 'MONTH') {
         const sortedDaysOfMonth = sortDaysOfMonth(daysOfMonth); 
-        return `${interval}개월 간격으로 매달 ${sortedDaysOfMonth.join(', ')}일에 일정이 반복됩니다.`;
+        return `${interval}개월 간격으로 매달 ${sortedDaysOfMonth.join(', ')}일에 일정이 반복됩니다`;
       } else if (frequency === 'YEAR') {
-        return `${interval}년 간격으로 일정이 반복됩니다.`; 
+        return `${interval}년 간격으로 일정이 반복됩니다`; 
       }
     }
     return '';
   };
+
+  useEffect(() => {
+    if (repeatType !== 'CUSTOM') {
+    }
+  }, [repeatType]);
 
   const allPets = [...petId, ...(caregiverPets || [])];
   const petList = allPets.length > 0 ? `${allPets.join(', ')}` : '반려동물을 선택해주세요';
@@ -89,8 +96,12 @@ const SchedulePreview = ({ formData, caregiverPets }) => {
         <p>{formattedStartDate}</p>
         <h5>반복 주기</h5>
         <p>{repeatDescription()}</p>
-        <h5>일정 종료</h5>
-        <p>{formattedEndDate}</p>
+        {repeatType === 'CUSTOM' && formattedEndDate && (
+          <>
+            <h5>일정 종료</h5>
+            <p>{formattedEndDate}</p>
+          </>
+        )}
         <h5>알림 설정</h5>
         <p>{noticeYn ? `해당 일정 ${noticeAt}분 전에 알림을 설정` : ''}</p>
         <h5>우선 순위</h5>
