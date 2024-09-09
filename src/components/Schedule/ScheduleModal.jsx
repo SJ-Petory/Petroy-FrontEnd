@@ -27,8 +27,6 @@ const ScheduleModal = ({ onClose, pets }) => {
   });
 
   const [careGiverPets, setCareGiverPets] = useState([]);
-  const [loadingCareGiverPets, setLoadingCareGiverPets] = useState(true);
-  const [errorCareGiverPets, setErrorCareGiverPets] = useState(null);
 
   useEffect(() => {
     const now = new Date();
@@ -45,8 +43,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       const token = localStorage.getItem('accessToken');
 
       if (!token) {
-        setErrorCareGiverPets('로그인이 필요합니다');
-        setLoadingCareGiverPets(false);
+        alert('로그인이 필요합니다');
         return;
       }
 
@@ -60,14 +57,12 @@ const ScheduleModal = ({ onClose, pets }) => {
         if (response.status === 200) {
           setCareGiverPets(response.data.content || []);
         } else {
-          setErrorCareGiverPets(response.data.errorMessage || '돌보미 반려동물 목록을 불러오는 중 오류가 발생했습니다.');
+          alert(response.data.errorMessage || '돌보미 반려동물 목록을 불러오는 중 오류가 발생했습니다.');
         }
       } catch (err) {
         const errorMessage = err.response?.data?.errorMessage || 'API 호출 중 오류가 발생했습니다.';
-        setErrorCareGiverPets(errorMessage);
+        alert(errorMessage);
         console.error('API 호출 오류:', err);
-      } finally {
-        setLoadingCareGiverPets(false);
       }
     };
 
@@ -141,7 +136,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       noticeYn: formData.noticeYn,
       noticeAt: formData.noticeAt,
       priority: formData.priority,
-      petId: [...formData.petId, ...formData.careGiverPetId], 
+      petId: formData.petId, 
     };
   
     try {
@@ -160,15 +155,6 @@ const ScheduleModal = ({ onClose, pets }) => {
       const { data } = error.response;
       alert(data.errorMessage || '일정 생성 중 오류가 발생했습니다.');
     }
-  };
-
-  const handleCareGiverPetChange = (petId) => {
-    setFormData(prevData => ({
-      ...prevData,
-      careGiverPetId: prevData.careGiverPetId.includes(petId)
-        ? prevData.careGiverPetId.filter(id => id !== petId)
-        : [...prevData.careGiverPetId, petId]
-    }));
   };
 
   const allPets = [...pets, ...careGiverPets];
@@ -220,27 +206,7 @@ const ScheduleModal = ({ onClose, pets }) => {
               ))}
             </select>
           </label>
-          <label>돌보미 반려동물
-            {loadingCareGiverPets ? (
-              <p>로딩 중...</p>
-            ) : errorCareGiverPets ? (
-              <p className="error">{errorCareGiverPets}</p>
-            ) : (
-              careGiverPets.map(pet => (
-                <div key={pet.petId} className="careGiverPetItem">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={formData.careGiverPetId?.includes(pet.petId) || false}
-                      onChange={() => handleCareGiverPetChange(pet.petId)}
-                    />
-                    {pet.name} ({pet.breed})
-                  </label>
-                </div>
-              ))
-            )}
-          </label>
-          <label>일정 시작 시간
+          <label>일정 시작
             <input
               type="datetime-local"
               name="scheduleAt"
@@ -322,9 +288,9 @@ const ScheduleModal = ({ onClose, pets }) => {
                   </div>
                 )}
               </label>
-              <label>종료 날짜
+              <label>일정 종료
                 <input
-                  type="date"
+                  type="datetime-local"
                   name="customRepeat.endDate"
                   value={formData.customRepeat.endDate}
                   onChange={handleChange}
@@ -363,11 +329,10 @@ const ScheduleModal = ({ onClose, pets }) => {
           <button type="submit">일정 저장</button>
           <button type="button" onClick={onClose}>취소</button>
         </form>
-        <SchedulePreview formData={formData} />
       </div>
+      <SchedulePreview formData={formData} />
     </div>
   );
 };
 
 export default ScheduleModal;
-
