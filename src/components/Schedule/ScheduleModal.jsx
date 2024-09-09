@@ -309,8 +309,8 @@ const ScheduleModal = ({ onClose, pets }) => {
           <button type="submit">저장</button>
           <button type="button" onClick={onClose}>닫기</button>
         </form>
-        <SchedulePreview formData={formData} pets={pets}/>
       </div>
+      <SchedulePreview formData={formData} pets={pets}/>
     </div>
   );
 };
