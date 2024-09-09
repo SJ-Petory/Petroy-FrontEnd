@@ -159,9 +159,10 @@ function MainPage() {
             {isScheduleModalOpen && (
                 <ScheduleModal
                     onClose={closeScheduleModal}
-                    pets={pets.filter(pet => selectedPets.has(pet.petId))}
-                />
-            )}
+                    pets={[...pets, ...careGiverPets]} 
+                 />
+)}
+
         </div>
     );
 }
