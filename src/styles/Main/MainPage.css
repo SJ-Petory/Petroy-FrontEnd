@@ -53,3 +53,13 @@
 .create-schedule-button:hover {
     background-color: #8a8a8a; 
 }
+
+.pet-info-list {
+    margin-top: 20px;
+    background-color: #ffffff;
+}
+
+.pet-info-list p {
+    margin: 5px 0;
+}
+

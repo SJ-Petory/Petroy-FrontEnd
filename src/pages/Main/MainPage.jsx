@@ -12,6 +12,7 @@ function MainPage() {
     const [pets, setPets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedPets, setSelectedPets] = useState(new Set());
 
     useEffect(() => {
         const loadPets = async () => {
@@ -46,6 +47,18 @@ function MainPage() {
     const openScheduleModal = () => setIsScheduleModalOpen(true);
     const closeScheduleModal = () => setIsScheduleModalOpen(false);
 
+    const handleCheckboxChange = (petId) => {
+        setSelectedPets(prevSelectedPets => {
+            const newSelectedPets = new Set(prevSelectedPets);
+            if (newSelectedPets.has(petId)) {
+                newSelectedPets.delete(petId);
+            } else {
+                newSelectedPets.add(petId);
+            }
+            return newSelectedPets;
+        });
+    };
+
     return (
         <div className="main-page">
             <NavBar title="메인페이지" />
@@ -67,9 +80,14 @@ function MainPage() {
                     <div className="pet-info-list">
                         <h3>반려동물 목록</h3>
                         {pets.map((pet) => (
-                            <p key={pet.petId}>
-                                <strong>{pet.name}</strong> ({pet.species})
-                            </p>
+                            <div key={pet.petId} className="pet-info-item">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedPets.has(pet.petId)}
+                                    onChange={() => handleCheckboxChange(pet.petId)}
+                                />
+                                <strong>{pet.name}</strong> ({pet.breed})
+                            </div>
                         ))}
                     </div>
                 )}
@@ -84,7 +102,7 @@ function MainPage() {
             {isScheduleModalOpen && (
                 <ScheduleModal
                     onClose={closeScheduleModal}
-                    pets={pets}
+                    pets={pets.filter(pet => selectedPets.has(pet.petId))}
                 />
             )}
         </div>
