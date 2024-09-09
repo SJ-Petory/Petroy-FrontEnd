@@ -145,7 +145,7 @@ export default function NavBar({ title }) {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar>
+        <Toolbar sx={{ backgroundColor: '#484848' }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
