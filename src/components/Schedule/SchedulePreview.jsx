@@ -80,6 +80,11 @@ const SchedulePreview = ({ formData, pets, caregiverPets }) => {
   const allPets = [...pets, ...caregiverPets];
   
   const getPetNames = (petIds) => {
+    if (!Array.isArray(petIds)) {
+      console.error('petIds가 배열이 아닙니다:', petIds);
+      return '반려동물을 선택해주세요';
+    }
+  
     const petMap = new Map(allPets.map(pet => [pet.petId, pet.name]));
     return petIds.map(id => petMap.get(id)).filter(name => name).join(', ') || '반려동물을 선택해주세요';
   };
