@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../styles/Main/ScheduleModal.css';
 import SchedulePreview from '../../components/Schedule/SchedulePreview.jsx';
+import defaultPetPic from '../../assets/DefaultImage.png';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -199,18 +200,21 @@ const ScheduleModal = ({ onClose, pets }) => {
             />
           </label>
           <label>반려동물
-            <div className="pets-checkbox-container">
+            <div className="pets-container">
               {allPets.map(pet => (
-                <div key={pet.petId} className="pet-checkbox">
-                  <input
-                    type="checkbox"
-                    id={`pet-${pet.petId}`}
-                    checked={formData.petId.includes(pet.petId)}
-                    onChange={() => handlePetSelectionChange(pet.petId)}
-                  />
-                  <label htmlFor={`pet-${pet.petId}`}>
-                    {pet.name} ({pet.species}, {pet.breed})
-                  </label>
+                <div key={pet.petId} className="pet-card">
+                  <img src={pet.imageUrl || defaultPetPic} alt={pet.name} />
+                  <div className="pet-info">
+                    <input
+                      type="checkbox"
+                      id={`pet-${pet.petId}`}
+                      checked={formData.petId.includes(pet.petId)}
+                      onChange={() => handlePetSelectionChange(pet.petId)}
+                    />
+                    <label htmlFor={`pet-${pet.petId}`}>
+                      {pet.name} ({pet.species}, {pet.breed})
+                    </label>
+                  </div>
                 </div>
               ))}
             </div>
