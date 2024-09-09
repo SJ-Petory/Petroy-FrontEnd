@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import '../../styles/Main/SchedulePreview.css';
 
 const formatDateTime = (dateTime) => {
@@ -20,16 +20,16 @@ const formatDateTime = (dateTime) => {
 const daysOfWeekOrder = ['월', '화', '수', '목', '금', '토', '일'];
 
 const sortDaysOfWeek = (daysOfWeek) => {
-  return daysOfWeek.sort((a, b) => {
+  return (daysOfWeek || []).sort((a, b) => {
     return daysOfWeekOrder.indexOf(a) - daysOfWeekOrder.indexOf(b);
   });
 };
 
 const sortDaysOfMonth = (daysOfMonth) => {
-  return daysOfMonth.sort((a, b) => a - b);
+  return (daysOfMonth || []).sort((a, b) => a - b);
 };
 
-const SchedulePreview = ({ formData, pets, caregiverPets }) => {
+const SchedulePreview = ({ formData = {}, pets = [], caregiverPets = [] }) => {
   const {
     categoryId, title, content, scheduleAt, repeatType, repeatCycle, customRepeat,
     noticeYn, noticeAt, priority, petId
@@ -72,19 +72,14 @@ const SchedulePreview = ({ formData, pets, caregiverPets }) => {
     return '';
   };
 
-  useEffect(() => {
-    if (repeatType !== 'CUSTOM') {
-    }
-  }, [repeatType]);
-
   const allPets = [...pets, ...caregiverPets];
-  
+
   const getPetNames = (petIds) => {
     if (!Array.isArray(petIds)) {
       console.error('petIds가 배열이 아닙니다:', petIds);
       return '반려동물을 선택해주세요';
     }
-  
+
     const petMap = new Map(allPets.map(pet => [pet.petId, pet.name]));
     return petIds.map(id => petMap.get(id)).filter(name => name).join(', ') || '반려동물을 선택해주세요';
   };

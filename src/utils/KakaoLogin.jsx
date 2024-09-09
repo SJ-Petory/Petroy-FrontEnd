@@ -16,9 +16,7 @@ function KakaoLogin() {
     script.async = true;
     script.onload = () => {
       if (window.Kakao) {
-        console.log('Kakao SDK 로드 완료');
         window.Kakao.init(KAKAO_KEY); 
-        console.log('Kakao SDK 초기화 완료');
       } else {
         console.error('Kakao SDK를 로드할 수 없습니다.');
       }
