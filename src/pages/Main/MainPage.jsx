@@ -33,7 +33,7 @@ function MainPage() {
                 }
             } else {
                 setError('로그인이 필요합니다.');
-                alert('로그인이 필요합니다')
+                alert('로그인이 필요합니다');
                 setLoading(false);
             }
         };
@@ -49,24 +49,44 @@ function MainPage() {
     return (
         <div className="main-page">
             <NavBar title="메인페이지" />
-            <CalendarComponent />
-            <button onClick={openCategoryModal} className="create-category-button">
-                일정 카테고리 생성
-            </button>
+
+            <div className="left-section">
+                <div className="button-container">
+                    <button onClick={openCategoryModal} className="create-category-button">
+                        일정 카테고리 생성
+                    </button>
+                    <button onClick={openScheduleModal} className="create-schedule-button">
+                        일정 생성
+                    </button>
+                </div>
+                
+                {loading && <p>로딩 중...</p>}
+                {error && <p className="error">{error}</p>}
+                
+                {!loading && !error && pets.length > 0 && (
+                    <div className="pet-info-list">
+                        <h3>반려동물 목록</h3>
+                        {pets.map((pet) => (
+                            <p key={pet.petId}>
+                                <strong>{pet.name}</strong> ({pet.species})
+                            </p>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            <div className="right-section">
+                <CalendarComponent />
+            </div>
+
             <CategoryModal isOpen={isCategoryModalOpen} onRequestClose={closeCategoryModal} />
             
-            <button onClick={openScheduleModal} className="create-schedule-button">
-                일정 생성
-            </button>
             {isScheduleModalOpen && (
                 <ScheduleModal
                     onClose={closeScheduleModal}
-                    pets={pets} 
+                    pets={pets}
                 />
             )}
-
-            {loading && <p>로딩 중...</p>}
-            {error && <p className="error">{error}</p>}
         </div>
     );
 }

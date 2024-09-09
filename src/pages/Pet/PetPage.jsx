@@ -38,7 +38,7 @@ const PetPage = () => {
                     setLoading(false);
                 }
             } else {
-                setError('토큰이 없습니다.');
+                setError('로그인이 필요합니다');
                 setLoading(false);
             }
         };
