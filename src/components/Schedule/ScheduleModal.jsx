@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import '../../styles/Main/ScheduleModal.css';
 import SchedulePreview from '../../components/Schedule/SchedulePreview.jsx';
 import defaultPetPic from '../../assets/DefaultImage.png';
+import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -27,8 +27,6 @@ const ScheduleModal = ({ onClose, pets }) => {
     }
   });
 
-  const [careGiverPets, setCareGiverPets] = useState([]);
-
   useEffect(() => {
     const now = new Date();
     const koreanTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -37,37 +35,6 @@ const ScheduleModal = ({ onClose, pets }) => {
       ...prevData,
       scheduleAt: localDateTime,
     }));
-  }, []);
-
-  useEffect(() => {
-    const fetchCareGiverPets = async () => {
-      const token = localStorage.getItem('accessToken');
-
-      if (!token) {
-        alert('로그인이 필요합니다');
-        return;
-      }
-
-      try {
-        const response = await axios.get(`${API_BASE_URL}/pets/caregiver`, {
-          headers: {
-            'Authorization': `${token}`,
-          },
-        });
-
-        if (response.status === 200) {
-          setCareGiverPets(response.data.content || []);
-        } else {
-          alert(response.data.errorMessage || '돌보미 반려동물 목록을 불러오는 중 오류가 발생했습니다.');
-        }
-      } catch (err) {
-        const errorMessage = err.response?.data?.errorMessage || 'API 호출 중 오류가 발생했습니다.';
-        alert(errorMessage);
-        console.error('API 호출 오류:', err);
-      }
-    };
-
-    fetchCareGiverPets();
   }, []);
 
   const handleChange = (e) => {
@@ -167,8 +134,6 @@ const ScheduleModal = ({ onClose, pets }) => {
     }
   };
 
-  const allPets = [...pets, ...careGiverPets];
-
   return (
     <div className="schedule-modal-container">
       <div className="schedule-modal-content">
@@ -200,25 +165,25 @@ const ScheduleModal = ({ onClose, pets }) => {
             />
           </label>
           <label>반려동물
-            <div className="pets-container">
-              {allPets.map(pet => (
-                <div key={pet.petId} className="pet-card">
-                  <img src={pet.imageUrl || defaultPetPic} alt={pet.name} />
-                  <div className="pet-info">
-                    <input
-                      type="checkbox"
-                      id={`pet-${pet.petId}`}
-                      checked={formData.petId.includes(pet.petId)}
-                      onChange={() => handlePetSelectionChange(pet.petId)}
-                    />
-                    <label htmlFor={`pet-${pet.petId}`}>
-                      {pet.name} ({pet.species}, {pet.breed})
-                    </label>
-                  </div>
+          <div className="pets-container">
+            {pets.map(pet => (
+              <div key={pet.petId} className="pet-card">
+                <img src={pet.imageUrl || defaultPetPic} alt={pet.name} />
+                <div className="pet-info">
+                  <input
+                    type="checkbox"
+                    id={`pet-${pet.petId}`}
+                    checked={formData.petId.includes(pet.petId)}
+                    onChange={() => handlePetSelectionChange(pet.petId)}
+                  />
+                  <label htmlFor={`pet-${pet.petId}`}>
+                    {pet.name} ({pet.species}, {pet.breed})
+                  </label>
                 </div>
-              ))}
-            </div>
-          </label>
+              </div>
+            ))}
+          </div>
+        </label>
           <label>일정 시작
             <input
               type="datetime-local"
@@ -318,16 +283,18 @@ const ScheduleModal = ({ onClose, pets }) => {
               checked={formData.noticeYn}
               onChange={handleChange}
             />
-            <input
-              type="number"
-              name="noticeAt"
-              value={formData.noticeAt}
-              onChange={handleChange}
-              placeholder="알림 시간(분)"
-              disabled={!formData.noticeYn}
-              min="1"
-            />
           </label>
+          {formData.noticeYn && (
+            <label>알림 시간 (분 전)
+              <input
+                type="number"
+                name="noticeAt"
+                value={formData.noticeAt}
+                onChange={handleChange}
+                min="1"
+              />
+            </label>
+          )}
           <label>우선 순위
             <select
               name="priority"
@@ -335,15 +302,15 @@ const ScheduleModal = ({ onClose, pets }) => {
               onChange={handleChange}
             >
               <option value="LOW">낮음</option>
-              <option value="MEDIUM">중간</option>
+              <option value="MEDIUM">보통</option>
               <option value="HIGH">높음</option>
             </select>
           </label>
-          <button type="submit">일정 저장</button>
-          <button type="button" onClick={onClose}>취소</button>
+          <button type="submit">저장</button>
+          <button type="button" onClick={onClose}>닫기</button>
         </form>
+        <SchedulePreview formData={formData} pets={pets}/>
       </div>
-      <SchedulePreview formData={formData} />
     </div>
   );
 };
