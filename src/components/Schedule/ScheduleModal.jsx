@@ -128,9 +128,9 @@ const ScheduleModal = ({ onClose, pets }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const token = localStorage.getItem('accessToken');
-
+  
     const requestData = {
       categoryId: formData.categoryId,
       title: formData.title,
@@ -151,6 +151,8 @@ const ScheduleModal = ({ onClose, pets }) => {
       priority: formData.priority,
       petId: formData.petId,
     };
+  
+    console.log(requestData);
 
     try {
       const response = await axios.post(`${API_BASE_URL}/schedules`, requestData, {
