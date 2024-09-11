@@ -39,6 +39,7 @@ const ScheduleModal = ({ onClose, pets }) => {
           },
         });
 
+        console.log('카테고리 데이터:', response.data.content);
         setCategories(response.data.content);  
       } catch (error) {
         console.error('카테고리 로딩 중 오류 발생:', error);
@@ -62,6 +63,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     const { name, value, type, checked } = e.target;
   
     console.log(name, value);
+    console.log('categoryId:', formData.categoryId); 
 
     if (name === 'categoryId') {
       setFormData(prevData => ({
