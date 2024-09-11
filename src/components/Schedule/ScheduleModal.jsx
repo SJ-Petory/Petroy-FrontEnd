@@ -60,10 +60,15 @@ const ScheduleModal = ({ onClose, pets }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    if (name.startsWith('customRepeat.')) {
+  
+    if (name === 'categoryId') {
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: Number(value), 
+      }));
+    } else if (name.startsWith('customRepeat.')) {
       const [, subKey] = name.split('.');
-
+  
       setFormData(prevData => ({
         ...prevData,
         customRepeat: {
@@ -180,10 +185,10 @@ const ScheduleModal = ({ onClose, pets }) => {
               required
             >
               <option value="" disabled>카테고리 선택</option>
-              {(Array.isArray(categories) ? categories : []).map(category => (
-                <option key={category.id} value={category.id}>
+             {categories.map(category => (
+              <option key={category.id} value={category.id}>
                   {category.name}
-                </option>
+               </option>
               ))}
             </select>
           </label>
