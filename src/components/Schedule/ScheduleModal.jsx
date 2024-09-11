@@ -159,7 +159,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       <div className="schedule-modal-content">
         <h2>일정 생성</h2>
         <form onSubmit={handleSubmit}>
-          <label>카테고리
+        <label>카테고리
             <select
               name="categoryId"
               value={formData.categoryId}
@@ -167,7 +167,7 @@ const ScheduleModal = ({ onClose, pets }) => {
               required
             >
               <option value="" disabled>카테고리 선택</option>
-              {categories.map(category => (
+              {(Array.isArray(categories) ? categories : []).map(category => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
