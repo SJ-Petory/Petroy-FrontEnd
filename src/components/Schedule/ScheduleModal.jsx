@@ -39,7 +39,6 @@ const ScheduleModal = ({ onClose, pets }) => {
           },
         });
 
-        console.log('카테고리 데이터:', response.data.content);
         setCategories(response.data.content);  
       } catch (error) {
         console.error('카테고리 로딩 중 오류 발생:', error);
@@ -61,9 +60,6 @@ const ScheduleModal = ({ onClose, pets }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-  
-    console.log(name, value);
-    console.log('categoryId:', formData.categoryId); 
 
     if (name === 'categoryId') {
       setFormData(prevData => ({
@@ -132,9 +128,9 @@ const ScheduleModal = ({ onClose, pets }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const token = localStorage.getItem('accessToken');
-
+  
     const requestData = {
       categoryId: formData.categoryId,
       title: formData.title,
@@ -142,20 +138,25 @@ const ScheduleModal = ({ onClose, pets }) => {
       scheduleAt: formData.scheduleAt,
       repeatType: formData.repeatType,
       ...(formData.repeatType === 'BASIC' && { repeatCycle: formData.repeatCycle }),
-      ...(formData.repeatType === 'CUSTOM' && { 
+      ...(formData.repeatType === 'CUSTOM' && {
         customRepeat: {
-          ...formData.customRepeat,
-          daysOfWeek: formData.customRepeat.frequency === 'WEEK' ? formData.customRepeat.daysOfWeek : undefined, 
-          daysOfMonth: formData.customRepeat.frequency === 'MONTH' ? formData.customRepeat.daysOfMonth : undefined, 
+          frequency: formData.customRepeat.frequency,
+          ...(formData.customRepeat.frequency === 'WEEK' && { daysOfWeek: formData.customRepeat.daysOfWeek }),
+          ...(formData.customRepeat.frequency === 'MONTH' && { daysOfMonth: formData.customRepeat.daysOfMonth }),
         }
       }),
       noticeYn: formData.noticeYn,
       noticeAt: formData.noticeAt,
       priority: formData.priority,
-      petId: formData.petId, 
+      petId: formData.petId,
     };
 
+    if (formData.repeatType !== 'CUSTOM') {
+      requestData.customRepeat = {};
+    }
+  
     console.log('보내는 데이터:', requestData); 
+   
 
     try {
       const response = await axios.post(`${API_BASE_URL}/schedules`, requestData, {
