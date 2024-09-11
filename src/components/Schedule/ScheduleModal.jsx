@@ -147,6 +147,8 @@ const ScheduleModal = ({ onClose, pets }) => {
       petId: formData.petId, 
     };
 
+    console.log('보내는 데이터:', requestData); 
+
     try {
       const response = await axios.post(`${API_BASE_URL}/schedules`, requestData, {
         headers: {
