@@ -80,13 +80,23 @@ const ScheduleModal = ({ onClose, pets }) => {
   };
 
   const handleDayClick = (day) => {
+    const dayMapping = {
+      '일': 'SUNDAY',
+      '월': 'MONDAY',
+      '화': 'TUESDAY',
+      '수': 'WEDNESDAY',
+      '목': 'THURSDAY',
+      '금': 'FRIDAY',
+      '토': 'SATURDAY'
+    };
+    
     setFormData(prevData => ({
       ...prevData,
       customRepeat: {
         ...prevData.customRepeat,
-        daysOfWeek: prevData.customRepeat.daysOfWeek.includes(day)
-          ? prevData.customRepeat.daysOfWeek.filter(d => d !== day)
-          : [...prevData.customRepeat.daysOfWeek, day]
+        daysOfWeek: prevData.customRepeat.daysOfWeek.includes(dayMapping[day])
+          ? prevData.customRepeat.daysOfWeek.filter(d => d !== dayMapping[day])
+          : [...prevData.customRepeat.daysOfWeek, dayMapping[day]]
       }
     }));
   };
@@ -118,7 +128,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     const token = localStorage.getItem('accessToken');
 
     const requestData = {
-      categoryId: formData.categoryId,
+      categoryId: Number(formData.categoryId),
       title: formData.title,
       content: formData.content,
       scheduleAt: formData.scheduleAt,
