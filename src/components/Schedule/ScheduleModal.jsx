@@ -33,7 +33,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     const fetchCategories = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/categories`, {
+        const response = await axios.get(`${API_BASE_URL}/schedules/category`, {
           headers: {
             Authorization: `${token}`,
           },
@@ -338,8 +338,8 @@ const ScheduleModal = ({ onClose, pets }) => {
           <button type="submit">일정 저장</button>
           <button type="button" onClick={onClose}>닫기</button>
         </form>
-        <SchedulePreview formData={formData} />
       </div>
+      <SchedulePreview formData={formData} />
     </div>
   );
 };
