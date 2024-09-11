@@ -144,6 +144,7 @@ const ScheduleModal = ({ onClose, pets }) => {
           interval: formData.customRepeat.interval,
           ...(formData.customRepeat.frequency === 'WEEK' && { daysOfWeek: formData.customRepeat.daysOfWeek }),
           ...(formData.customRepeat.frequency === 'MONTH' && { daysOfMonth: formData.customRepeat.daysOfMonth }),
+          ...(formData.customRepeat.endDate && { endDate: formData.customRepeat.endDate })
         }
       }),
       noticeYn: formData.noticeYn,
@@ -312,7 +313,7 @@ const ScheduleModal = ({ onClose, pets }) => {
               </label>
               <label>종료 날짜
                 <input
-                  type="date"
+                  type="datetime-local"
                   name="customRepeat.endDate"
                   value={formData.customRepeat.endDate}
                   onChange={handleChange}
