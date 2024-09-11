@@ -68,11 +68,10 @@ const ScheduleModal = ({ onClose, pets }) => {
     if (name === 'categoryId') {
       setFormData(prevData => ({
         ...prevData,
-        [name]: Number(value),
+        [name]: Number(value) 
       }));
     } else if (name.startsWith('customRepeat.')) {
       const [, subKey] = name.split('.');
-  
       setFormData(prevData => ({
         ...prevData,
         customRepeat: {
@@ -182,17 +181,17 @@ const ScheduleModal = ({ onClose, pets }) => {
         <h2>일정 생성</h2>
         <form onSubmit={handleSubmit}>
         <label>카테고리
-            <select
+        <select
               name="categoryId"
               value={formData.categoryId}
               onChange={handleChange}
               required
             >
               <option value="" disabled>카테고리 선택</option>
-             {categories.map(category => (
-              <option key={category.id} value={category.id}>
+              {categories.map(category => (
+               <option key={category.categoryId} value={category.categoryId}>
                   {category.name}
-               </option>
+                </option>
               ))}
             </select>
           </label>
