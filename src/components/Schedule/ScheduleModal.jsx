@@ -27,11 +27,31 @@ const ScheduleModal = ({ onClose, pets }) => {
     }
   });
 
+  const [categories, setCategories] = useState([]); 
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`${API_BASE_URL}/categories`, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        });
+        setCategories(response.data); 
+      } catch (error) {
+        console.error('카테고리 로딩 중 오류 발생:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   useEffect(() => {
     const now = new Date();
     const koreanTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
     const localDateTime = koreanTime.toISOString().slice(0, 16);
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
       scheduleAt: localDateTime,
     }));
@@ -93,9 +113,9 @@ const ScheduleModal = ({ onClose, pets }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const token = localStorage.getItem('accessToken');
-  
+
     const requestData = {
       categoryId: formData.categoryId,
       title: formData.title,
@@ -115,7 +135,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       priority: formData.priority,
       petId: formData.petId, 
     };
-  
+
     try {
       const response = await axios.post(`${API_BASE_URL}/schedules`, requestData, {
         headers: {
@@ -123,7 +143,7 @@ const ScheduleModal = ({ onClose, pets }) => {
           'Content-Type': 'application/json',
         },
       });
-  
+
       if (response.status === 200) {
         alert('일정이 생성되었습니다.');
         onClose();
@@ -140,13 +160,19 @@ const ScheduleModal = ({ onClose, pets }) => {
         <h2>일정 생성</h2>
         <form onSubmit={handleSubmit}>
           <label>카테고리
-            <input
-              type="number"
+            <select
               name="categoryId"
               value={formData.categoryId}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="" disabled>카테고리 선택</option>
+              {categories.map(category => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </label>
           <label>제목
             <input
@@ -234,49 +260,52 @@ const ScheduleModal = ({ onClose, pets }) => {
                   name="customRepeat.interval"
                   value={formData.customRepeat.interval}
                   onChange={handleChange}
-                  placeholder="간격"
                   min="1"
                 />
-                {formData.customRepeat.frequency === 'WEEK' && (
-                  <div className="day-buttons-container">
-                    {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
-                      <button
-                        key={day}
-                        type="button"
-                        className={`day-button ${formData.customRepeat.daysOfWeek.includes(day) ? 'selected' : ''}`}
-                        onClick={() => handleDayClick(day)}
-                      >
-                        {day}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {formData.customRepeat.frequency === 'MONTH' && (
-                  <div className="day-buttons-container">
-                    {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
-                      <button
-                        key={day}
-                        type="button"
-                        className={`day-button ${formData.customRepeat.daysOfMonth.includes(day) ? 'selected' : ''}`}
-                        onClick={() => handleDayOfMonthClick(day)}
-                      >
-                        {day}
-                      </button>
-                    ))}
-                  </div>
-                )}
               </label>
-              <label>일정 종료
-                <input
-                  type="datetime-local"
-                  name="customRepeat.endDate"
-                  value={formData.customRepeat.endDate}
-                  onChange={handleChange}
-                />
-              </label>
+              {formData.customRepeat.frequency === 'WEEK' && (
+                <div className="days-of-week">
+                  {['일', '월', '화', '수', '목', '금', '토'].map(day => (
+                    <button
+                      key={day}
+                      type="button"
+                      className={`day-button ${formData.customRepeat.daysOfWeek.includes(day) ? 'selected' : ''}`}
+                      onClick={() => handleDayClick(day)}
+                    >
+                      {day}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {formData.customRepeat.frequency === 'MONTH' && (
+                <div className="days-of-month">
+                  {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
+                    <button
+                      key={day}
+                      type="button"
+                      className={`day-button ${formData.customRepeat.daysOfMonth.includes(day) ? 'selected' : ''}`}
+                      onClick={() => handleDayOfMonthClick(day)}
+                    >
+                      {day}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {formData.customRepeat.frequency === 'YEAR' && (
+                <label>
+                  종료일
+                  <input
+                    type="date"
+                    name="customRepeat.endDate"
+                    value={formData.customRepeat.endDate}
+                    onChange={handleChange}
+                  />
+                </label>
+              )}
             </>
           )}
-          <label>알림
+          <label>
+            알림 설정
             <input
               type="checkbox"
               name="noticeYn"
@@ -284,33 +313,33 @@ const ScheduleModal = ({ onClose, pets }) => {
               onChange={handleChange}
             />
           </label>
-          {formData.noticeYn && (
-            <label>알림 시간 (분 전)
-              <input
-                type="number"
-                name="noticeAt"
-                value={formData.noticeAt}
-                onChange={handleChange}
-                min="1"
-              />
-            </label>
-          )}
-          <label>우선 순위
+          <label>
+            알림 시간 (분)
+            <input
+              type="number"
+              name="noticeAt"
+              value={formData.noticeAt}
+              onChange={handleChange}
+              min="0"
+            />
+          </label>
+          <label>
+            우선순위
             <select
               name="priority"
               value={formData.priority}
               onChange={handleChange}
             >
               <option value="LOW">낮음</option>
-              <option value="MEDIUM">보통</option>
+              <option value="MEDIUM">중간</option>
               <option value="HIGH">높음</option>
             </select>
           </label>
-          <button type="submit">저장</button>
+          <button type="submit">일정 저장</button>
           <button type="button" onClick={onClose}>닫기</button>
         </form>
+        <SchedulePreview formData={formData} />
       </div>
-      <SchedulePreview formData={formData} pets={pets}/>
     </div>
   );
 };
