@@ -29,7 +29,7 @@ const sortDaysOfMonth = (daysOfMonth) => {
   return (daysOfMonth || []).sort((a, b) => a - b);
 };
 
-const SchedulePreview = ({ formData = {}, pets = [] }) => {
+const SchedulePreview = ({ formData = {}, pets = [], categories = [] }) => {
   const {
     categoryId, title, content, scheduleAt, repeatType, repeatCycle, customRepeat,
     noticeYn, noticeAt, priority, petId
@@ -42,6 +42,8 @@ const SchedulePreview = ({ formData = {}, pets = [] }) => {
     MEDIUM: '중간',
     HIGH: '높음'
   }[priority] || '낮음';
+
+  const categoryName = categories.find(cat => cat.categoryId === categoryId)?.name || '카테고리를 선택해주세요';
 
   const repeatDescription = () => {
     if (repeatType === 'BASIC') {
@@ -89,7 +91,7 @@ const SchedulePreview = ({ formData = {}, pets = [] }) => {
       <h3>일정 생성 미리보기</h3>
       <div className="schedule-preview-content">
         <h5>카테고리</h5>
-        <p>{categoryId ? categoryId : '카테고리를 선택해주세요'}</p>
+        <p>{categoryName ? categoryName : '카테고리를 선택해주세요'}</p>
         <h5>제목</h5>
         <p>{title}</p>
         <h5>내용</h5>
