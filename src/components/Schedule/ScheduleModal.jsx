@@ -27,7 +27,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     }
   });
 
-  const [categories, setCategories] = useState([]); 
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -39,7 +39,7 @@ const ScheduleModal = ({ onClose, pets }) => {
           },
         });
 
-        setCategories(response.data.content);  
+        setCategories(response.data.content);
       } catch (error) {
         console.error('카테고리 로딩 중 오류 발생:', error);
       }
@@ -64,7 +64,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     if (name === 'categoryId') {
       setFormData(prevData => ({
         ...prevData,
-        [name]: Number(value) 
+        [name]: Number(value)
       }));
     } else if (name.startsWith('customRepeat.')) {
       const [, subKey] = name.split('.');
@@ -93,7 +93,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       '금': 'FRIDAY',
       '토': 'SATURDAY'
     };
-    
+
     setFormData(prevData => ({
       ...prevData,
       customRepeat: {
@@ -128,9 +128,9 @@ const ScheduleModal = ({ onClose, pets }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const token = localStorage.getItem('accessToken');
-  
+
     const requestData = {
       categoryId: formData.categoryId,
       title: formData.title,
@@ -141,6 +141,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       ...(formData.repeatType === 'CUSTOM' && {
         customRepeat: {
           frequency: formData.customRepeat.frequency,
+          interval: formData.customRepeat.interval,
           ...(formData.customRepeat.frequency === 'WEEK' && { daysOfWeek: formData.customRepeat.daysOfWeek }),
           ...(formData.customRepeat.frequency === 'MONTH' && { daysOfMonth: formData.customRepeat.daysOfMonth }),
         }
@@ -150,13 +151,6 @@ const ScheduleModal = ({ onClose, pets }) => {
       priority: formData.priority,
       petId: formData.petId,
     };
-
-    if (formData.repeatType !== 'CUSTOM') {
-      requestData.customRepeat = {};
-    }
-  
-    console.log('보내는 데이터:', requestData); 
-   
 
     try {
       const response = await axios.post(`${API_BASE_URL}/schedules`, requestData, {
@@ -181,8 +175,8 @@ const ScheduleModal = ({ onClose, pets }) => {
       <div className="schedule-modal-content">
         <h2>일정 생성</h2>
         <form onSubmit={handleSubmit}>
-        <label>카테고리
-        <select
+          <label>카테고리
+            <select
               name="categoryId"
               value={formData.categoryId}
               onChange={handleChange}
@@ -190,7 +184,7 @@ const ScheduleModal = ({ onClose, pets }) => {
             >
               <option value="" disabled>카테고리 선택</option>
               {categories.map(category => (
-               <option key={category.categoryId} value={category.categoryId}>
+                <option key={category.categoryId} value={category.categoryId}>
                   {category.name}
                 </option>
               ))}
@@ -213,25 +207,25 @@ const ScheduleModal = ({ onClose, pets }) => {
             />
           </label>
           <label>반려동물
-          <div className="pets-container">
-            {pets.map(pet => (
-              <div key={pet.petId} className="pet-card">
-                <img src={pet.imageUrl || defaultPetPic} alt={pet.name} />
-                <div className="pet-info">
-                  <input
-                    type="checkbox"
-                    id={`pet-${pet.petId}`}
-                    checked={formData.petId.includes(pet.petId)}
-                    onChange={() => handlePetSelectionChange(pet.petId)}
-                  />
-                  <label htmlFor={`pet-${pet.petId}`}>
-                    {pet.name} ({pet.species}, {pet.breed})
-                  </label>
+            <div className="pets-container">
+              {pets.map(pet => (
+                <div key={pet.petId} className="pet-card">
+                  <img src={pet.imageUrl || defaultPetPic} alt={pet.name} />
+                  <div className="pet-info">
+                    <input
+                      type="checkbox"
+                      id={`pet-${pet.petId}`}
+                      checked={formData.petId.includes(pet.petId)}
+                      onChange={() => handlePetSelectionChange(pet.petId)}
+                    />
+                    <label htmlFor={`pet-${pet.petId}`}>
+                      {pet.name} ({pet.species}, {pet.breed})
+                    </label>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </label>
+              ))}
+            </div>
+          </label>
           <label>일정 시작
             <input
               type="datetime-local"
@@ -275,15 +269,7 @@ const ScheduleModal = ({ onClose, pets }) => {
                   <option value="DAY">일일</option>
                   <option value="WEEK">주간</option>
                   <option value="MONTH">월간</option>
-                  <option value="YEAR">연간</option>
                 </select>
-                <input
-                  type="number"
-                  name="customRepeat.interval"
-                  value={formData.customRepeat.interval}
-                  onChange={handleChange}
-                  min="1"
-                />
               </label>
               {formData.customRepeat.frequency === 'WEEK' && (
                 <div className="days-of-week">
@@ -313,40 +299,47 @@ const ScheduleModal = ({ onClose, pets }) => {
                   ))}
                 </div>
               )}
-              {formData.customRepeat.frequency === 'YEAR' && (
-                <label>
-                  종료일
-                  <input
-                    type="date"
-                    name="customRepeat.endDate"
-                    value={formData.customRepeat.endDate}
-                    onChange={handleChange}
-                  />
-                </label>
-              )}
+              <label>간격
+                <input
+                  type="number"
+                  name="customRepeat.interval"
+                  value={formData.customRepeat.interval}
+                  min="1"
+                  onChange={handleChange}
+                />
+              </label>
+              <label>종료 날짜
+                <input
+                  type="date"
+                  name="customRepeat.endDate"
+                  value={formData.customRepeat.endDate}
+                  onChange={handleChange}
+                />
+              </label>
             </>
           )}
-          <label>
-            알림 설정
+          <label>알림 설정
             <input
               type="checkbox"
               name="noticeYn"
               checked={formData.noticeYn}
               onChange={handleChange}
             />
-          </label>
-          <label>
-            알림 시간 (분)
-            <input
-              type="number"
-              name="noticeAt"
-              value={formData.noticeAt}
-              onChange={handleChange}
-              min="0"
-            />
-          </label>
-          <label>
-            우선순위
+            </label>
+            {formData.noticeYn && (
+          <>
+            <label>알림 시간 (분 전)
+              <input
+                type="number"
+                name="noticeAt"
+                value={formData.noticeAt}
+                min="0"
+                onChange={handleChange}
+              />
+            </label>
+          </>
+        )}
+          <label>우선순위
             <select
               name="priority"
               value={formData.priority}
@@ -357,7 +350,7 @@ const ScheduleModal = ({ onClose, pets }) => {
               <option value="HIGH">높음</option>
             </select>
           </label>
-          <button type="submit">일정 저장</button>
+          <button type="submit">저장</button>
           <button type="button" onClick={onClose}>닫기</button>
         </form>
       </div>
