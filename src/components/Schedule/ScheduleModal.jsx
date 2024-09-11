@@ -68,7 +68,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     if (name === 'categoryId') {
       setFormData(prevData => ({
         ...prevData,
-        [name]: value,
+        [name]: Number(value),
       }));
     } else if (name.startsWith('customRepeat.')) {
       const [, subKey] = name.split('.');
