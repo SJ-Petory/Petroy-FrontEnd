@@ -62,7 +62,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     const { name, value, type, checked } = e.target;
   
     console.log(name, value);
-    
+
     if (name === 'categoryId') {
       setFormData(prevData => ({
         ...prevData,
@@ -135,7 +135,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     const token = localStorage.getItem('accessToken');
 
     const requestData = {
-      categoryId: Number(formData.categoryId),
+      categoryId: formData.categoryId,
       title: formData.title,
       content: formData.content,
       scheduleAt: formData.scheduleAt,
