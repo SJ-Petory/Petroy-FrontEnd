@@ -38,6 +38,9 @@ const ScheduleModal = ({ onClose, pets }) => {
             Authorization: `${token}`,
           },
         });
+
+        console.log('카테고리 응답:', response.data);
+
         setCategories(response.data.categories);  
       } catch (error) {
         console.error('카테고리 로딩 중 오류 발생:', error);
