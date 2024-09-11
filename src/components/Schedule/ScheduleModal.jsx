@@ -61,6 +61,8 @@ const ScheduleModal = ({ onClose, pets }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
   
+    console.log(name, value);
+    
     if (name === 'categoryId') {
       setFormData(prevData => ({
         ...prevData,
