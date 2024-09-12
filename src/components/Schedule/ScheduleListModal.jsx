@@ -44,6 +44,7 @@ function ScheduleListModal({ isOpen, onRequestClose }) {
         <div className="schedule-list-modal">
             <div className="modal-header">
                 <h2>일정 목록</h2>
+                <button onClick={onRequestClose}>닫기</button>
             </div>
             <div className="modal-body">
                 {loading ? (
@@ -63,9 +64,6 @@ function ScheduleListModal({ isOpen, onRequestClose }) {
                 ) : (
                     <p>등록된 일정이 없습니다.</p>
                 )}
-            </div>
-            <div className="modal-footer">
-                <button onClick={onRequestClose}>닫기</button>
             </div>
         </div>
     );
