@@ -3,6 +3,7 @@ import CalendarComponent from '../../components/commons/CalendarComponent.jsx';
 import NavBar from '../../components/commons/NavBar.jsx';
 import CategoryModal from '../../components/Schedule/CategoryModal.jsx';
 import ScheduleModal from '../../components/Schedule/ScheduleModal.jsx';
+import ScheduleListModal from '../../components/Schedule/ScheduleListModal.jsx'
 import { fetchMemberPets } from '../../services/TokenService.jsx';
 import axios from 'axios';
 import '../../styles/Main/MainPage.css';
@@ -12,6 +13,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL;
 function MainPage() {
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
     const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+    const [isScheduleListModalOpen, setIsScheduleListModalOpen] = useState(false); 
     const [pets, setPets] = useState([]);
     const [careGiverPets, setCareGiverPets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -74,6 +76,8 @@ function MainPage() {
     const closeCategoryModal = () => setIsCategoryModalOpen(false);
     const openScheduleModal = () => setIsScheduleModalOpen(true);
     const closeScheduleModal = () => setIsScheduleModalOpen(false);
+    const openScheduleListModal = () => setIsScheduleListModalOpen(true); 
+    const closeScheduleListModal = () => setIsScheduleListModalOpen(false); 
 
     const handleCheckboxChange = (petId) => {
         setSelectedPets(prevSelectedPets => {
@@ -98,6 +102,9 @@ function MainPage() {
                     </button>
                     <button onClick={openScheduleModal} className="create-schedule-button">
                         일정 생성
+                    </button>
+                    <button onClick={openScheduleListModal} className="schedule-list-button"> 
+                        내 일정 보기
                     </button>
                 </div>
                 
@@ -155,12 +162,8 @@ function MainPage() {
             </div>
 
             <CategoryModal isOpen={isCategoryModalOpen} onRequestClose={closeCategoryModal} />
-            
-            {isScheduleModalOpen && (
-                <ScheduleModal
-                    onClose={closeScheduleModal}
-                    pets={[...pets, ...careGiverPets]} 
-                 />
+            <ScheduleListModal isOpen={isScheduleListModalOpen} onRequestClose={closeScheduleListModal} />
+            {isScheduleModalOpen && (<ScheduleModal onClose={closeScheduleModal} pets={[...pets, ...careGiverPets]} />
 )}
 
         </div>
