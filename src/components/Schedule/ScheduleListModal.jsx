@@ -20,7 +20,7 @@ function ScheduleListModal({ isOpen, onRequestClose }) {
                         },
                     });
                     if (response.status === 200) {
-                        setSchedules(response.data.schedules || []);
+                        setSchedules(response.data.content || []);
                     } else {
                         setError(response.data.message || '일정을 불러오는 데 실패했습니다.');
                     }
