@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../../styles/Main/ScheduleListModal.css';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 
 function ScheduleListModal({ isOpen, onRequestClose }) {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
     const [schedules, setSchedules] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

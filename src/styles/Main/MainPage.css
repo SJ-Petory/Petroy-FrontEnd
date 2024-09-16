@@ -12,10 +12,11 @@
     justify-content: flex-start;
     align-items: center;
     width: 30%; 
-    height: 85%;
+    height: 850px;
     background-color: #e7e4e4; 
     border-radius: 10px; 
     padding-bottom: 20px;
+    margin-right: 2%;
 }
 
 .button-container {
@@ -55,22 +56,19 @@
     background-color: #8a8a8a; 
 }
 
-.pet-info-list {
-    display: flex;
-    flex-direction: column;
-    margin-top: 20px;
-    background-color: #ffffff;
-    width: 80%;
-    border-radius: 8px; 
-}
-
-.my-pets, .care-giver-pets {
+/* 내 반려동물 섹션 */
+.my-pets-section {
     margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    width: 90%;
 }
 
-.my-pets h3, .care-giver-pets h3 {
+.my-pets-section h3 {
     font-size: 1.2em;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .pet-info-item {
@@ -78,6 +76,22 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
+    width: 90%;
+}
+
+/* 돌보미 반려동물 섹션 */
+.care-giver-pets-section {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    width: 90%;
+}
+
+.care-giver-pets-section h3 {
+    font-size: 1.2em;
+    margin-bottom: 20px;
 }
 
 .care-giver-pet-item {
@@ -85,6 +99,7 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
+    width: 90%;
 }
 
 .pet-info-content {
@@ -107,7 +122,57 @@
     background-color: #e0e0e0; 
 }
 
-.pet-checkbox:focus {
-    outline: 2px solid #007bff; 
-    outline-offset: 2px;
+
+/* 일정 리스트 */
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 20%; 
+    height: 850px;
+    background-color: #e7e4e4; 
+    border-radius: 10px; 
+    padding-bottom: 20px;
+    margin-right: 2%;
+    overflow-y: auto;
+}
+
+.schedule-list::-webkit-scrollbar {
+    width: 0px; /* 스크롤바의 너비를 0으로 설정하여 숨깁니다 */
+    background: transparent; /* 배경색을 투명으로 설정하여 보이지 않게 함 */
+  }
+
+.schedule-list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 90%;
+}
+
+.schedule-item {
+    background-color: #fff;
+    border: 1px solid #ffffff;
+    border-radius: 3px;
+    padding-bottom: 20px;
+}
+
+.schedule-item p {
+    margin: 5px;
+}
+
+.schedule-checkbox {
+    width: 20px; 
+    height: 20px; 
+    margin-top: 20px; 
+    cursor: pointer; 
+    accent-color: #007bff; 
+}
+
+.schedule-checkbox:hover {
+    background-color: #e0e0e0; 
+}
+
+.error {
+    color: red;
 }
