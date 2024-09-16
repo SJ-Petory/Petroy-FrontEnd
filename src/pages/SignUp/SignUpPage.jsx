@@ -6,6 +6,7 @@ import '../../styles/SignUp/SignUpPage.css';
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function SignUpPage() {
+    
     const navigate = useNavigate(); // 사용자 페이지 이동 관리
     const [formData, setFormData] = useState({ // 입력 상태 저장
         name: '',
@@ -38,6 +39,9 @@ function SignUpPage() {
     // 양식 필드 변경 처리 (필드 속성 : name, value : 제출 값)
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        console.log('API_BASE_URL??:', API_BASE_URL);
+
 
         setFormData((prevData) => ({
             ...prevData, // 이전 입력 계속 저장 (formData)

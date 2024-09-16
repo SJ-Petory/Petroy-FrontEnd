@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1000px;
+  height: 65vh;
+  margin-top: 105px;
 }
 
 .calendar-container {
@@ -11,6 +12,7 @@
   width: 100%;
   margin: 0 auto; 
   margin-bottom: 10px; 
+  height: 100%;
 }
 
 .react-calendar {
@@ -18,15 +20,82 @@
   border-radius: 10px;
   font-size: 16px; 
   width: 100%; 
+  height: 100%;
+  display: grid; 
+  grid-template-rows: repeat(6, 1fr);
 }
 
 .react-calendar__month-view {
   width: 100%; 
+  height: 100%;
 }
 
 .react-calendar__tile {
   position: relative; 
   padding: 50px;
+  box-sizing: border-box;
+}
+
+.react-calendar--five-rows {
+  grid-template-rows: repeat(5, 1fr);
+}
+
+.tile-content {
+  position: relative;
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  height: 100%; /* 높이 설정 (필요에 따라 조정) */
+}
+
+.tile-schedules {
+  position: absolute;
+    font-size: 0.8em;
+    color: #333;
+    width: 80px;
+    max-height: 60px; /* 높이를 조정할 수 있습니다 */
+    overflow-y: auto; /* 세로 스크롤을 활성화 */
+    border: 1px solid #ddd; /* 경계선을 추가하여 구분 */
+    border-radius: 4px; /* 모서리를 둥글게 */
+    background-color: #f9f9f9; /* 배경색 */
+    padding: 2px 4px; /* 안쪽 여백 */
+    text-align: center; /* 텍스트 가로 중앙 정렬 */
+}
+
+.tile-schedules::-webkit-scrollbar {
+  width: 0px; /* 스크롤바의 너비를 0으로 설정하여 숨깁니다 */
+  background: transparent; /* 배경색을 투명으로 설정하여 보이지 않게 함 */
+}
+
+
+.tile-schedule-item {
+  display: block;
+  margin-bottom: 2px; /* 항목 사이의 간격 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+}
+
+.schedule-list2 {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 80%;
+  justify-content: flex-start; /* 세로 중앙 정렬 */
+  text-align: center; /* 텍스트 가로 중앙 정렬 */
+  overflow-y: auto; /* 세로 스크롤을 활성화 */
+  height: 160px;
+  margin: 0 auto; /* 수평 중앙 정렬 */
+  background-color: #e7e4e4;
+  border: 1px solid #e7e4e4;
+  border-radius: 5px;
+}
+
+.schedule-list2::-webkit-scrollbar {
+  width: 0px; /* 스크롤바의 너비를 0으로 설정하여 숨깁니다 */
+  background: transparent; /* 배경색을 투명으로 설정하여 보이지 않게 함 */
 }
 
 .react-calendar__tile > abbr {
@@ -38,7 +107,7 @@
 }
 
 .highlight-today {
-  background: #31853d;
+  background: #c6dbc9;
   border-radius: 10px;
 }
 
@@ -46,15 +115,19 @@
   margin-top: 20px;
   padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 98%;
-  height: 200px;
-  max-width: 1000px; 
-  background: #f9f9f9;
+  border-radius: 10px;
+  width: 100%;
+  height: 220px; 
+  background: #e7e4e4;
   text-align: center;
   justify-content: center; 
 }
 
-.schedule-container h3 {
+.schedule-item2 {
+  padding: 10px;
+  margin: 5px auto; /* 좌우 중앙 정렬 */
+  background-color: #FFFFFF; /* 배경색 */
   margin-bottom: 10px;
+  border-radius: 10px;
+  width: 70%;
 }
