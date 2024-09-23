@@ -139,21 +139,21 @@ const ScheduleModal = ({ onClose, pets }) => {
       repeatType: formData.repeatType,
       ...(formData.repeatType === 'BASIC' && { repeatCycle: formData.repeatCycle }),
       ...(formData.repeatType === 'CUSTOM' && {
-        customRepeat: {
-          frequency: formData.customRepeat.frequency,
-          interval: formData.customRepeat.interval,
-          ...(formData.customRepeat.frequency === 'WEEK' && { daysOfWeek: formData.customRepeat.daysOfWeek }),
-          ...(formData.customRepeat.frequency === 'MONTH' && { daysOfMonth: formData.customRepeat.daysOfMonth }),
-          ...(formData.customRepeat.endDate && { endDate: formData.customRepeat.endDate })
-        }
+          customRepeat: {
+              frequency: formData.customRepeat.frequency,
+              interval: formData.customRepeat.interval,
+              ...(formData.customRepeat.frequency === 'WEEK' && { daysOfWeek: formData.customRepeat.daysOfWeek }),
+              ...(formData.customRepeat.frequency === 'MONTH' && { daysOfMonth: formData.customRepeat.daysOfMonth }),
+              endDate: formData.customRepeat.endDate, 
+          }
       }),
       noticeYn: formData.noticeYn,
       noticeAt: formData.noticeAt,
       priority: formData.priority,
       petId: formData.petId,
-    };
-  
-    console.log(requestData);
+  };
+
+  console.log(requestData);
 
     try {
       const response = await axios.post(`${API_BASE_URL}/schedules`, requestData, {

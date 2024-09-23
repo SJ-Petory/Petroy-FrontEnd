@@ -3,6 +3,7 @@ import CalendarComponent from '../../components/commons/CalendarComponent.jsx';
 import NavBar from '../../components/commons/NavBar.jsx';
 import CategoryModal from '../../components/Schedule/CategoryModal.jsx';
 import ScheduleModal from '../../components/Schedule/ScheduleModal.jsx';
+import ScheduleDetailModal from '../../components/Schedule/ScheduleDetailModal.jsx'; 
 import { fetchMemberPets } from '../../services/TokenService.jsx';
 import axios from 'axios';
 import '../../styles/Main/MainPage.css';
@@ -12,6 +13,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL;
 function MainPage() {
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
     const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+    const [isScheduleDetailModalOpen, setIsScheduleDetailModalOpen] = useState(false); 
     const [pets, setPets] = useState([]);
     const [careGiverPets, setCareGiverPets] = useState([]);
     const [schedules, setSchedules] = useState([]);
@@ -20,6 +22,7 @@ function MainPage() {
     const [selectedPets, setSelectedPets] = useState(new Set());
     const [selectedSchedules, setSelectedSchedules] = useState(new Set());
     const [selectedDates, setSelectedDates] = useState(new Set());
+    const [selectedScheduleId, setSelectedScheduleId] = useState(null); 
 
     useEffect(() => {
         const loadPets = async () => {
@@ -114,6 +117,16 @@ function MainPage() {
     const closeCategoryModal = () => setIsCategoryModalOpen(false);
     const openScheduleModal = () => setIsScheduleModalOpen(true);
     const closeScheduleModal = () => setIsScheduleModalOpen(false);
+
+    const openScheduleDetailModal = (scheduleId) => {
+        setSelectedScheduleId(scheduleId);
+        setIsScheduleDetailModalOpen(true); 
+    };
+
+    const closeScheduleDetailModal = () => {
+        setIsScheduleDetailModalOpen(false);
+        setSelectedScheduleId(null); // Reset selected schedule
+    };
 
     const handleCheckboxChange = (petId) => {
         setSelectedPets(prevSelectedPets => {
@@ -212,7 +225,11 @@ function MainPage() {
                 ) : schedules.length > 0 ? (
                     <div className="schedule-list-content">
                         {schedules.map((schedule) => (
-                            <div key={schedule.scheduleId} className="schedule-item">
+                            <div 
+                                key={schedule.scheduleId} 
+                                className="schedule-item"
+                                onClick={() => openScheduleDetailModal(schedule.scheduleId)} 
+                            >
                                 <input
                                     type="checkbox"
                                     checked={selectedSchedules.has(schedule.scheduleId)}
@@ -222,7 +239,6 @@ function MainPage() {
                                 <h4>{schedule.title}</h4>
                                 <p>날짜: {new Date(schedule.scheduleAt).toLocaleString()}</p>
                                 <p>우선순위: {schedule.priority}</p>
-                                <p>상태: {schedule.status}</p>
                                 <p>반려동물: {schedule.petName.join(', ')}</p>
                             </div>
                         ))}
@@ -238,6 +254,11 @@ function MainPage() {
 
             <CategoryModal isOpen={isCategoryModalOpen} onRequestClose={closeCategoryModal} />
             {isScheduleModalOpen && (<ScheduleModal onClose={closeScheduleModal} pets={[...pets, ...careGiverPets]} />)}
+            <ScheduleDetailModal 
+                isOpen={isScheduleDetailModalOpen} 
+                onRequestClose={closeScheduleDetailModal} 
+                scheduleId={selectedScheduleId} 
+            /> 
         </div>
     );
 }
