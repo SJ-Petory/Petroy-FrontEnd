@@ -226,21 +226,26 @@ function MainPage() {
                     <div className="schedule-list-content">
                         {schedules.map((schedule) => (
                             <div 
-                                key={schedule.scheduleId} 
-                                className="schedule-item"
-                                onClick={() => openScheduleDetailModal(schedule.scheduleId)} 
-                            >
-                                <input
-                                    type="checkbox"
-                                    checked={selectedSchedules.has(schedule.scheduleId)}
-                                    onChange={() => handleScheduleCheckboxChange(schedule.scheduleId)}
-                                    className="schedule-checkbox"
-                                />
-                                <h4>{schedule.title}</h4>
-                                <p>날짜: {new Date(schedule.scheduleAt).toLocaleString()}</p>
-                                <p>우선순위: {schedule.priority}</p>
-                                <p>반려동물: {schedule.petName.join(', ')}</p>
-                            </div>
+                            key={schedule.scheduleId} 
+                            className="schedule-item"
+                            onClick={(e) => {
+                                if (e.target.tagName !== 'INPUT') {
+                                    openScheduleDetailModal(schedule.scheduleId);
+                                }
+                            }} 
+                        >
+                            <input
+                                type="checkbox"
+                                checked={selectedSchedules.has(schedule.scheduleId)}
+                                onChange={() => handleScheduleCheckboxChange(schedule.scheduleId)}
+                                className="schedule-checkbox"
+                                onClick={(e) => e.stopPropagation()} 
+                            />
+                            <h4>{schedule.title}</h4>
+                            <p>날짜: {new Date(schedule.scheduleAt).toLocaleString()}</p>
+                            <p>우선순위: {schedule.priority}</p>
+                            <p>반려동물: {schedule.petName.join(', ')}</p>
+                        </div>
                         ))}
                     </div>
                 ) : (
