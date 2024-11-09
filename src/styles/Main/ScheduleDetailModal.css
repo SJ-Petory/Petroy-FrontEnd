@@ -1,0 +1,42 @@
+.schedule-detail-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 500px;
+    max-width: 80%;
+}
+
+.schedule-detail-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.schedule-detail-modal .modal-body {
+    margin-top: 10px;
+}
+
+.schedule-detail-modal .close-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.schedule-detail-modal-close-button {
+    margin-top: 10px;
+}
+
+.schedule-detail-modal h3 {
+    margin-bottom: 10px;
+}
+
+.schedule-detail-modal p {
+    margin: 5px 0;
+}
