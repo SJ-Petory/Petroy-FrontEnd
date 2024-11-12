@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/Main/ScheduleModal.css';
-import SchedulePreview from '../../components/Schedule/SchedulePreview.jsx';
 import defaultPetPic from '../../assets/DefaultImage.png';
 import Calendar from 'react-calendar';  
 import axios from 'axios';
@@ -12,8 +11,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     categoryId: '',
     title: '',
     content: '',
-    scheduleAt: '',
-    isRepeating: false,
+    isRepeating: true,
     noticeYn: false,
     noticeAt: 1,
     priority: 'LOW',
@@ -22,6 +20,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     customRepeat: {
       frequency: 'DAY',
       interval: 1,
+      scheduleAt: '',
       endDate: '',
       daysOfWeek: [],
       daysOfMonth: [],
@@ -53,14 +52,47 @@ const ScheduleModal = ({ onClose, pets }) => {
     const localDateTime = koreanTime.toISOString().slice(0, 16);
     setFormData((prevData) => ({
       ...prevData,
-      scheduleAt: localDateTime,
+      customRepeat: {
+        ...prevData.customRepeat,
+        scheduleAt: localDateTime,  
+      },
     }));
   }, []);
 
+  useEffect(() => {
+    console.log("현재 formData:", formData);
+  }, [formData]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    if (name === 'categoryId') {
+  
+    // 반복 유무 변경 시 상태 초기화
+    if (name === 'isRepeating') {
+      setFormData((prevData) => ({
+        ...prevData,
+        isRepeating: checked,
+        customRepeat: checked ? {
+          frequency: 'DAY',
+          interval: 1,
+          scheduleAt: prevData.customRepeat.scheduleAt,
+          endDate: '',
+          daysOfWeek: [],
+          daysOfMonth: [],
+        } : prevData.customRepeat,
+        selectedDates: !checked ? [] : prevData.selectedDates,
+      }));
+    } else if (name === 'customRepeat.frequency') {
+      setFormData((prevData) => ({
+        ...prevData,
+        customRepeat: {
+          ...prevData.customRepeat,
+          frequency: value,
+          // frequency 변경 시 daysOfWeek와 daysOfMonth 초기화
+          daysOfWeek: value === 'WEEK' ? prevData.customRepeat.daysOfWeek : [],
+          daysOfMonth: value === 'MONTH' ? prevData.customRepeat.daysOfMonth : [],
+        },
+      }));
+    } else if (name === 'categoryId') {
       setFormData((prevData) => ({
         ...prevData,
         [name]: Number(value),
@@ -80,7 +112,7 @@ const ScheduleModal = ({ onClose, pets }) => {
         [name]: type === 'checkbox' ? checked : value,
       }));
     }
-  };
+  };  
 
   const handleDayClick = (day) => {
     const updatedDays = formData.customRepeat.daysOfWeek.includes(day)
@@ -204,24 +236,31 @@ const ScheduleModal = ({ onClose, pets }) => {
       categoryId: formData.categoryId,
       title: formData.title,
       content: formData.content,
-      scheduleAt: formData.scheduleAt,
       isRepeating: formData.isRepeating,
-      ...(formData.isRepeating && {
-        customRepeat: {
-          frequency: formData.customRepeat.frequency,
-          interval: formData.customRepeat.interval,
-          endDate: formData.customRepeat.endDate,
-        },
-      }),
-      selectedDates: generatedDates, // 생성된 날짜를 포함
       noticeYn: formData.noticeYn,
-      noticeAt: formData.noticeAt,
       priority: formData.priority,
       petId: formData.petId,
     };
-
+  
+    // 반복 유무에 따라 customRepeat 또는 selectedDates 추가
+    if (formData.isRepeating) {
+      requestData.customRepeat = {
+        frequency: formData.customRepeat.frequency,
+        interval: formData.customRepeat.interval,
+        endDate: formData.customRepeat.endDate,
+        scheduleAt: formData.customRepeat.scheduleAt,
+      };
+    } else {
+      requestData.selectedDates = generatedDates; // 생성된 날짜를 포함
+    }
+  
+    // 알림 시간은 필수로 포함하지 않음
+    if (formData.noticeYn) {
+      requestData.noticeAt = formData.noticeAt;
+    }
+  
     console.log("최종 요청 데이터:", requestData);
-
+  
     try {
       const response = await axios.post(`${API_BASE_URL}/schedules`, requestData, {
         headers: {
@@ -229,7 +268,7 @@ const ScheduleModal = ({ onClose, pets }) => {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (response.status === 200) {
         alert('일정이 생성되었습니다.');
         onClose();
@@ -239,6 +278,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       alert(data.errorMessage || '일정 생성 중 오류가 발생했습니다.');
     }
   };
+  
 
   return (
     <div className="schedule-modal-container">
@@ -295,15 +335,6 @@ const ScheduleModal = ({ onClose, pets }) => {
                 </div>
               ))}
             </div>
-          </label>
-          <label>일정 시작
-            <input
-              type="datetime-local"
-              name="scheduleAt"
-              value={formData.scheduleAt}
-              onChange={handleChange}
-              required
-            />
           </label>
           <label>반복 유무
             <input
@@ -366,8 +397,16 @@ const ScheduleModal = ({ onClose, pets }) => {
                   ))}
                 </div>
               )}  
-
-              <label>반복 종료 날짜
+            <label>일정 반복 시작
+            <input
+              type="datetime-local"
+              name="scheduleAt"
+              value={formData.customRepeat.scheduleAt}
+              onChange={handleChange}
+              required
+            />
+          </label>
+              <label>일정 반복 종료 
                 <input
                   type="datetime-local"
                   name="customRepeat.endDate"
@@ -392,18 +431,18 @@ const ScheduleModal = ({ onClose, pets }) => {
               />
               <div>
               <label>선택된 날짜</label>
-                {formData.selectedDates.length > 0 && (
-                 <div className="selected-dates">
-                 {formData.selectedDates.map((date, index) => (
-                   <div key={index} className="date-time-selection">
-                     <span>{date}</span>
+              {formData.selectedDates.length > 0 && (
+                <div className="selected-dates">
+                  {formData.selectedDates.map((dateObj, index) => (
+                    <div key={index} className="date-time-selection">
+                     <span>{dateObj.date}</span> 
                      <input
-                       type="time"
-                       onChange={(e) => handleTimeChange(date, e.target.value)}
-                     />
-                   </div>
+                      type="time"
+                      onChange={(e) => handleTimeChange(dateObj.date, e.target.value)}
+                    />
+                  </div>
                  ))}
-               </div>
+                </div>
                 )}
               </div>
             </>
@@ -420,13 +459,34 @@ const ScheduleModal = ({ onClose, pets }) => {
               <option value="HIGH">높음</option>
             </select>
           </label>
+          
+          <label>알림 설정
+            <input
+              type="checkbox"
+              name="noticeYn"
+              checked={formData.noticeYn}
+              onChange={handleChange}
+            />
+          </label>
+          {formData.noticeYn && (
+            <label>알림 시간 (분 전)
+              <input
+                type="number"
+                name="noticeAt"
+                value={formData.noticeAt}
+                onChange={handleChange}
+                min="1"
+                required
+              />
+            </label>
+          )}
+
           <div className="button-container">
             <button type="submit">저장</button>
             <button type="button" onClick={onClose}>취소</button>
           </div>
         </form>
       </div>
-      <SchedulePreview/>
     </div>
   );
 };
