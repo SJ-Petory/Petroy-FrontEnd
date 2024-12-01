@@ -111,6 +111,13 @@ const ScheduleModal = ({ onClose, pets }) => {
     }
   };
 
+  const convertToKST = (date) => {
+    const utcDate = new Date(date);
+    const koreanTime = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // UTC +9시간
+    return koreanTime.toISOString(); // ISO 형식으로 변환
+  };
+  
+
   const handleDayClick = (day) => {
     const dayMapping = {
       '일': 'SUNDAY',
@@ -193,24 +200,24 @@ const ScheduleModal = ({ onClose, pets }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('accessToken');
-
+  
     const startDateTime = new Date(formData.repeatPattern.startDate);
     const endDateTime = new Date(formData.repeatPattern.endDate);
     const generatedDates = [];
-
+  
     // 반복 유무에 따라 날짜 생성
     if (formData.repeatYn) {
       if (formData.repeatPattern.frequency === 'DAY') {
         // 일일 반복
-        for (let date = startDateTime; date <= endDateTime; date.setDate(date.getDate() + formData.repeatPattern.interval)) {
-          generatedDates.push(date.toISOString()); // ISO 형식으로 변경
+        for (let date = new Date(startDateTime); date <= endDateTime; date.setDate(date.getDate() + formData.repeatPattern.interval)) {
+          generatedDates.push(convertToKST(date));
         }
       } else if (formData.repeatPattern.frequency === 'WEEK') {
         const selectedDays = formData.repeatPattern.daysOfWeek;
-
-        for (let date = startDateTime; date <= endDateTime; date.setDate(date.getDate() + 1)) {
+  
+        for (let date = new Date(startDateTime); date <= endDateTime; date.setDate(date.getDate() + 1)) {
           if (selectedDays.includes(new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(date))) {
-            generatedDates.push(date.toISOString());
+            generatedDates.push(convertToKST(date)); 
             date.setDate(date.getDate() + (formData.repeatPattern.interval - 1) * 7);
           }
         }
@@ -220,7 +227,7 @@ const ScheduleModal = ({ onClose, pets }) => {
           dayOfMonth.forEach(day => {
             const monthlyDate = new Date(date.getFullYear(), date.getMonth(), day);
             if (monthlyDate >= startDateTime && monthlyDate <= endDateTime) {
-              generatedDates.push(monthlyDate.toISOString());
+              generatedDates.push(convertToKST(monthlyDate)); 
             }
           });
         }
@@ -235,16 +242,14 @@ const ScheduleModal = ({ onClose, pets }) => {
           date.setHours(hours); // 시간 설정
           date.setMinutes(minutes); // 분 설정
   
-          // 유효한 날짜인지 확인 후 ISO 형식으로 변환
+          // 유효한 날짜인지 확인 후 KST 형식으로 변환
           if (!isNaN(date.getTime())) {
-            generatedDates.push(date.toISOString());
+            generatedDates.push(convertToKST(date)); // KST 변환
           }
         });
       }
     }
   
-
-    // 요청 데이터 준비
     const requestData = {
       categoryId: formData.categoryId,
       title: formData.title,
@@ -254,27 +259,25 @@ const ScheduleModal = ({ onClose, pets }) => {
       priority: formData.priority,
       petId: formData.petId,
     };
-
-    // 반복 유무에 따라 repeatPattern 또는 selectedDates 추가
+  
     if (formData.repeatYn) {
       requestData.repeatPattern = {
         frequency: formData.repeatPattern.frequency,
         interval: formData.repeatPattern.interval,
-        startDate: formData.repeatPattern.startDate,
-        endDate: formData.repeatPattern.endDate,
+        startDate: convertToKST(formData.repeatPattern.startDate), 
+        endDate: convertToKST(formData.repeatPattern.endDate), 
         daysOfWeek: formData.repeatPattern.daysOfWeek,
       };
     } else {
       requestData.selectedDates = generatedDates;
     }
-
-    // 알림 시간은 필수로 포함하지 않음
+  
     if (formData.noticeYn) {
       requestData.noticeAt = formData.noticeAt;
     }
-
+  
     console.log("최종 요청 데이터:", requestData);
-
+  
     try {
       const response = await axios.post(`${API_BASE_URL}/schedules`, requestData, {
         headers: {
@@ -282,7 +285,7 @@ const ScheduleModal = ({ onClose, pets }) => {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (response.status === 200) {
         alert('일정이 생성되었습니다.');
         onClose();
