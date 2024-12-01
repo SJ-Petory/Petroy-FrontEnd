@@ -265,7 +265,9 @@ const ScheduleModal = ({ onClose, pets }) => {
         interval: formData.repeatPattern.interval,
         startDate: convertToKST(formData.repeatPattern.startDate), 
         endDate: convertToKST(formData.repeatPattern.endDate), 
-        daysOfWeek: formData.repeatPattern.daysOfWeek,
+        ...(formData.repeatPattern.frequency === 'WEEK' && { daysOfWeek: formData.repeatPattern.daysOfWeek }),
+        ...(formData.repeatPattern.frequency === 'MONTH' && { daysOfMonth: formData.repeatPattern.daysOfMonth }),
+        // 'DAY'인 경우, daysOfWeek와 daysOfMonth는 포함되지 않음
       };
     } else {
       requestData.selectedDates = generatedDates;
