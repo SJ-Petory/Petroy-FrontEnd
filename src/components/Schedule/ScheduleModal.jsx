@@ -114,9 +114,8 @@ const ScheduleModal = ({ onClose, pets }) => {
   const convertToKST = (date) => {
     const utcDate = new Date(date);
     const koreanTime = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // UTC +9시간
-    return koreanTime.toISOString(); // ISO 형식으로 변환
-  };
-  
+    return koreanTime.toISOString().replace('Z', ''); // ISO 형식으로 변환 후 Z 제거
+  };  
 
   const handleDayClick = (day) => {
     const dayMapping = {
@@ -294,7 +293,7 @@ const ScheduleModal = ({ onClose, pets }) => {
       const { data } = error.response;
       alert(data.errorMessage || '일정 생성 중 오류가 발생했습니다.');
     }
-  };
+  };  
   
   return (
     <div className="schedule-modal-container">
