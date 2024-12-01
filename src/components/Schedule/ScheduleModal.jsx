@@ -72,17 +72,22 @@ const ScheduleModal = ({ onClose, pets }) => {
         ...prevData,
         repeatYn: checked,
         repeatPattern: checked ? {
-          frequency: 'DAY',
-          interval: 1,
-          startDate: prevData.repeatPattern.startDate || new Date().toISOString().slice(0, 16), 
-          endDate: '',
+          frequency: 'DAY', 
+          interval: 1, 
+          startDate: new Date().toISOString().slice(0, 16),
+          endDate: '', 
           daysOfWeek: [],
           daysOfMonth: [],
         } : {
-          ...prevData.repeatPattern, 
-          endDate: '', 
+          ...prevData.repeatPattern,
+          frequency: '',
+          interval: 1, 
+          startDate: '', 
+          endDate: '',
+          daysOfWeek: [], 
+          daysOfMonth: [], 
         },
-        selectedDates: !checked ? [] : prevData.selectedDates,
+        selectedDates: !checked ? [] : prevData.selectedDates, 
       }));
     } else if (name.startsWith('repeatPattern.')) { 
       const [, subKey] = name.split('.');
@@ -104,12 +109,22 @@ const ScheduleModal = ({ onClose, pets }) => {
         [name]: type === 'checkbox' ? checked : value,
       }));
     }
-  };  
+  };
 
   const handleDayClick = (day) => {
-    const updatedDays = formData.repeatPattern.daysOfWeek.includes(day)
-      ? formData.repeatPattern.daysOfWeek.filter((d) => d !== day)
-      : [...formData.repeatPattern.daysOfWeek, day];
+    const dayMapping = {
+      '일': 'SUNDAY',
+      '월': 'MONDAY',
+      '화': 'TUESDAY',
+      '수': 'WEDNESDAY',
+      '목': 'THURSDAY',
+      '금': 'FRIDAY',
+      '토': 'SATURDAY',
+    };
+  
+    const updatedDays = formData.repeatPattern.daysOfWeek.includes(dayMapping[day])
+      ? formData.repeatPattern.daysOfWeek.filter((d) => d !== dayMapping[day])
+      : [...formData.repeatPattern.daysOfWeek, dayMapping[day]]; 
   
     setFormData((prevData) => ({
       ...prevData,
@@ -213,12 +228,21 @@ const ScheduleModal = ({ onClose, pets }) => {
     } else {
       // 반복이 없을 때 선택한 날짜 추가
       if (formData.selectedDates && formData.selectedDates.length > 0) {
-        formData.selectedDates.forEach(date => {
-          const dateObj = new Date(date);
-          generatedDates.push(dateObj.toISOString());
+        formData.selectedDates.forEach(dateObj => {
+          const date = new Date(dateObj.date); // 날짜 객체 생성
+          const time = dateObj.time; // 시간 가져오기
+          const [hours, minutes] = time.split(':'); // 시간 분리
+          date.setHours(hours); // 시간 설정
+          date.setMinutes(minutes); // 분 설정
+  
+          // 유효한 날짜인지 확인 후 ISO 형식으로 변환
+          if (!isNaN(date.getTime())) {
+            generatedDates.push(date.toISOString());
+          }
         });
       }
     }
+  
 
     // 요청 데이터 준비
     const requestData = {
