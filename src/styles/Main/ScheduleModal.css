@@ -207,6 +207,11 @@
   width: 70%;
 }
 
+.selected-day {
+  background-color: #6c9f6e !important; /* 원하는 배경색 */
+  color: #fff; /* 글자색 */
+}
+
 .selected-date {
   background-color: #6c9f6e !important; /* 원하는 배경색 */
   color: #fff; /* 글자색 */

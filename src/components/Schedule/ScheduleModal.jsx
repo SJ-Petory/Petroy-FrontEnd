@@ -17,6 +17,7 @@ const ScheduleModal = ({ onClose, pets }) => {
     priority: 'LOW',
     petId: [],
     selectedDates: [], 
+    isAllDay: false,
     repeatPattern: { 
       frequency: 'DAY',
       interval: 1,
@@ -129,16 +130,16 @@ const ScheduleModal = ({ onClose, pets }) => {
     };
   
     const updatedDays = formData.repeatPattern.daysOfWeek.includes(dayMapping[day])
-      ? formData.repeatPattern.daysOfWeek.filter((d) => d !== dayMapping[day])
-      : [...formData.repeatPattern.daysOfWeek, dayMapping[day]]; 
+    ? formData.repeatPattern.daysOfWeek.filter((d) => d !== dayMapping[day])
+    : [...formData.repeatPattern.daysOfWeek, dayMapping[day]]; 
   
-    setFormData((prevData) => ({
-      ...prevData,
-      repeatPattern: {
-        ...prevData.repeatPattern,
-        daysOfWeek: updatedDays,
-      },
-    }));
+  setFormData((prevData) => ({
+    ...prevData,
+    repeatPattern: {
+      ...prevData.repeatPattern,
+      daysOfWeek: updatedDays,
+    },
+  }));
   };
   
   const handleDayOfMonthClick = (day) => {
@@ -165,7 +166,7 @@ const ScheduleModal = ({ onClose, pets }) => {
   };
 
   const handleDateChange = (date) => {
-    const formattedDate = new Date(date).toLocaleDateString('en-CA'); 
+    const formattedDate = new Date(date).toISOString().slice(0, 10); // yyyy-mm-dd 형식
     setFormData((prevData) => {
       const existingDate = prevData.selectedDates.find(d => d.date === formattedDate);
       if (existingDate) {
@@ -182,19 +183,19 @@ const ScheduleModal = ({ onClose, pets }) => {
     });
   };
 
-  const handleTimeChange = (date, time) => {
-    const formattedDate = new Date(date).toLocaleDateString('en-CA');
-    const updatedDates = formData.selectedDates.map((d) => {
-      if (d.date === formattedDate) {
-        return { date: formattedDate, time: time };
-      }
-      return d;
-    });
-    setFormData((prevData) => ({
-      ...prevData,
-      selectedDates: updatedDates,
-    }));
-  };
+//   const handleTimeChange = (date, time) => {
+//     const formattedDate = new Date(date).toISOString().slice(0, 10);
+//     const updatedDates = formData.selectedDates.map((d) => {
+//       if (d.date === formattedDate) {
+//         return { date: formattedDate, time: time };
+//       }
+//       return d;
+//     });
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       selectedDates: updatedDates,
+//     }));
+// };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -257,20 +258,28 @@ const ScheduleModal = ({ onClose, pets }) => {
       noticeYn: formData.noticeYn,
       priority: formData.priority,
       petId: formData.petId,
+      isAllDay: formData.isAllDay,
     };
+
+    // scheduleAt 설정
+    if (formData.isAllDay) {
+      requestData.scheduleAt = null; // 하루종일인 경우 null 전송
+    } else {
+      // '하루종일'이 아닐 때 사용자가 설정한 시간 포함
+      requestData.scheduleAt = formData.scheduleAt || "00:00:00"; // 시간 설정, 없으면 기본값
+    }
   
     if (formData.repeatYn) {
       requestData.repeatPattern = {
         frequency: formData.repeatPattern.frequency,
         interval: formData.repeatPattern.interval,
-        startDate: convertToKST(formData.repeatPattern.startDate), 
-        endDate: convertToKST(formData.repeatPattern.endDate), 
+        startDate: formData.repeatPattern.startDate,
+        endDate: formData.repeatPattern.endDate,
         ...(formData.repeatPattern.frequency === 'WEEK' && { daysOfWeek: formData.repeatPattern.daysOfWeek }),
         ...(formData.repeatPattern.frequency === 'MONTH' && { daysOfMonth: formData.repeatPattern.daysOfMonth }),
-        // 'DAY'인 경우, daysOfWeek와 daysOfMonth는 포함되지 않음
       };
     } else {
-      requestData.selectedDates = generatedDates;
+      requestData.selectedDates = formData.selectedDates.map(d => d.date); // yyyy-mm-dd 형식으로 전송
     }
   
     if (formData.noticeYn) {
@@ -386,19 +395,19 @@ const ScheduleModal = ({ onClose, pets }) => {
               </label>
 
               {formData.repeatPattern.frequency === 'WEEK' && (
-                <div className="days-of-week">
-                  {['일', '월', '화', '수', '목', '금', '토'].map(day => (
-                    <button
-                      key={day}
-                      type="button"
-                      className={`day-button ${formData.repeatPattern.daysOfWeek.includes(day) ? 'selected' : ''}`}
-                      onClick={() => handleDayClick(day)}
-                    >
-                      {day}
-                    </button>
-                  ))}
-                </div>
-              )}
+            <div className="days-of-week">
+              {['일', '월', '화', '수', '목', '금', '토'].map(day => (
+                <button
+                  key={day}
+                  type="button"
+                  className={`day-button ${formData.repeatPattern.daysOfWeek.includes(day) ? 'selected' : ''}`}
+                  onClick={() => handleDayClick(day)}
+                >
+                  {day}
+                </button>
+              ))}
+            </div>
+          )}
 
               {formData.repeatPattern.frequency === 'MONTH' && (
                 <div className="days-of-month">
@@ -430,7 +439,7 @@ const ScheduleModal = ({ onClose, pets }) => {
                   value={formData.repeatPattern.endDate}
                   onChange={handleChange}
                 />
-              </label>
+          </label>
             </>
           ) : (
             <>
@@ -446,25 +455,39 @@ const ScheduleModal = ({ onClose, pets }) => {
               }
               selectRange={false}
               />
-              <div>
+               <div>
               <label>선택된 날짜</label>
               {formData.selectedDates.length > 0 && (
                 <div className="selected-dates">
                   {formData.selectedDates.map((dateObj, index) => (
                     <div key={index} className="date-time-selection">
-                     <span>{dateObj.date}</span> 
-                     <input
-                      type="time"
-                      onChange={(e) => handleTimeChange(dateObj.date, e.target.value)}
-                    />
-                  </div>
-                 ))}
+                      <span>{dateObj.date}</span> 
+                    </div>
+                  ))}
                 </div>
-                )}
-              </div>
+              )}
+            </div>
             </>
           )}
-
+          <label>하루종일 (시간 설정 X, 모든 일정 일괄적용)
+          <input
+            type="checkbox"
+            name="isAllDay"
+            checked={formData.isAllDay}
+            onChange={handleChange}
+          />
+          </label>
+          {!formData.isAllDay && (
+          <div>
+            <label>시간 설정
+              <input
+                type="time"
+                value={formData.scheduleAt || '00:00'}
+                onChange={(e) => setFormData({ ...formData, scheduleAt: e.target.value })}
+              />
+            </label>
+          </div>
+        )}
           <label>우선순위
             <select
               name="priority"
