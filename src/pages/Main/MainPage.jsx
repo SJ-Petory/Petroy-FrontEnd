@@ -36,11 +36,14 @@ function MainPage() {
                         setError('반려동물 정보를 불러오는 데 실패했습니다.');
                     }
                 } catch (error) {
-                    setError('네트워크 오류가 발생했습니다. 나중에 다시 시도해 주세요.');
+                    console.error('반려동물 로딩 중 오류 발생:', error);
+                    setError('반려동물 정보를 불러오는 중 오류 발생');
+                } finally {
+                    setLoading(false);
                 }
             } else {
                 setError('로그인이 필요합니다.');
-                alert('로그인이 필요합니다');
+                setLoading(false);
             }
         };
 
@@ -60,6 +63,7 @@ function MainPage() {
                         setError(response.data.errorMessage || '돌보미 반려동물 목록을 불러오는 중 오류가 발생했습니다.');
                     }
                 } catch (err) {
+                    console.error('돌보미 반려동물 로딩 중 오류 발생:', err);
                     setError('API 호출 중 오류가 발생했습니다.');
                 }
             } else {
@@ -76,19 +80,24 @@ function MainPage() {
                             'Authorization': `${token}`,
                         },
                     });
+        
                     if (response.status === 200) {
-                        setSchedules(response.data.content || []);
+                        setSchedules(response.data.schedules || []);
                     } else {
                         setError(response.data.message || '일정을 불러오는 데 실패했습니다.');
                     }
                 } catch (err) {
-                    setError('네트워크 오류가 발생했습니다. 나중에 다시 시도해 주세요.');
+                    console.error('일정 로딩 중 오류 발생:', err.response ? err.response.data : err);
+                    setError(err.response ? err.response.data.message : '네트워크 오류가 발생했습니다. 나중에 다시 시도해 주세요.');
                 } finally {
                     setLoading(false);
                 }
+            } else {
+                setError('로그인이 필요합니다.');
+                setLoading(false);
             }
         };
-
+        
         loadPets();
         loadCareGiverPets();
         loadSchedules();
@@ -105,7 +114,6 @@ function MainPage() {
         setSelectedDates(dates);
     }, [selectedSchedules, schedules]);
 
-    // 모든 일정 선택하기
     useEffect(() => {
         if (!loading && !error) {
             const allScheduleIds = new Set(schedules.map(schedule => schedule.scheduleId));
@@ -125,7 +133,7 @@ function MainPage() {
 
     const closeScheduleDetailModal = () => {
         setIsScheduleDetailModalOpen(false);
-        setSelectedScheduleId(null); // Reset selected schedule
+        setSelectedScheduleId(null);
     };
 
     const handleCheckboxChange = (petId) => {
