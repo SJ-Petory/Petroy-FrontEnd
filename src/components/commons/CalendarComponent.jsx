@@ -37,23 +37,19 @@ const CalendarComponent = ({ selectedDates, schedules }) => {
         setSelectedDate(newDate);
     };
 
-    const tileClassName = ({ date, view }) => {
-        if (view === 'month') {
-            if (date.toDateString() === new Date().toDateString()) {
-                return 'custom-highlight-today';
-            }
-        }
-        return null;
-    };
-
     const tileContent = ({ date, view }) => {
         if (view === 'month') {
+            const isSelected = selectedDates.has(date.toDateString()); 
             const schedulesForDate = schedules.filter(schedule => {
                 const scheduleDate = new Date(schedule.scheduleAt).toDateString();
                 return scheduleDate === date.toDateString();
             });
+    
             return (
                 <div className="custom-tile-content">
+                    {isSelected && (
+                        <div className="indicator"></div> 
+                    )}
                     {schedulesForDate.length > 0 && (
                         <div className="custom-tile-schedules">
                             {schedulesForDate.map(schedule => (
@@ -67,7 +63,8 @@ const CalendarComponent = ({ selectedDates, schedules }) => {
             );
         }
     };
-
+    
+    
     return (
         <div className="custom-calendar-wrapper">
             <div className="custom-calendar-container">
@@ -75,16 +72,7 @@ const CalendarComponent = ({ selectedDates, schedules }) => {
                     onChange={handleDateChange}
                     value={date}
                     view="month"
-                    tileClassName={tileClassName}
                     tileContent={tileContent}
-                    navigationLabel={({ date }) => {
-                        return (
-                            <div>
-                                <span>{date.toLocaleString('default', { month: 'long' })}</span>
-                                <span> {date.getFullYear()}</span>
-                            </div>
-                        );
-                    }}
                 />
             </div>
             {selectedDate && <ScheduleComponent selectedDate={selectedDate} schedules={schedules} />}

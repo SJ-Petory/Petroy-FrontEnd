@@ -154,7 +154,13 @@
     background-color: #fff;
     border: 1px solid #ffffff;
     border-radius: 3px;
-    padding-bottom: 20px;
+    padding: 10px; /* 패딩 추가 */
+    position: relative; /* 펼치기 기능을 위한 위치 설정 */
+    transition: box-shadow 0.2s; /* 마우스 오버 시 부드러운 그림자 효과 */
+}
+
+.schedule-item:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* 마우스 오버 시 그림자 효과 */
 }
 
 .schedule-item p {
@@ -175,4 +181,55 @@
 
 .error {
     color: red;
+}
+
+.schedule-dates {
+    margin-top: 5px;
+    color: #555; /* 날짜 텍스트 색상 */
+}
+
+.toggle-arrow {
+    cursor: pointer; /* 클릭 가능한 요소 */
+    margin-left: 10px; /* 제목과 아이콘 사이의 간격 */
+}
+
+.schedule-title {
+    cursor: pointer; /* 클릭 가능한 요소 */
+}
+
+.category-section {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    width: 90%;
+}
+
+.category-section h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.category-item {
+    display: flex;
+    align-items: center; /* 수직 정렬 */
+    justify-content: space-between; /* 좌우 공간 배분 */
+    margin-bottom: 10px;
+    width: 90%;
+}
+
+.category-info-content {
+    flex-grow: 1; /* 남은 공간을 차지 */
+}
+
+.category-checkbox {
+    width: 20px; 
+    height: 20px; 
+    cursor: pointer; 
+    accent-color: #007bff; 
+}
+
+.category-checkbox:hover {
+    background-color: #e0e0e0; 
 }

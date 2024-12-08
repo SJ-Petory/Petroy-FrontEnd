@@ -9,6 +9,19 @@ function ScheduleDetailModal({ isOpen, onRequestClose, scheduleId }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const getPriorityLabel = (priority) => {
+        switch (priority) {
+            case 'LOW':
+                return '낮음';
+            case 'MEDIUM':
+                return '중간';
+            case 'HIGH':
+                return '높음';
+            default:
+                return '미지정';
+        }
+    };
+
     useEffect(() => {
         const fetchScheduleDetail = async () => {
             const token = localStorage.getItem('accessToken');
@@ -19,6 +32,9 @@ function ScheduleDetailModal({ isOpen, onRequestClose, scheduleId }) {
                             'Authorization': `${token}`,
                         },
                     });
+
+                    console.log('Schedule Detail:', response.data);
+
                     if (response.status === 200) {
                         setScheduleDetail(response.data);
                     } else {
@@ -53,13 +69,18 @@ function ScheduleDetailModal({ isOpen, onRequestClose, scheduleId }) {
                 ) : scheduleDetail ? (
                     <div>
                         <h3>{scheduleDetail.title}</h3>
-                        <p>내용: {scheduleDetail.content}</p>
-                        <p>날짜: {new Date(scheduleDetail.scheduleAt).toLocaleString()}</p>
-                        <p>우선순위: {scheduleDetail.priority}</p>
-                        <p>상태: {scheduleDetail.status}</p>
-                        <p>반려동물: {scheduleDetail.petName.join(', ')}</p>
-                        <p>카테고리: {scheduleDetail.categoryName}</p>
-                        {/* Add more details as needed */}
+                        <p>내용 : {scheduleDetail.content}</p>
+                        <p>우선순위 : {getPriorityLabel(scheduleDetail.priority)}</p>
+                        <p>반려동물 : {scheduleDetail.petName.join(', ')}</p>
+                        <p>카테고리 : {scheduleDetail.categoryName}</p>
+                        <p>날짜 :</p>
+                        {scheduleDetail.selectedDates && scheduleDetail.selectedDates.length > 0 ? (
+                            scheduleDetail.selectedDates.map((date, index) => (
+                                <p key={index}>{new Date(date).toLocaleString()}</p>
+                            ))
+                        ) : (
+                            <p>날짜 정보 없음</p>
+                        )}
                     </div>
                 ) : (
                     <p>일정 정보가 없습니다.</p>

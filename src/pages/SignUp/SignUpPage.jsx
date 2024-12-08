@@ -224,7 +224,7 @@ function SignUpPage() {
                                 name="name" 
                                 maxLength="10" 
                                 required 
-                                placeholder='김지훈'
+                                placeholder='이름'
                                 value={formData.name}
                                 onChange={handleChange}
                             />
@@ -239,7 +239,7 @@ function SignUpPage() {
                                 type="email" 
                                 id="email" 
                                 name="email" 
-                                placeholder='wlgns5041@naver.com'
+                                placeholder='abc123@naver.com'
                                 required 
                                 value={formData.email}
                                 onChange={handleChange}
