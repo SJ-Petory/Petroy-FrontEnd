@@ -36,7 +36,7 @@ const AssignCareGiver = ({ pet, onClose, onAssignCareGiver }) => {
 
     const handleAssign = async (careGiverId) => {
         const token = localStorage.getItem('accessToken');
-
+    
         try {
             const response = await axios.post(
                 `${API_BASE_URL}/pets/${pet.petId}`, 
@@ -45,10 +45,10 @@ const AssignCareGiver = ({ pet, onClose, onAssignCareGiver }) => {
                     headers: {
                         'Authorization': `${token}`,
                     },
-                    params: { memberId: careGiverId },
+                    params: { memberId: careGiverId }, 
                 }
             );
-
+    
             if (response.status === 200) {
                 onAssignCareGiver(careGiverId); 
                 onClose(); 

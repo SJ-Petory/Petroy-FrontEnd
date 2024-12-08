@@ -7,6 +7,7 @@ import ScheduleDetailModal from '../../components/Schedule/ScheduleDetailModal.j
 import { fetchMemberPets } from '../../services/TokenService.jsx';
 import axios from 'axios';
 import '../../styles/Main/MainPage.css';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -17,12 +18,15 @@ function MainPage() {
     const [pets, setPets] = useState([]);
     const [careGiverPets, setCareGiverPets] = useState([]);
     const [schedules, setSchedules] = useState([]);
+    const [categories, setCategories] = useState([]); 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedPets, setSelectedPets] = useState(new Set());
     const [selectedSchedules, setSelectedSchedules] = useState(new Set());
     const [selectedDates, setSelectedDates] = useState(new Set());
     const [selectedScheduleId, setSelectedScheduleId] = useState(null); 
+    const [expandedSchedules, setExpandedSchedules] = useState(new Set());
+    const [selectedCategories, setSelectedCategories] = useState(new Set()); 
 
     useEffect(() => {
         const loadPets = async () => {
@@ -71,6 +75,29 @@ function MainPage() {
             }
         };
 
+        const loadCategories = async () => {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                try {
+                    const response = await axios.get(`${API_BASE_URL}/schedules/category`, {
+                        headers: {
+                            'Authorization': `${token}` 
+                        }
+                    });
+                    if (response.status === 200) {
+                        setCategories(response.data.content || []);
+                    } else {
+                        setError(response.data.errorMessage || '카테고리를 불러오는 중 오류 발생');
+                    }
+                } catch (err) {
+                    console.error('카테고리 로딩 중 오류 발생:', err);
+                    setError('카테고리 정보를 불러오는 중 오류 발생');
+                }
+            } else {
+                setError('로그인이 필요합니다.');
+            }
+        };
+
         const loadSchedules = async () => {
             const token = localStorage.getItem('accessToken');
             if (token) {
@@ -82,7 +109,7 @@ function MainPage() {
                     });
         
                     if (response.status === 200) {
-                        setSchedules(response.data.schedules || []);
+                        setSchedules(response.data.content || []);
                     } else {
                         setError(response.data.message || '일정을 불러오는 데 실패했습니다.');
                     }
@@ -101,6 +128,7 @@ function MainPage() {
         loadPets();
         loadCareGiverPets();
         loadSchedules();
+        loadCategories(); 
     }, []);
 
     useEffect(() => {
@@ -136,6 +164,19 @@ function MainPage() {
         setSelectedScheduleId(null);
     };
 
+    const getPriorityLabel = (priority) => {
+        switch (priority) {
+            case 'LOW':
+                return '낮음';
+            case 'MEDIUM':
+                return '중간';
+            case 'HIGH':
+                return '높음';
+            default:
+                return '미지정';
+        }
+    };
+
     const handleCheckboxChange = (petId) => {
         setSelectedPets(prevSelectedPets => {
             const newSelectedPets = new Set(prevSelectedPets);
@@ -148,6 +189,18 @@ function MainPage() {
         });
     };
 
+    const handleCategoryCheckboxChange = (categoryId) => {
+        setSelectedCategories(prevSelectedCategories => {
+            const newSelectedCategories = new Set(prevSelectedCategories);
+            if (newSelectedCategories.has(categoryId)) {
+                newSelectedCategories.delete(categoryId);
+            } else {
+                newSelectedCategories.add(categoryId);
+            }
+            return newSelectedCategories;
+        });
+    };
+
     const handleScheduleCheckboxChange = (scheduleId) => {
         setSelectedSchedules(prevSelectedSchedules => {
             const newSelectedSchedules = new Set(prevSelectedSchedules);
@@ -156,7 +209,31 @@ function MainPage() {
             } else {
                 newSelectedSchedules.add(scheduleId);
             }
+    
+            // 선택한 일정의 날짜를 업데이트
+            const updatedDates = new Set();
+            newSelectedSchedules.forEach(id => {
+                const schedule = schedules.find(s => s.scheduleId === id);
+                if (schedule && schedule.selectedDates) {
+                    schedule.selectedDates.forEach(date => {
+                        updatedDates.add(new Date(date).toDateString());
+                    });
+                }
+            });
+            setSelectedDates(updatedDates); 
             return newSelectedSchedules;
+        });
+    };
+
+    const toggleScheduleDetails = (scheduleId) => {
+        setExpandedSchedules(prev => {
+            const newExpanded = new Set(prev);
+            if (newExpanded.has(scheduleId)) {
+                newExpanded.delete(scheduleId);
+            } else {
+                newExpanded.add(scheduleId);
+            }
+            return newExpanded;
         });
     };
 
@@ -166,14 +243,37 @@ function MainPage() {
 
             <div className="left-section">
                 <div className="button-container">
-                    <button onClick={openCategoryModal} className="create-category-button">
+                <button onClick={openCategoryModal} className="create-category-button">
                         일정 카테고리 생성
                     </button>
                     <button onClick={openScheduleModal} className="create-schedule-button">
                         일정 생성
                     </button>
                 </div>
-    
+
+                <div className="category-section">
+                    <h3>일정 카테고리</h3>
+                    {categories.length > 0 ? (
+                        <ul className="category-list">
+                            {categories.map((category) => (
+                                <li key={category.categoryId} className="category-item">
+                                    <div className="category-info-content">
+                                        <strong>{category.name}</strong>
+                                    </div>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedCategories.has(category.categoryId)}
+                                        onChange={() => handleCategoryCheckboxChange(category.categoryId)}
+                                        className="category-checkbox"
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>등록된 카테고리가 없습니다.</p>
+                    )}
+                </div>
+                
                 {loading && <p>로딩 중...</p>}
                 {error && <p className="error">{error}</p>}
     
@@ -233,27 +333,37 @@ function MainPage() {
                 ) : schedules.length > 0 ? (
                     <div className="schedule-list-content">
                         {schedules.map((schedule) => (
-                            <div 
-                            key={schedule.scheduleId} 
-                            className="schedule-item"
-                            onClick={(e) => {
-                                if (e.target.tagName !== 'INPUT') {
-                                    openScheduleDetailModal(schedule.scheduleId);
-                                }
-                            }} 
-                        >
-                            <input
-                                type="checkbox"
-                                checked={selectedSchedules.has(schedule.scheduleId)}
-                                onChange={() => handleScheduleCheckboxChange(schedule.scheduleId)}
-                                className="schedule-checkbox"
-                                onClick={(e) => e.stopPropagation()} 
-                            />
-                            <h4>{schedule.title}</h4>
-                            <p>날짜: {new Date(schedule.scheduleAt).toLocaleString()}</p>
-                            <p>우선순위: {schedule.priority}</p>
-                            <p>반려동물: {schedule.petName.join(', ')}</p>
-                        </div>
+                            <div key={schedule.scheduleId} className="schedule-item">
+                                <div className="schedule-title" onClick={() => openScheduleDetailModal(schedule.scheduleId)}>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedSchedules.has(schedule.scheduleId)}
+                                        onChange={() => handleScheduleCheckboxChange(schedule.scheduleId)}
+                                        className="schedule-checkbox"
+                                        onClick={(e) => e.stopPropagation()} 
+                                    />
+                                    <h4>{schedule.title}</h4>
+                                    <p>우선순위 : {getPriorityLabel(schedule.priority)}</p>
+                                    <p>반려동물 : {schedule.petName.join(', ')}</p>
+                                    <span 
+                                        onClick={(e) => {
+                                            e.stopPropagation(); 
+                                            toggleScheduleDetails(schedule.scheduleId);
+                                        }} 
+                                        className="toggle-arrow"
+                                     >
+                                        {expandedSchedules.has(schedule.scheduleId) ? <FaChevronUp /> : <FaChevronDown />}
+                                     </span>
+                                </div>
+                                {expandedSchedules.has(schedule.scheduleId) && (
+                                    <div className="schedule-dates">
+                                        <h4>해당 날짜</h4>
+                                        {schedule.selectedDates.map((date, index) => (
+                                            <p key={index}>{new Date(date).toLocaleString()}</p>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         ))}
                     </div>
                 ) : (

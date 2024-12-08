@@ -129,3 +129,18 @@
   border-radius: 10px;
   width: 70%;
 }
+
+.custom-tile-content {
+  position: relative;
+}
+
+.indicator {
+  width: 8px; /* 네모의 너비 */
+  height: 8px; /* 네모의 높이 */
+  background-color: #ff5722; /* 네모 색상 */
+  position: absolute;
+  bottom: 5px; /* 타일의 하단에서의 위치 */
+  left: 50%; /* 타일의 중앙에 위치 */
+  transform: translateX(-50%); /* 중앙 정렬 */
+  border-radius: 2px; /* 둥글게 */
+}

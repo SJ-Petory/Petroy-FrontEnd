@@ -148,6 +148,14 @@ const MyPage = () => {
         }
     }
 
+    // 로그아웃 처리 함수
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken'); // 로컬 저장소에서 토큰 제거
+        localStorage.removeItem('refreshToken'); // 로컬 저장소에서 리프레시 토큰 제거
+        alert('로그아웃되었습니다.'); // 로그아웃 메시지 표시
+        window.location.href = '/login'; // 로그인 페이지로 리디렉션
+    };
+
     // 로딩 중일 때 메시지 표시
     if (loading) return <p>잠시만 기다려주세요...</p>;
 
@@ -183,6 +191,7 @@ const MyPage = () => {
                 <button onClick={handleImageUpload} className="myPage-button">이미지 수정</button>
 
                 <button onClick={handleAccountDelete} className="myPage-button">회원 탈퇴</button>
+                <button onClick={handleLogout} className="myPage-button">로그아웃</button> {/* 로그아웃 버튼 추가 */}
             </div>
 
             <div className="pets">
