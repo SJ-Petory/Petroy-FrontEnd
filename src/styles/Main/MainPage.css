@@ -233,3 +233,7 @@
 .category-checkbox:hover {
     background-color: #e0e0e0; 
 }
+
+.sort-select{
+    margin-bottom: 20px;
+}
