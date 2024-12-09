@@ -261,12 +261,12 @@ const ScheduleModal = ({ onClose, pets }) => {
       isAllDay: formData.isAllDay,
     };
 
-    // scheduleAt 설정
+    // schduleTime 설정
     if (formData.isAllDay) {
-      requestData.scheduleAt = null; // 하루종일인 경우 null 전송
+      requestData.schduleTime = null; // 하루종일인 경우 null 전송
     } else {
       // '하루종일'이 아닐 때 사용자가 설정한 시간 포함
-      requestData.scheduleAt = formData.scheduleAt || "00:00:00"; // 시간 설정, 없으면 기본값
+      requestData.schduleTime = formData.schduleTime || "00:00:00"; // 시간 설정, 없으면 기본값
     }
   
     if (formData.repeatYn) {
@@ -482,8 +482,8 @@ const ScheduleModal = ({ onClose, pets }) => {
             <label>시간 설정
               <input
                 type="time"
-                value={formData.scheduleAt || '00:00'}
-                onChange={(e) => setFormData({ ...formData, scheduleAt: e.target.value })}
+                value={formData.schduleTime || '00:00'}
+                onChange={(e) => setFormData({ ...formData, schduleTime: e.target.value })}
               />
             </label>
           </div>

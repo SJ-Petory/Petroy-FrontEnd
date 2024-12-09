@@ -7,7 +7,6 @@ import ScheduleDetailModal from '../../components/Schedule/ScheduleDetailModal.j
 import { fetchMemberPets } from '../../services/TokenService.jsx';
 import axios from 'axios';
 import '../../styles/Main/MainPage.css';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -23,10 +22,11 @@ function MainPage() {
     const [error, setError] = useState(null);
     const [selectedPets, setSelectedPets] = useState(new Set());
     const [selectedSchedules, setSelectedSchedules] = useState(new Set());
-    const [selectedDates, setSelectedDates] = useState(new Set());
     const [selectedScheduleId, setSelectedScheduleId] = useState(null); 
-    const [expandedSchedules, setExpandedSchedules] = useState(new Set());
+    const [selectedDates, setSelectedDates] = useState(new Set());
     const [selectedCategories, setSelectedCategories] = useState(new Set()); 
+    const [scheduleDetails, setScheduleDetails] = useState([]);
+    const [sortOrder, setSortOrder] = useState('recent');
 
     useEffect(() => {
         const loadPets = async () => {
@@ -107,7 +107,7 @@ function MainPage() {
                             'Authorization': `${token}`,
                         },
                     });
-        
+
                     if (response.status === 200) {
                         setSchedules(response.data.content || []);
                     } else {
@@ -130,40 +130,27 @@ function MainPage() {
         loadSchedules();
         loadCategories(); 
     }, []);
-
+    
     useEffect(() => {
-        const dates = new Set();
-        selectedSchedules.forEach((scheduleId) => {
-            const schedule = schedules.find((s) => s.scheduleId === scheduleId);
-            if (schedule) {
-                dates.add(new Date(schedule.scheduleAt).toDateString());
-            }
-        });
-        setSelectedDates(dates);
-    }, [selectedSchedules, schedules]);
-
-    useEffect(() => {
-        if (!loading && !error) {
-            const allScheduleIds = new Set(schedules.map(schedule => schedule.scheduleId));
-            setSelectedSchedules(allScheduleIds);
-        }
-    }, [loading, error, schedules]);
+        const allScheduleIds = new Set(schedules.map(schedule => schedule.scheduleId));
+        setSelectedSchedules(allScheduleIds);
+    }, [schedules]); 
 
     const openCategoryModal = () => setIsCategoryModalOpen(true);
     const closeCategoryModal = () => setIsCategoryModalOpen(false);
     const openScheduleModal = () => setIsScheduleModalOpen(true);
     const closeScheduleModal = () => setIsScheduleModalOpen(false);
-
+    
     const openScheduleDetailModal = (scheduleId) => {
         setSelectedScheduleId(scheduleId);
         setIsScheduleDetailModalOpen(true); 
     };
-
+    
     const closeScheduleDetailModal = () => {
         setIsScheduleDetailModalOpen(false);
         setSelectedScheduleId(null);
     };
-
+    
     const getPriorityLabel = (priority) => {
         switch (priority) {
             case 'LOW':
@@ -176,7 +163,7 @@ function MainPage() {
                 return '미지정';
         }
     };
-
+    
     const handleCheckboxChange = (petId) => {
         setSelectedPets(prevSelectedPets => {
             const newSelectedPets = new Set(prevSelectedPets);
@@ -188,7 +175,27 @@ function MainPage() {
             return newSelectedPets;
         });
     };
-
+    
+    const handleScheduleCheckboxChange = (scheduleId, date) => {
+        setSelectedDates(prevSelectedDates => {
+            const newSelectedDates = new Set(prevSelectedDates);
+            const key = `${scheduleId}-${date}`;
+            if (newSelectedDates.has(key)) {
+                newSelectedDates.delete(key);
+            } else {
+                newSelectedDates.add(key);
+            }
+    
+            // 일정 제목 및 날짜를 저장
+            const updatedScheduleDetails = newSelectedDates.has(key)
+                ? [...scheduleDetails, { scheduleId, title: schedules.find(schedule => schedule.scheduleId === scheduleId).title, date: date }] // date를 그대로 사용
+                : scheduleDetails.filter(detail => detail.scheduleId !== scheduleId || detail.date !== date);
+    
+            setScheduleDetails(updatedScheduleDetails);
+            return newSelectedDates;
+        });
+    };
+    
     const handleCategoryCheckboxChange = (categoryId) => {
         setSelectedCategories(prevSelectedCategories => {
             const newSelectedCategories = new Set(prevSelectedCategories);
@@ -201,49 +208,31 @@ function MainPage() {
         });
     };
 
-    const handleScheduleCheckboxChange = (scheduleId) => {
-        setSelectedSchedules(prevSelectedSchedules => {
-            const newSelectedSchedules = new Set(prevSelectedSchedules);
-            if (newSelectedSchedules.has(scheduleId)) {
-                newSelectedSchedules.delete(scheduleId);
-            } else {
-                newSelectedSchedules.add(scheduleId);
-            }
+    const sortedSchedules = schedules.flatMap((schedule) =>
+        schedule.selectedDates.map((date) => ({
+            scheduleId: schedule.scheduleId,
+            title: schedule.title,
+            date: new Date(date), // Date 객체로 변환
+            petName: schedule.petName,
+            priority: schedule.priority,
+            status: schedule.status,
+            createdAt: schedule.createdAt // 생성일 추가
+        }))
+    ).sort((a, b) => {
+        if (sortOrder === 'recent') {
+            return b.createdAt - a.createdAt; // 최근 생성순
+        } else {
+            return a.date - b.date; // 날짜순
+        }
+    });
     
-            // 선택한 일정의 날짜를 업데이트
-            const updatedDates = new Set();
-            newSelectedSchedules.forEach(id => {
-                const schedule = schedules.find(s => s.scheduleId === id);
-                if (schedule && schedule.selectedDates) {
-                    schedule.selectedDates.forEach(date => {
-                        updatedDates.add(new Date(date).toDateString());
-                    });
-                }
-            });
-            setSelectedDates(updatedDates); 
-            return newSelectedSchedules;
-        });
-    };
-
-    const toggleScheduleDetails = (scheduleId) => {
-        setExpandedSchedules(prev => {
-            const newExpanded = new Set(prev);
-            if (newExpanded.has(scheduleId)) {
-                newExpanded.delete(scheduleId);
-            } else {
-                newExpanded.add(scheduleId);
-            }
-            return newExpanded;
-        });
-    };
-
     return (
         <div className="main-page">
             <NavBar title="메인페이지" />
 
             <div className="left-section">
                 <div className="button-container">
-                <button onClick={openCategoryModal} className="create-category-button">
+                    <button onClick={openCategoryModal} className="create-category-button">
                         일정 카테고리 생성
                     </button>
                     <button onClick={openScheduleModal} className="create-schedule-button">
@@ -276,7 +265,7 @@ function MainPage() {
                 
                 {loading && <p>로딩 중...</p>}
                 {error && <p className="error">{error}</p>}
-    
+
                 {!loading && !error && (
                     <>
                         <div className="my-pets-section">
@@ -325,58 +314,58 @@ function MainPage() {
             </div>
 
             <div className="schedule-list">
-                <h3>일정 목록</h3>
-                {loading ? (
-                    <p>로딩 중...</p>
-                ) : error ? (
-                    <p>{error}</p>
-                ) : schedules.length > 0 ? (
-                    <div className="schedule-list-content">
-                        {schedules.map((schedule) => (
-                            <div key={schedule.scheduleId} className="schedule-item">
-                                <div className="schedule-title" onClick={() => openScheduleDetailModal(schedule.scheduleId)}>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedSchedules.has(schedule.scheduleId)}
-                                        onChange={() => handleScheduleCheckboxChange(schedule.scheduleId)}
-                                        className="schedule-checkbox"
-                                        onClick={(e) => e.stopPropagation()} 
-                                    />
-                                    <h4>{schedule.title}</h4>
-                                    <p>우선순위 : {getPriorityLabel(schedule.priority)}</p>
-                                    <p>반려동물 : {schedule.petName.join(', ')}</p>
-                                    <span 
-                                        onClick={(e) => {
-                                            e.stopPropagation(); 
-                                            toggleScheduleDetails(schedule.scheduleId);
-                                        }} 
-                                        className="toggle-arrow"
-                                     >
-                                        {expandedSchedules.has(schedule.scheduleId) ? <FaChevronUp /> : <FaChevronDown />}
-                                     </span>
-                                </div>
-                                {expandedSchedules.has(schedule.scheduleId) && (
-                                    <div className="schedule-dates">
-                                        <h4>해당 날짜</h4>
-                                        {schedule.selectedDates.map((date, index) => (
-                                            <p key={index}>{new Date(date).toLocaleString()}</p>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <p>등록된 일정이 없습니다.</p>
-                )}
+            <h3>일정 목록</h3>
+            <div className="sort-select">
+                <label htmlFor="sortOrder">정렬 기준 : </label>
+                <select
+                    id="sortOrder"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                >
+                    <option value="recent">최근 생성순</option>
+                    <option value="date">날짜순</option>
+                </select>
+            </div>
+            {loading ? (
+    <p>로딩 중...</p>
+) : error ? (
+    <p>{error}</p>
+) : sortedSchedules.length > 0 ? (
+    <div className="schedule-list-content">
+        {sortedSchedules.map((schedule) => (
+            <div key={`${schedule.scheduleId}-${schedule.date}`} className="schedule-item" onClick={() => openScheduleDetailModal(schedule.scheduleId)}>
+                <div className="schedule-title">
+                    <input
+                        type="checkbox"
+                        checked={selectedSchedules.has(schedule.scheduleId) && selectedDates.has(`${schedule.scheduleId}-${schedule.date}`)}
+                        onClick={(e) => e.stopPropagation()} 
+                        onChange={() => handleScheduleCheckboxChange(schedule.scheduleId, schedule.date)}
+                        className="schedule-checkbox"
+                    />
+                    <h4>{schedule.title}</h4>
+                </div>
+                <p>날짜: {schedule.date.toLocaleString()}</p>
+                <p>반려동물: {schedule.petName.join(', ')}</p>
+                <p>우선순위: {getPriorityLabel(schedule.priority)}</p>
+                <p>상태: {schedule.status}</p>
+            </div>
+        ))}
+    </div>
+) : (
+    <p>등록된 일정이 없습니다.</p>
+)}
             </div>
 
             <div className="right-section">
-                <CalendarComponent selectedDates={selectedDates} schedules={schedules.filter(schedule => selectedSchedules.has(schedule.scheduleId))} />
+                <CalendarComponent 
+                    schedules={scheduleDetails}
+                    selectedDates={selectedDates} 
+                />
             </div>
 
             <CategoryModal isOpen={isCategoryModalOpen} onRequestClose={closeCategoryModal} />
             {isScheduleModalOpen && (<ScheduleModal onClose={closeScheduleModal} pets={[...pets, ...careGiverPets]} />)}
+
             <ScheduleDetailModal 
                 isOpen={isScheduleDetailModalOpen} 
                 onRequestClose={closeScheduleDetailModal} 
@@ -387,3 +376,4 @@ function MainPage() {
 }
 
 export default MainPage;
+

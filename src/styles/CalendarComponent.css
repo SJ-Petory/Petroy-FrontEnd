@@ -1,0 +1,64 @@
+.calendar {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.weekdays, .days {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.weekdays div, .day {
+  width: 14.28%;
+  text-align: center;
+  padding: 5px;
+}
+
+.day {
+  border: 1px solid #eee;
+  box-sizing: border-box;
+  height: 14.5vh;
+  text-align: left; /* 왼쪽 정렬 */
+  padding-left: 10px; /* 왼쪽 여백 추가 */
+}
+
+
+.week {
+  display: flex;
+  width: 100%;
+}
+
+.today {
+  background-color: #79ae70; /* 원하는 배경색으로 설정 */
+}
+
+.Calendar-schedule-title {
+  margin-top: 2px;
+  display: flex;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  background-color: #2e3030; /* 일정 제목 배경색 */
+  border-radius: 3px; /* 모서리 둥글게 */
+  padding: 2px; /* 여백 */
+  margin-right: 5px;
+  font-size: 11px;
+  color: white;
+}

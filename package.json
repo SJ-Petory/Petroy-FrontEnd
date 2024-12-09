@@ -18,6 +18,7 @@
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.12",
     "dotenv": "^16.4.5",
+    "font-awesome": "^4.7.0",
     "gr": "^0.0.1",
     "kakao-js-sdk": "^1.2.3",
     "os-browserify": "^0.3.0",
