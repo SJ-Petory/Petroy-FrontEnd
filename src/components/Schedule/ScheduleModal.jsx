@@ -166,7 +166,9 @@ const ScheduleModal = ({ onClose, pets }) => {
   };
 
   const handleDateChange = (date) => {
-    const formattedDate = new Date(date).toISOString().slice(0, 10); // yyyy-mm-dd 형식
+    // KST로 변환
+    const localDate = new Date(date.getTime() + (9 * 60 * 60 * 1000)); // UTC +9시간
+    const formattedDate = localDate.toISOString().slice(0, 10); // yyyy-mm-dd 형식
     setFormData((prevData) => {
       const existingDate = prevData.selectedDates.find(d => d.date === formattedDate);
       if (existingDate) {
@@ -182,6 +184,8 @@ const ScheduleModal = ({ onClose, pets }) => {
       }
     });
   };
+  
+  
 
 //   const handleTimeChange = (date, time) => {
 //     const formattedDate = new Date(date).toISOString().slice(0, 10);
@@ -261,12 +265,12 @@ const ScheduleModal = ({ onClose, pets }) => {
       isAllDay: formData.isAllDay,
     };
 
-    // schduleTime 설정
+    // scheduleTime 설정
     if (formData.isAllDay) {
-      requestData.schduleTime = null; // 하루종일인 경우 null 전송
+      requestData.scheduleTime = null; // 하루종일인 경우 null 전송
     } else {
       // '하루종일'이 아닐 때 사용자가 설정한 시간 포함
-      requestData.schduleTime = formData.schduleTime || "00:00:00"; // 시간 설정, 없으면 기본값
+      requestData.scheduleTime = formData.scheduleTime || "00:00:00"; // 시간 설정, 없으면 기본값
     }
   
     if (formData.repeatYn) {
@@ -445,16 +449,21 @@ const ScheduleModal = ({ onClose, pets }) => {
             <>
               <label>날짜 선택</label>
               <Calendar
-                onChange={handleDateChange}
-                value={formData.selectedDates.map((date) => new Date(date))}
-                className="custom-small-calendar" 
-                tileClassName={({ date }) => 
-                  formData.selectedDates.includes(new Date(date).toLocaleDateString('en-CA'))
-                    ? 'selected-date'
-                    : ''
-              }
-              selectRange={false}
-              />
+  onChange={handleDateChange}
+  value={formData.selectedDates.map((date) => new Date(date.date))}
+  className="custom-small-calendar"
+  tileClassName={({ date }) => {
+    const localDate = new Date(date.getTime() + (9 * 60 * 60 * 1000)); // UTC +9시간
+    const formattedDate = localDate.toISOString().slice(0, 10); // yyyy-mm-dd 형식
+    return formData.selectedDates.some(selected => selected.date === formattedDate)
+      ? 'selected-date'
+      : '';
+  }}
+  selectRange={false}
+/>
+
+
+
                <div>
               <label>선택된 날짜</label>
               {formData.selectedDates.length > 0 && (
@@ -482,8 +491,8 @@ const ScheduleModal = ({ onClose, pets }) => {
             <label>시간 설정
               <input
                 type="time"
-                value={formData.schduleTime || '00:00'}
-                onChange={(e) => setFormData({ ...formData, schduleTime: e.target.value })}
+                value={formData.scheduleTime || '00:00'}
+                onChange={(e) => setFormData({ ...formData, scheduleTime: e.target.value })}
               />
             </label>
           </div>
