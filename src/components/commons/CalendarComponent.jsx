@@ -83,7 +83,7 @@ const CalendarComponent = ({ schedules, selectedDates }) => {
                                     {hasSchedules.length > 0 && (
                                         <div className="schedule-details">
                                             {hasSchedules.map(schedule => (
-                                                <div key={schedule.scheduleId} className="Calendar-schedule-title">
+                                                <div key={schedule.scheduleId} className="schedule-title">
                                                     {schedule.title}
                                                 </div>
                                             ))}

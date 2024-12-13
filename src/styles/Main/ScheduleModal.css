@@ -225,3 +225,8 @@
 .react-calendar__tile--now {
   color: #1708eb; /* 글자색 변경 */
 }
+
+.selected-date {
+  background-color: #4caf50; /* 원하는 배경색으로 변경 */
+  color: white; /* 텍스트 색상 변경 (선택사항) */
+}

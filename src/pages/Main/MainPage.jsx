@@ -50,7 +50,7 @@ function MainPage() {
                 setLoading(false);
             }
         };
-
+    
         const loadCareGiverPets = async () => {
             const token = localStorage.getItem('accessToken');
             if (token) {
@@ -60,7 +60,7 @@ function MainPage() {
                             'Authorization': `${token}`,
                         },
                     });
-
+    
                     if (response.status === 200) {
                         setCareGiverPets(response.data.content || []);
                     } else {
@@ -74,7 +74,7 @@ function MainPage() {
                 setError('로그인이 필요합니다.');
             }
         };
-
+    
         const loadCategories = async () => {
             const token = localStorage.getItem('accessToken');
             if (token) {
@@ -96,8 +96,8 @@ function MainPage() {
             } else {
                 setError('로그인이 필요합니다.');
             }
-        };
-
+        }
+    
         const loadSchedules = async () => {
             const token = localStorage.getItem('accessToken');
             if (token) {
@@ -107,13 +107,36 @@ function MainPage() {
                             'Authorization': `${token}`,
                         },
                     });
-
+        
+                    // API 응답을 콘솔에 출력
+                    console.log("API 응답:", response);
+        
                     if (response.status === 200) {
-                        setSchedules(response.data.content || []);
+                        // 응답 데이터 출력
+                        console.log("응답 데이터:", response.data);
+        
+                        // 데이터 형식화
+                        const formattedSchedules = response.data.schedules.map(schedule => ({
+                            categoryId: schedule.categoryId,
+                            scheduleId: schedule.scheduleId,
+                            title: schedule.title,
+                            priority: schedule.priority,
+                            petId: schedule.petId,
+                            petName: schedule.petName,
+                            dates: schedule.dateInfo.map(dateInfo => ({
+                                date: new Date(dateInfo.date),
+                                status: dateInfo.status,
+                            })),
+                        }));
+        
+                        // 형식화된 일정 설정
+                        setSchedules(formattedSchedules);
                     } else {
+                        // 오류 메시지 출력
                         setError(response.data.message || '일정을 불러오는 데 실패했습니다.');
                     }
                 } catch (err) {
+                    // 오류 발생 시 콘솔에 출력
                     console.error('일정 로딩 중 오류 발생:', err.response ? err.response.data : err);
                     setError(err.response ? err.response.data.message : '네트워크 오류가 발생했습니다. 나중에 다시 시도해 주세요.');
                 } finally {
@@ -123,7 +146,7 @@ function MainPage() {
                 setError('로그인이 필요합니다.');
                 setLoading(false);
             }
-        };
+        };        
         
         loadPets();
         loadCareGiverPets();
@@ -135,7 +158,7 @@ function MainPage() {
         const allScheduleIds = new Set(schedules.map(schedule => schedule.scheduleId));
         setSelectedSchedules(allScheduleIds);
     }, [schedules]); 
-
+    
     const openCategoryModal = () => setIsCategoryModalOpen(true);
     const closeCategoryModal = () => setIsCategoryModalOpen(false);
     const openScheduleModal = () => setIsScheduleModalOpen(true);
@@ -207,29 +230,28 @@ function MainPage() {
             return newSelectedCategories;
         });
     };
-
-    const sortedSchedules = schedules.flatMap((schedule) =>
-        schedule.selectedDates.map((date) => ({
+    
+    const sortedSchedules = schedules.flatMap(schedule =>
+        schedule.dates.map(dateInfo => ({
             scheduleId: schedule.scheduleId,
             title: schedule.title,
-            date: new Date(date), // Date 객체로 변환
-            petName: schedule.petName,
+            date: dateInfo.date, // Date 객체로 변환
+            petName: schedule.petName.join(', '),
             priority: schedule.priority,
-            status: schedule.status,
-            createdAt: schedule.createdAt // 생성일 추가
+            dateStatus: dateInfo.status, // selectDate의 status
         }))
     ).sort((a, b) => {
         if (sortOrder === 'recent') {
-            return b.createdAt - a.createdAt; // 최근 생성순
+            return b.date - a.date; // 날짜순 정렬
         } else {
-            return a.date - b.date; // 날짜순
+            return a.date - b.date; // 최근 생성순 정렬
         }
     });
     
     return (
         <div className="main-page">
             <NavBar title="메인페이지" />
-
+    
             <div className="left-section">
                 <div className="button-container">
                     <button onClick={openCategoryModal} className="create-category-button">
@@ -239,7 +261,7 @@ function MainPage() {
                         일정 생성
                     </button>
                 </div>
-
+    
                 <div className="category-section">
                     <h3>일정 카테고리</h3>
                     {categories.length > 0 ? (
@@ -265,7 +287,7 @@ function MainPage() {
                 
                 {loading && <p>로딩 중...</p>}
                 {error && <p className="error">{error}</p>}
-
+    
                 {!loading && !error && (
                     <>
                         <div className="my-pets-section">
@@ -288,7 +310,7 @@ function MainPage() {
                                 <p>등록된 반려동물이 없습니다.</p>
                             )}
                         </div>
-
+    
                         <div className="care-giver-pets-section">
                             <h3>돌보미 반려동물</h3>
                             {careGiverPets.length > 0 ? (
@@ -312,60 +334,65 @@ function MainPage() {
                     </>
                 )}
             </div>
-
+    
             <div className="schedule-list">
-            <h3>일정 목록</h3>
-            <div className="sort-select">
-                <label htmlFor="sortOrder">정렬 기준 : </label>
-                <select
-                    id="sortOrder"
-                    value={sortOrder}
-                    onChange={(e) => setSortOrder(e.target.value)}
-                >
-                    <option value="recent">최근 생성순</option>
-                    <option value="date">날짜순</option>
-                </select>
-            </div>
-            {loading ? (
-    <p>로딩 중...</p>
-) : error ? (
-    <p>{error}</p>
-) : sortedSchedules.length > 0 ? (
-    <div className="schedule-list-content">
-        {sortedSchedules.map((schedule) => (
-            <div key={`${schedule.scheduleId}-${schedule.date}`} className="schedule-item" onClick={() => openScheduleDetailModal(schedule.scheduleId)}>
-                <div className="schedule-title">
-                    <input
-                        type="checkbox"
-                        checked={selectedSchedules.has(schedule.scheduleId) && selectedDates.has(`${schedule.scheduleId}-${schedule.date}`)}
-                        onClick={(e) => e.stopPropagation()} 
-                        onChange={() => handleScheduleCheckboxChange(schedule.scheduleId, schedule.date)}
-                        className="schedule-checkbox"
-                    />
-                    <h4>{schedule.title}</h4>
+                <h3>일정 목록</h3>
+                <div className="sort-select">
+                    <label htmlFor="sortOrder">정렬 기준 : </label>
+                    <select
+                        id="sortOrder"
+                        value={sortOrder}
+                        onChange={(e) => setSortOrder(e.target.value)}
+                    >
+                        <option value="recent">최근 생성순</option>
+                        <option value="date">날짜순</option>
+                    </select>
                 </div>
-                <p>날짜: {schedule.date.toLocaleString()}</p>
-                <p>반려동물: {schedule.petName.join(', ')}</p>
-                <p>우선순위: {getPriorityLabel(schedule.priority)}</p>
-                <p>상태: {schedule.status}</p>
+                {loading ? (
+                    <p>로딩 중...</p>
+                ) : error ? (
+                    <p>{error}</p>
+                ) : sortedSchedules.length > 0 ? (
+                    <div className="schedule-list-content">
+                        {sortedSchedules.map((schedule) => (
+                            <div key={`${schedule.scheduleId}-${schedule.date}`} className="schedule-item" onClick={() => openScheduleDetailModal(schedule.scheduleId)}>
+                                <div className="schedule-title">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedSchedules.has(schedule.scheduleId) && selectedDates.has(`${schedule.scheduleId}-${schedule.date}`)}
+                                        onClick={(e) => e.stopPropagation()} 
+                                        onChange={() => handleScheduleCheckboxChange(schedule.scheduleId, schedule.date)}
+                                        className="schedule-checkbox"
+                                    />
+                                    <h4>{schedule.title}</h4>
+                                </div>
+                                <p>날짜: {schedule.date.toLocaleString()}</p>
+                                <p>반려동물: {schedule.petName}</p>
+                                <p>우선순위: {getPriorityLabel(schedule.priority)}</p>
+                                <p>상태: {schedule.dateStatus}</p> 
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p>등록된 일정이 없습니다.</p>
+                )}
             </div>
-        ))}
-    </div>
-) : (
-    <p>등록된 일정이 없습니다.</p>
-)}
-            </div>
-
+    
             <div className="right-section">
                 <CalendarComponent 
                     schedules={scheduleDetails}
                     selectedDates={selectedDates} 
                 />
             </div>
-
+    
             <CategoryModal isOpen={isCategoryModalOpen} onRequestClose={closeCategoryModal} />
-            {isScheduleModalOpen && (<ScheduleModal onClose={closeScheduleModal} pets={[...pets, ...careGiverPets]} />)}
-
+            {isScheduleModalOpen && (
+                <ScheduleModal 
+                    onClose={closeScheduleModal} 
+                    pets={[...pets, ...careGiverPets]} 
+                />
+            )}
+    
             <ScheduleDetailModal 
                 isOpen={isScheduleDetailModalOpen} 
                 onRequestClose={closeScheduleDetailModal} 
@@ -373,7 +400,6 @@ function MainPage() {
             /> 
         </div>
     );
-}
+}    
 
 export default MainPage;
-
