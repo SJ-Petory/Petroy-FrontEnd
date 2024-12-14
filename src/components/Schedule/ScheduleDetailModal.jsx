@@ -4,10 +4,21 @@ import '../../styles/Main/ScheduleDetailModal.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-function ScheduleDetailModal({ isOpen, onRequestClose, scheduleId }) {
-    const [scheduleDetail, setScheduleDetail] = useState(null);
+function ScheduleDetailModal({ isOpen, onRequestClose, scheduleId, selectedDate }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [scheduleDetail, setScheduleDetail] = useState({
+        title: '로딩 중...',
+        content: '',
+        priority: '미지정',
+        petName: [],
+        categoryName: '정보 없음',
+        status: '미지정',
+        noticeYn: false,
+        allDay: false,
+        repeatYn: false,
+        scheduleAt: new Date().toISOString(),
+    });
 
     const getPriorityLabel = (priority) => {
         switch (priority) {
@@ -22,6 +33,24 @@ function ScheduleDetailModal({ isOpen, onRequestClose, scheduleId }) {
         }
     };
 
+    const getStatusLabel = (status) => {
+        switch (status) {
+            case 'ONGOING':
+                return '진행중';
+            case 'DONE':
+                return '완료';
+            case 'DELETED':
+                return '삭제됨';
+            default:
+                return '미지정';
+        }
+    };
+
+    const handleClose = (e) => {
+        e.stopPropagation(); 
+        onRequestClose();
+    };
+
     useEffect(() => {
         const fetchScheduleDetail = async () => {
             const token = localStorage.getItem('accessToken');
@@ -31,30 +60,50 @@ function ScheduleDetailModal({ isOpen, onRequestClose, scheduleId }) {
                         headers: {
                             'Authorization': `${token}`,
                         },
+                        params: {
+                            scheduleAt: selectedDate ? selectedDate.toLocaleString('sv-SE') : null,
+                        },
                     });
 
-                    console.log('Schedule Detail:', response.data);
-
                     if (response.status === 200) {
-                        setScheduleDetail(response.data);
+                        setScheduleDetail(response.data); 
+                        console.log(response.data); 
                     } else {
                         setError(response.data.message || '일정 상세 정보를 불러오는 데 실패했습니다.');
                     }
                 } catch (err) {
                     setError('네트워크 오류가 발생했습니다. 나중에 다시 시도해 주세요.');
-                    console.error('일정 상세 정보 불러오기 실패:', err);
                 } finally {
                     setLoading(false);
                 }
+            } else {
+                setError('로그인이 필요합니다.'); 
+                setLoading(false);
             }
         };
 
-        if (isOpen && scheduleId) {
+        if (isOpen && scheduleId && selectedDate) {
             fetchScheduleDetail();
+        } else if (!isOpen) {
+            // 모달이 닫힐 때 상태 초기화
+            setLoading(true);
+            setError(null);
+            setScheduleDetail({
+                title: '로딩 중...',
+                content: '',
+                priority: '미지정',
+                petName: [],
+                categoryName: '정보 없음',
+                status: '미지정',
+                noticeYn: false,
+                allDay: false,
+                repeatYn: false,
+                scheduleAt: new Date().toISOString(),
+            });
         }
-    }, [isOpen, scheduleId]);
+    }, [isOpen, scheduleId, selectedDate]);
 
-    if (!isOpen) return null;
+    if (!isOpen) return null; 
 
     return (
         <div className="schedule-detail-modal">
@@ -62,31 +111,25 @@ function ScheduleDetailModal({ isOpen, onRequestClose, scheduleId }) {
                 <h2>일정 상세 정보</h2>
             </div>
             <div className="schedule-detail-modal-body">
-                {loading ? (
-                    <p>로딩 중...</p>
-                ) : error ? (
-                    <p>{error}</p>
-                ) : scheduleDetail ? (
-                    <div>
+                {loading && <p>로딩 중...</p>}
+                {error && <p>{error}</p>}
+                {!loading && !error && !scheduleDetail.title && <p>일정 정보가 없습니다.</p>}
+                {!loading && !error && (
+                    <>
                         <h3>{scheduleDetail.title}</h3>
                         <p>내용 : {scheduleDetail.content}</p>
                         <p>우선순위 : {getPriorityLabel(scheduleDetail.priority)}</p>
                         <p>반려동물 : {scheduleDetail.petName.join(', ')}</p>
-                        <p>카테고리 : {scheduleDetail.categoryName}</p>
-                        <p>날짜 :</p>
-                        {scheduleDetail.selectedDates && scheduleDetail.selectedDates.length > 0 ? (
-                            scheduleDetail.selectedDates.map((date, index) => (
-                                <p key={index}>{new Date(date).toLocaleString()}</p>
-                            ))
-                        ) : (
-                            <p>날짜 정보 없음</p>
-                        )}
-                    </div>
-                ) : (
-                    <p>일정 정보가 없습니다.</p>
+                        <p>카테고리 : {scheduleDetail.categoryName || '정보 없음'}</p>
+                        <p>상태 : {getStatusLabel(scheduleDetail.status)}</p>
+                        <p>알림 여부 : {scheduleDetail.noticeYn ? '예' : '아니오'}</p>
+                        <p>하루종일 : {scheduleDetail.allDay ? '예' : '아니오'}</p>
+                        <p>반복 여부 : {scheduleDetail.repeatYn ? '예' : '아니오'}</p>
+                        <p>일정 시간 : {new Date(scheduleDetail.scheduleAt).toLocaleString()}</p>
+                    </>
                 )}
             </div>
-            <button onClick={onRequestClose} className="schedule-detail-modal-close-button">닫기</button>
+            <button onClick={handleClose} className="schedule-detail-modal-close-button">닫기</button>
         </div>
     );
 }

@@ -27,6 +27,8 @@ function MainPage() {
     const [selectedCategories, setSelectedCategories] = useState(new Set()); 
     const [scheduleDetails, setScheduleDetails] = useState([]);
     const [sortOrder, setSortOrder] = useState('recent');
+    const [selectedDate, setSelectedDate] = useState(null);
+
 
     useEffect(() => {
         const loadPets = async () => {
@@ -37,18 +39,18 @@ function MainPage() {
                     if (response && response.content) {
                         setPets(response.content);
                     } else {
-                        setError('반려동물 정보를 불러오는 데 실패했습니다.');
+                        setPets([]); 
                     }
                 } catch (error) {
                     console.error('반려동물 로딩 중 오류 발생:', error);
+                    setPets([]); 
                     setError('반려동물 정보를 불러오는 중 오류 발생');
-                } finally {
-                    setLoading(false);
                 }
             } else {
                 setError('로그인이 필요합니다.');
-                setLoading(false);
+                setPets([]); 
             }
+            setLoading(false); 
         };
     
         const loadCareGiverPets = async () => {
@@ -64,15 +66,19 @@ function MainPage() {
                     if (response.status === 200) {
                         setCareGiverPets(response.data.content || []);
                     } else {
+                        setCareGiverPets([]); 
                         setError(response.data.errorMessage || '돌보미 반려동물 목록을 불러오는 중 오류가 발생했습니다.');
                     }
                 } catch (err) {
                     console.error('돌보미 반려동물 로딩 중 오류 발생:', err);
+                    setCareGiverPets([]); 
                     setError('API 호출 중 오류가 발생했습니다.');
                 }
             } else {
                 setError('로그인이 필요합니다.');
+                setCareGiverPets([]); 
             }
+            setLoading(false); 
         };
     
         const loadCategories = async () => {
@@ -96,7 +102,7 @@ function MainPage() {
             } else {
                 setError('로그인이 필요합니다.');
             }
-        }
+        };
     
         const loadSchedules = async () => {
             const token = localStorage.getItem('accessToken');
@@ -108,35 +114,26 @@ function MainPage() {
                         },
                     });
         
-                    // API 응답을 콘솔에 출력
-                    console.log("API 응답:", response);
-        
                     if (response.status === 200) {
-                        // 응답 데이터 출력
-                        console.log("응답 데이터:", response.data);
-        
-                        // 데이터 형식화
-                        const formattedSchedules = response.data.schedules.map(schedule => ({
-                            categoryId: schedule.categoryId,
-                            scheduleId: schedule.scheduleId,
-                            title: schedule.title,
-                            priority: schedule.priority,
-                            petId: schedule.petId,
-                            petName: schedule.petName,
-                            dates: schedule.dateInfo.map(dateInfo => ({
+                        const schedulesData = response.data.content || [];
+
+                        const formattedSchedules = schedulesData.flatMap(schedule => 
+                            schedule.dateInfo.map(dateInfo => ({
+                                categoryId: schedule.categoryId,
+                                scheduleId: schedule.scheduleId,
+                                title: schedule.title,
+                                priority: schedule.priority,
+                                petName: schedule.petName,
                                 date: new Date(dateInfo.date),
                                 status: dateInfo.status,
-                            })),
-                        }));
-        
-                        // 형식화된 일정 설정
+                            }))
+                        );
+
                         setSchedules(formattedSchedules);
                     } else {
-                        // 오류 메시지 출력
                         setError(response.data.message || '일정을 불러오는 데 실패했습니다.');
                     }
                 } catch (err) {
-                    // 오류 발생 시 콘솔에 출력
                     console.error('일정 로딩 중 오류 발생:', err.response ? err.response.data : err);
                     setError(err.response ? err.response.data.message : '네트워크 오류가 발생했습니다. 나중에 다시 시도해 주세요.');
                 } finally {
@@ -150,8 +147,8 @@ function MainPage() {
         
         loadPets();
         loadCareGiverPets();
-        loadSchedules();
         loadCategories(); 
+        loadSchedules();
     }, []);
     
     useEffect(() => {
@@ -164,15 +161,18 @@ function MainPage() {
     const openScheduleModal = () => setIsScheduleModalOpen(true);
     const closeScheduleModal = () => setIsScheduleModalOpen(false);
     
-    const openScheduleDetailModal = (scheduleId) => {
+    const openScheduleDetailModal = (scheduleId, date) => {
         setSelectedScheduleId(scheduleId);
+        setSelectedDate(date); 
         setIsScheduleDetailModalOpen(true); 
     };
     
+    
     const closeScheduleDetailModal = () => {
-        setIsScheduleDetailModalOpen(false);
-        setSelectedScheduleId(null);
+        setIsScheduleDetailModalOpen(false); 
+        setSelectedScheduleId(null); 
     };
+    
     
     const getPriorityLabel = (priority) => {
         switch (priority) {
@@ -186,8 +186,52 @@ function MainPage() {
                 return '미지정';
         }
     };
+
+    const getStatusLabel = (status) => {
+        switch (status) {
+            case 'ONGOING':
+                return '진행중';
+            case 'DONE':
+                return '완료';
+            case 'DELETED':
+                return '삭제됨';
+            default:
+                return '미지정';
+        }
+    };
     
-    const handleCheckboxChange = (petId) => {
+    const handlePetCheckboxChange = (petId) => {
+        setSelectedPets(prevSelectedPets => {
+            const newSelectedPets = new Set(prevSelectedPets);
+            if (newSelectedPets.has(petId)) {
+                newSelectedPets.delete(petId); 
+            } else {
+                newSelectedPets.add(petId);
+            }
+    
+            const updatedSchedules = schedules.reduce((acc, schedule) => {
+                if (schedule.petName.includes(petId)) {
+                    const key = `${schedule.scheduleId}-${schedule.date}`;
+                    const isChecked = newSelectedPets.has(petId);
+                    if (isChecked) {
+                        acc.add(schedule.scheduleId);
+                    } else {
+                        acc.delete(schedule.scheduleId); 
+                    }
+                }
+                return acc;
+            }, new Set(selectedSchedules)); 
+    
+            setSelectedSchedules(updatedSchedules); 
+    
+            console.log('선택된 반려동물 ID:', petId);
+            console.log('선택된 일정 ID:', Array.from(updatedSchedules));
+    
+            return newSelectedPets; 
+        });
+    };
+    
+    const handleCareGiverCheckboxChange = (petId) => {
         setSelectedPets(prevSelectedPets => {
             const newSelectedPets = new Set(prevSelectedPets);
             if (newSelectedPets.has(petId)) {
@@ -195,7 +239,47 @@ function MainPage() {
             } else {
                 newSelectedPets.add(petId);
             }
+    
+            const updatedSchedules = schedules.map(schedule => {
+                if (schedule.petName.includes(petId)) {
+                    const key = `${schedule.scheduleId}-${schedule.date}`;
+                    return {
+                        ...schedule,
+                        checked: newSelectedPets.has(petId) ? true : false,
+                    };
+                }
+                return schedule;
+            });
+    
+            setSelectedSchedules(new Set(updatedSchedules.filter(schedule => schedule.checked).map(schedule => schedule.scheduleId)));
+    
             return newSelectedPets;
+        });
+    };
+
+    const handleCategoryCheckboxChange = (categoryId) => {
+        setSelectedCategories(prevSelectedCategories => {
+            const newSelectedCategories = new Set(prevSelectedCategories);
+            if (newSelectedCategories.has(categoryId)) {
+                newSelectedCategories.delete(categoryId);
+            } else {
+                newSelectedCategories.add(categoryId);
+            }
+    
+            const updatedSchedules = schedules.map(schedule => {
+                if (schedule.categoryId === categoryId) {
+                    const key = `${schedule.scheduleId}-${schedule.date}`;
+                    return {
+                        ...schedule,
+                        checked: newSelectedCategories.has(categoryId) ? true : false,
+                    };
+                }
+                return schedule;
+            });
+    
+            setSelectedSchedules(new Set(updatedSchedules.filter(schedule => schedule.checked).map(schedule => schedule.scheduleId)));
+    
+            return newSelectedCategories;
         });
     };
     
@@ -209,7 +293,6 @@ function MainPage() {
                 newSelectedDates.add(key);
             }
     
-            // 일정 제목 및 날짜를 저장
             const updatedScheduleDetails = newSelectedDates.has(key)
                 ? [...scheduleDetails, { scheduleId, title: schedules.find(schedule => schedule.scheduleId === scheduleId).title, date: date }] // date를 그대로 사용
                 : scheduleDetails.filter(detail => detail.scheduleId !== scheduleId || detail.date !== date);
@@ -219,39 +302,28 @@ function MainPage() {
         });
     };
     
-    const handleCategoryCheckboxChange = (categoryId) => {
-        setSelectedCategories(prevSelectedCategories => {
-            const newSelectedCategories = new Set(prevSelectedCategories);
-            if (newSelectedCategories.has(categoryId)) {
-                newSelectedCategories.delete(categoryId);
-            } else {
-                newSelectedCategories.add(categoryId);
-            }
-            return newSelectedCategories;
-        });
-    };
+    // const sortedSchedules = schedules.flatMap(schedule =>
+    //     schedule.dates ? schedule.dates.map(dateInfo => ({
+    //         scheduleId: schedule.scheduleId,
+    //         title: schedule.title,
+    //         date: dateInfo.date, 
+    //         petName: schedule.petName.join(', '), 
+    //         priority: schedule.priority,
+    //         dateStatus: dateInfo.status, 
+    //     })) : [] 
+    // ).sort((a, b) => {
+    //     if (sortOrder === 'recent') {
+    //         return a.date - b.date; 
+    //     } else {
+    //         return b.date - a.date; 
+    //     }
+    // });
     
-    const sortedSchedules = schedules.flatMap(schedule =>
-        schedule.dates.map(dateInfo => ({
-            scheduleId: schedule.scheduleId,
-            title: schedule.title,
-            date: dateInfo.date, // Date 객체로 변환
-            petName: schedule.petName.join(', '),
-            priority: schedule.priority,
-            dateStatus: dateInfo.status, // selectDate의 status
-        }))
-    ).sort((a, b) => {
-        if (sortOrder === 'recent') {
-            return b.date - a.date; // 날짜순 정렬
-        } else {
-            return a.date - b.date; // 최근 생성순 정렬
-        }
-    });
-    
+
     return (
         <div className="main-page">
             <NavBar title="메인페이지" />
-    
+
             <div className="left-section">
                 <div className="button-container">
                     <button onClick={openCategoryModal} className="create-category-button">
@@ -261,7 +333,7 @@ function MainPage() {
                         일정 생성
                     </button>
                 </div>
-    
+
                 <div className="category-section">
                     <h3>일정 카테고리</h3>
                     {categories.length > 0 ? (
@@ -284,10 +356,10 @@ function MainPage() {
                         <p>등록된 카테고리가 없습니다.</p>
                     )}
                 </div>
-                
+
                 {loading && <p>로딩 중...</p>}
                 {error && <p className="error">{error}</p>}
-    
+
                 {!loading && !error && (
                     <>
                         <div className="my-pets-section">
@@ -301,16 +373,16 @@ function MainPage() {
                                         <input
                                             type="checkbox"
                                             checked={selectedPets.has(pet.petId)}
-                                            onChange={() => handleCheckboxChange(pet.petId)}
+                                            onChange={() => handlePetCheckboxChange(pet.petId)}
                                             className="pet-checkbox"
                                         />
                                     </div>
                                 ))
                             ) : (
-                                <p>등록된 반려동물이 없습니다.</p>
+                                <div className="no-data-message">등록된 반려동물이 없습니다.</div> 
                             )}
                         </div>
-    
+
                         <div className="care-giver-pets-section">
                             <h3>돌보미 반려동물</h3>
                             {careGiverPets.length > 0 ? (
@@ -322,19 +394,19 @@ function MainPage() {
                                         <input
                                             type="checkbox"
                                             checked={selectedPets.has(pet.petId)}
-                                            onChange={() => handleCheckboxChange(pet.petId)}
+                                            onChange={() => handleCareGiverCheckboxChange(pet.petId)}
                                             className="pet-checkbox"
                                         />
                                     </div>
                                 ))
                             ) : (
-                                <p>돌보미로 등록된 반려동물이 없습니다.</p>
+                                <div className="no-data-message">등록된 돌보미 반려동물이 없습니다.</div> 
                             )}
                         </div>
                     </>
                 )}
             </div>
-    
+
             <div className="schedule-list">
                 <h3>일정 목록</h3>
                 <div className="sort-select">
@@ -352,10 +424,10 @@ function MainPage() {
                     <p>로딩 중...</p>
                 ) : error ? (
                     <p>{error}</p>
-                ) : sortedSchedules.length > 0 ? (
+                ) : schedules.length > 0 ? (
                     <div className="schedule-list-content">
-                        {sortedSchedules.map((schedule) => (
-                            <div key={`${schedule.scheduleId}-${schedule.date}`} className="schedule-item" onClick={() => openScheduleDetailModal(schedule.scheduleId)}>
+                       { schedules.map((schedule) => (
+                            <div key={`${schedule.scheduleId}-${schedule.date}`} className="schedule-item" onClick={() => openScheduleDetailModal(schedule.scheduleId, schedule.date)}>
                                 <div className="schedule-title">
                                     <input
                                         type="checkbox"
@@ -365,26 +437,28 @@ function MainPage() {
                                         className="schedule-checkbox"
                                     />
                                     <h4>{schedule.title}</h4>
-                                </div>
+                                 </div>
                                 <p>날짜: {schedule.date.toLocaleString()}</p>
                                 <p>반려동물: {schedule.petName}</p>
                                 <p>우선순위: {getPriorityLabel(schedule.priority)}</p>
-                                <p>상태: {schedule.dateStatus}</p> 
+                                <p>상태: {getStatusLabel(schedule.status)}</p> 
                             </div>
                         ))}
+
                     </div>
                 ) : (
                     <p>등록된 일정이 없습니다.</p>
                 )}
             </div>
-    
+
             <div className="right-section">
                 <CalendarComponent 
                     schedules={scheduleDetails}
+                    selectedSchedules={selectedSchedules} 
                     selectedDates={selectedDates} 
                 />
             </div>
-    
+
             <CategoryModal isOpen={isCategoryModalOpen} onRequestClose={closeCategoryModal} />
             {isScheduleModalOpen && (
                 <ScheduleModal 
@@ -397,7 +471,9 @@ function MainPage() {
                 isOpen={isScheduleDetailModalOpen} 
                 onRequestClose={closeScheduleDetailModal} 
                 scheduleId={selectedScheduleId} 
-            /> 
+                selectedDate={selectedDate}
+            />
+
         </div>
     );
 }    

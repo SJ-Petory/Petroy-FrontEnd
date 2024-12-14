@@ -61,7 +61,6 @@ const ScheduleModal = ({ onClose, pets }) => {
   }, []);
 
   useEffect(() => {
-    console.log("현재 formData:", formData);
   }, [formData]);
 
   const handleChange = (e) => {
