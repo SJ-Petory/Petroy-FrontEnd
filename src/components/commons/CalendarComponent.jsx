@@ -53,11 +53,11 @@ const CalendarComponent = ({ schedules, selectedDates }) => {
         <div className="calendar">
             <div className="header">
                 <button onClick={goToPreviousMonth} className="nav-button">
-                    <i className="fa fa-chevron-left" aria-hidden="true"></i> {/* 이전 아이콘 */}
+                    <i className="fa fa-chevron-left" aria-hidden="true"></i> 
                 </button>
                 <h2>{year}년 {month + 1}월</h2>
                 <button onClick={goToNextMonth} className="nav-button">
-                    <i className="fa fa-chevron-right" aria-hidden="true"></i> {/* 다음 아이콘 */}
+                    <i className="fa fa-chevron-right" aria-hidden="true"></i> 
                 </button>
             </div>
             <div className="weekdays">
@@ -83,7 +83,7 @@ const CalendarComponent = ({ schedules, selectedDates }) => {
                                     {hasSchedules.length > 0 && (
                                         <div className="schedule-details">
                                             {hasSchedules.map(schedule => (
-                                                <div key={schedule.scheduleId} className="schedule-title">
+                                                <div key={schedule.scheduleId} className="Calendar-schedule-title">
                                                     {schedule.title}
                                                 </div>
                                             ))}

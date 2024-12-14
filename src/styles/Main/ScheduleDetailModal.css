@@ -31,6 +31,7 @@
 
 .schedule-detail-modal-close-button {
     margin-top: 10px;
+    pointer-events: auto; 
 }
 
 .schedule-detail-modal h3 {
