@@ -211,7 +211,7 @@ function MainPage() {
     
             const updatedSchedules = schedules.reduce((acc, schedule) => {
                 if (schedule.petName.includes(petId)) {
-                    const key = `${schedule.scheduleId}-${schedule.date}`;
+                    // const key = `${schedule.scheduleId}-${schedule.date}`;
                     const isChecked = newSelectedPets.has(petId);
                     if (isChecked) {
                         acc.add(schedule.scheduleId);
@@ -242,7 +242,7 @@ function MainPage() {
     
             const updatedSchedules = schedules.map(schedule => {
                 if (schedule.petName.includes(petId)) {
-                    const key = `${schedule.scheduleId}-${schedule.date}`;
+                    // const key = `${schedule.scheduleId}-${schedule.date}`;
                     return {
                         ...schedule,
                         checked: newSelectedPets.has(petId) ? true : false,
@@ -268,7 +268,7 @@ function MainPage() {
     
             const updatedSchedules = schedules.map(schedule => {
                 if (schedule.categoryId === categoryId) {
-                    const key = `${schedule.scheduleId}-${schedule.date}`;
+                    // const key = `${schedule.scheduleId}-${schedule.date}`;
                     return {
                         ...schedule,
                         checked: newSelectedCategories.has(categoryId) ? true : false,
