@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-const ScheduleModal = ({ onClose, pets }) => {
+const ScheduleModal = ({ onClose, pets, onScheduleCreated }) => {
   const [formData, setFormData] = useState({
     categoryId: '',
     title: '',
@@ -66,8 +66,18 @@ const ScheduleModal = ({ onClose, pets }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
   
-    // 반복 유무 변경 시 상태 초기화
-    if (name === 'repeatYn') {
+    if (name === 'repeatPattern.frequency') {
+      setFormData((prevData) => ({
+          ...prevData,
+          repeatPattern: {
+              ...prevData.repeatPattern,
+              frequency: value,
+              daysOfWeek: [], 
+              daysOfMonth: [], 
+          },
+      }));
+
+  } else if (name === 'repeatYn') {
       setFormData((prevData) => ({
         ...prevData,
         repeatYn: checked,
@@ -89,6 +99,7 @@ const ScheduleModal = ({ onClose, pets }) => {
         },
         selectedDates: !checked ? [] : prevData.selectedDates, 
       }));
+
     } else if (name.startsWith('repeatPattern.')) { 
       const [, subKey] = name.split('.');
       setFormData((prevData) => ({
@@ -98,11 +109,13 @@ const ScheduleModal = ({ onClose, pets }) => {
           [subKey]: type === 'checkbox' ? checked : value,
         },
       }));
+
     } else if (name === 'categoryId') {
       setFormData((prevData) => ({
         ...prevData,
         [name]: Number(value),
       }));
+
     } else {
       setFormData((prevData) => ({
         ...prevData,
@@ -117,29 +130,30 @@ const ScheduleModal = ({ onClose, pets }) => {
     return koreanTime.toISOString().replace('Z', ''); // ISO 형식으로 변환 후 Z 제거
   };  
 
-  const handleDayClick = (day) => {
-    const dayMapping = {
-      '일': 'SUNDAY',
-      '월': 'MONDAY',
-      '화': 'TUESDAY',
-      '수': 'WEDNESDAY',
-      '목': 'THURSDAY',
-      '금': 'FRIDAY',
-      '토': 'SATURDAY',
-    };
-  
+  const dayMapping = {
+    '일': 'SUNDAY',
+    '월': 'MONDAY',
+    '화': 'TUESDAY',
+    '수': 'WEDNESDAY',
+    '목': 'THURSDAY',
+    '금': 'FRIDAY',
+    '토': 'SATURDAY',
+};
+
+const handleDayClick = (day) => {
     const updatedDays = formData.repeatPattern.daysOfWeek.includes(dayMapping[day])
-    ? formData.repeatPattern.daysOfWeek.filter((d) => d !== dayMapping[day])
-    : [...formData.repeatPattern.daysOfWeek, dayMapping[day]]; 
-  
-  setFormData((prevData) => ({
-    ...prevData,
-    repeatPattern: {
-      ...prevData.repeatPattern,
-      daysOfWeek: updatedDays,
-    },
-  }));
-  };
+        ? formData.repeatPattern.daysOfWeek.filter((d) => d !== dayMapping[day])
+        : [...formData.repeatPattern.daysOfWeek, dayMapping[day]];
+
+    setFormData((prevData) => ({
+        ...prevData,
+        repeatPattern: {
+            ...prevData.repeatPattern,
+            daysOfWeek: updatedDays,
+        },
+    }));
+};
+
   
   const handleDayOfMonthClick = (day) => {
     const updatedDays = formData.repeatPattern.daysOfMonth.includes(day)
@@ -301,6 +315,7 @@ const ScheduleModal = ({ onClose, pets }) => {
   
       if (response.status === 200) {
         alert('일정이 생성되었습니다.');
+        onScheduleCreated();
         onClose();
       }
     } catch (error) {
@@ -398,19 +413,20 @@ const ScheduleModal = ({ onClose, pets }) => {
               </label>
 
               {formData.repeatPattern.frequency === 'WEEK' && (
-            <div className="days-of-week">
-              {['일', '월', '화', '수', '목', '금', '토'].map(day => (
-                <button
-                  key={day}
-                  type="button"
-                  className={`day-button ${formData.repeatPattern.daysOfWeek.includes(day) ? 'selected' : ''}`}
-                  onClick={() => handleDayClick(day)}
-                >
-                  {day}
-                </button>
-              ))}
-            </div>
-          )}
+    <div className="days-of-week">
+        {['일', '월', '화', '수', '목', '금', '토'].map(day => (
+            <button
+                key={day}
+                type="button"
+                className={`day-button ${formData.repeatPattern.daysOfWeek.includes(dayMapping[day]) ? 'selected' : ''}`}
+                onClick={() => handleDayClick(day)}
+            >
+                {day}
+            </button>
+        ))}
+    </div>
+)}
+
 
               {formData.repeatPattern.frequency === 'MONTH' && (
                 <div className="days-of-month">

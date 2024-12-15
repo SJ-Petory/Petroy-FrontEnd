@@ -4,7 +4,7 @@ import '../../styles/Main/CategoryModal.css'
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-const CategoryModal = ({ isOpen, onRequestClose }) => {
+const CategoryModal = ({ isOpen, onRequestClose, onCategoryCreated }) => {
     const [categoryName, setCategoryName] = useState('');
 
     if (!isOpen) return null; 
@@ -21,6 +21,7 @@ const CategoryModal = ({ isOpen, onRequestClose }) => {
             );
             if (response.status === 200) {
                 alert('일정 카테고리가 생성되었습니다.');
+                onCategoryCreated(); 
                 onRequestClose(); 
             } else {
                 alert(`카테고리 생성에 실패했습니다: ${response.data.message}`);
