@@ -67,7 +67,6 @@ function ScheduleDetailModal({ isOpen, onRequestClose, scheduleId, selectedDate 
 
                     if (response.status === 200) {
                         setScheduleDetail(response.data); 
-                        console.log(response.data); 
                     } else {
                         setError(response.data.message || '일정 상세 정보를 불러오는 데 실패했습니다.');
                     }

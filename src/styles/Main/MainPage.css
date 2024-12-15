@@ -237,3 +237,8 @@
 .sort-select{
     margin-bottom: 20px;
 }
+
+.all-select {
+    margin-bottom: 20px;
+    cursor: pointer; 
+}

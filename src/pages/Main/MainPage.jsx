@@ -26,6 +26,7 @@ function MainPage() {
     const [selectedCategories, setSelectedCategories] = useState(new Set()); 
     const [sortOrder, setSortOrder] = useState('recent');
     const [selectedDate, setSelectedDate] = useState(null);
+    const [selectAll, setSelectAll] = useState(false);
 
         const loadPets = async () => {
             const token = localStorage.getItem('accessToken');
@@ -34,7 +35,6 @@ function MainPage() {
                     const response = await fetchMemberPets(token);
                     if (response && response.content) {
                         setPets(response.content);
-                        console.log('내 반려동물 데이터:', response.content);
                     } else {
                         setPets([]); 
                     }
@@ -62,7 +62,6 @@ function MainPage() {
 
                     if (response.status === 200) {
                         setCareGiverPets(response.data.content || []);
-                        console.log('돌보미 반려동물 데이터:', response.data.content || []);
                     } else {
                         setCareGiverPets([]); 
                         setError(response.data.errorMessage || '돌보미 반려동물 목록을 불러오는 중 오류가 발생했습니다.');
@@ -114,6 +113,7 @@ function MainPage() {
 
                     if (response.status === 200) {
                         const schedulesData = response.data.content || [];
+                        console.log("일정 목록 데이터",response.data.content || [] )
 
                         const formattedSchedules = schedulesData.flatMap(schedule => 
                             schedule.dateInfo.map(dateInfo => ({
@@ -126,8 +126,6 @@ function MainPage() {
                                 status: dateInfo.status,
                             }))
                         );
-
-                        console.log('일정 목록 데이터:', formattedSchedules || []);
 
                         setSchedules(formattedSchedules);
                     } else {
@@ -150,14 +148,15 @@ function MainPage() {
         loadCareGiverPets();
         loadCategories(); 
         loadSchedules();
+
     }, []);
 
     const handleCategoryCreated = () => {
-        loadCategories(); // 카테고리가 생성된 후 카테고리 다시 로드
+        loadCategories(); 
     };
 
     const handleScheduleCreated = () => {
-        loadSchedules(); // 일정이 생성된 후 일정을 다시 로드
+        loadSchedules(); 
     };
     
     const handlePetCheckboxChange = (petName) => {
@@ -169,6 +168,10 @@ function MainPage() {
         }
         setSelectedPets(newSelectedPets);
         
+        // 반려동물이 선택되면 카테고리 선택 초기화
+        setSelectedCategories(new Set()); // 모든 카테고리 선택 해제
+        setSelectedSchedules({}); // 모든 일정 선택 해제
+    
         const updatedSchedules = {};
         schedules.forEach(schedule => {
             const key = `${schedule.scheduleId}-${schedule.date}`;
@@ -187,6 +190,7 @@ function MainPage() {
         }));
     };
     
+    
     const handleCareGiverCheckboxChange = (petName) => {
         const newSelectedPets = new Set(selectedPets);
         if (newSelectedPets.has(petName)) {
@@ -196,6 +200,10 @@ function MainPage() {
         }
         setSelectedPets(newSelectedPets);
         
+        // 돌보미 반려동물이 선택되면 카테고리 선택 초기화
+        setSelectedCategories(new Set()); // 모든 카테고리 선택 해제
+        setSelectedSchedules({}); // 모든 일정 선택 해제
+    
         const updatedSchedules = {};
         schedules.forEach(schedule => {
             const key = `${schedule.scheduleId}-${schedule.date}`;
@@ -204,7 +212,7 @@ function MainPage() {
             } else if (selectedSchedules[key] && schedule.petName[0] === petName) {
                 updatedSchedules[key] = false; 
             } else {
-                updatedSchedules[key] = selectedSchedules[key];
+                updatedSchedules[key] = selectedSchedules[key]; 
             }
         });
     
@@ -214,6 +222,7 @@ function MainPage() {
         }));
     };
     
+    
     const handleCategoryCheckboxChange = (categoryId) => {
         const newSelectedCategories = new Set(selectedCategories);
         if (newSelectedCategories.has(categoryId)) {
@@ -222,6 +231,12 @@ function MainPage() {
             newSelectedCategories.add(categoryId); 
         }
         setSelectedCategories(newSelectedCategories);
+    
+        // 카테고리가 선택되면 반려동물 선택 초기화
+        if (newSelectedCategories.size > 0) {
+            setSelectedPets(new Set()); // 모든 반려동물 선택 해제
+            setSelectedSchedules({}); // 모든 일정 선택 해제
+        }
     
         const updatedSchedules = {};
         schedules.forEach(schedule => {
@@ -240,7 +255,6 @@ function MainPage() {
             ...updatedSchedules,
         }));
     };
-    
 
     const handleScheduleCheckboxChange = (scheduleId, date) => {
         const key = `${scheduleId}-${date}`;
@@ -253,9 +267,18 @@ function MainPage() {
     const getFilteredSchedules = () => {
         return schedules.filter(schedule => {
             const key = `${schedule.scheduleId}-${schedule.date}`;
-            return selectedSchedules[key]; 
+            const isScheduleSelected = selectedSchedules[key];
+    
+            // 카테고리가 선택된 경우 해당 카테고리에 속하는 일정만 필터링
+            const isCategorySelected = selectedCategories.size === 0 || selectedCategories.has(schedule.categoryId);
+            
+            // 반려동물이 선택된 경우 해당 반려동물에 대한 일정만 필터링
+            const isPetSelected = selectedPets.size === 0 || selectedPets.has(schedule.petName[0]);
+    
+            return isScheduleSelected && isCategorySelected && isPetSelected;
         });
     };
+    
 
     const openCategoryModal = () => setIsCategoryModalOpen(true);
     const closeCategoryModal = () => setIsCategoryModalOpen(false);
@@ -298,7 +321,55 @@ function MainPage() {
                 return '미지정';
         }
     };
+
+    const getSortedSchedules = () => {
+        const sortedSchedules = [...schedules];
     
+        if (sortOrder === 'recent') {
+            return sortedSchedules.sort((a, b) => b.scheduleId - a.scheduleId); 
+        } else if (sortOrder === 'date') {
+            return sortedSchedules.sort((a, b) => a.date - b.date);
+        }
+    
+        return sortedSchedules; 
+    };
+
+    const handleSelectAllChange = (event) => {
+        const checked = event.target.checked;
+        setSelectAll(checked);
+    
+        const newSelectedSchedules = {};
+        schedules.forEach(schedule => {
+            const key = `${schedule.scheduleId}-${schedule.date}`;
+            newSelectedSchedules[key] = checked; // 일정 체크 상태 업데이트
+        });
+    
+        setSelectedSchedules(newSelectedSchedules); // 선택된 일정 업데이트
+    
+        // 전체 선택/해제 상태에 따라 카테고리 및 반려동물 체크박스 상태 업데이트
+        if (checked) {
+            const allCategories = new Set(categories.map(category => category.categoryId));
+            const allPets = new Set(pets.map(pet => pet.name).concat(careGiverPets.map(pet => pet.name)));
+            
+            setSelectedCategories(allCategories);
+            setSelectedPets(allPets);
+        } else {
+            setSelectedCategories(new Set());
+            setSelectedPets(new Set());
+        }
+    };
+    
+    useEffect(() => {
+        const newSelectedSchedules = {};
+        schedules.forEach(schedule => {
+            const key = `${schedule.scheduleId}-${schedule.date}`;
+            newSelectedSchedules[key] = selectAll; // 전체 선택 상태에 따라 업데이트
+        });
+        setSelectedSchedules(newSelectedSchedules);
+    }, [selectAll, schedules]);
+
+    
+
     return (
         <div className="main-page">
             <NavBar title="메인페이지" />
@@ -393,19 +464,33 @@ function MainPage() {
                     <select
                         id="sortOrder"
                         value={sortOrder}
-                        onChange={(e) => setSortOrder(e.target.value)}
+                        onChange={(e) => {
+                            const newSortOrder = e.target.value;
+                            setSortOrder(newSortOrder);
+                        }}
                     >
                         <option value="recent">최근 생성순</option>
                         <option value="date">날짜순</option>
                     </select>
                 </div>
+
+                <div>
+                    <input 
+                        type="checkbox" 
+                        checked={selectAll}
+                        onChange={handleSelectAllChange}
+                        className="all-select"
+                    /> 전체 선택 
+                </div>
+
+
                 {loading ? (
                     <p>로딩 중...</p>
                 ) : error ? (
                     <p>{error}</p>
-                ) : schedules.length > 0 ? (
+                ) : getSortedSchedules().length > 0 ? (
                     <div className="schedule-list-content">
-                        {schedules.map((schedule) => (
+                        {getSortedSchedules().map((schedule) => (
                             <div key={`${schedule.scheduleId}-${schedule.date}`} className="schedule-item" onClick={() => openScheduleDetailModal(schedule.scheduleId, schedule.date)}>
                                 <div className="schedule-title">
                                     <input
