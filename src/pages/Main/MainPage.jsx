@@ -21,14 +21,11 @@ function MainPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedPets, setSelectedPets] = useState(new Set());
-    const [selectedSchedules, setSelectedSchedules] = useState(new Set());
+    const [selectedSchedules, setSelectedSchedules] = useState({}); 
     const [selectedScheduleId, setSelectedScheduleId] = useState(null); 
-    const [selectedDates, setSelectedDates] = useState(new Set());
     const [selectedCategories, setSelectedCategories] = useState(new Set()); 
-    const [scheduleDetails, setScheduleDetails] = useState([]);
     const [sortOrder, setSortOrder] = useState('recent');
     const [selectedDate, setSelectedDate] = useState(null);
-
 
     useEffect(() => {
         const loadPets = async () => {
@@ -38,6 +35,7 @@ function MainPage() {
                     const response = await fetchMemberPets(token);
                     if (response && response.content) {
                         setPets(response.content);
+                        console.log('내 반려동물 데이터:', response.content);
                     } else {
                         setPets([]); 
                     }
@@ -52,7 +50,7 @@ function MainPage() {
             }
             setLoading(false); 
         };
-    
+
         const loadCareGiverPets = async () => {
             const token = localStorage.getItem('accessToken');
             if (token) {
@@ -62,9 +60,10 @@ function MainPage() {
                             'Authorization': `${token}`,
                         },
                     });
-    
+
                     if (response.status === 200) {
                         setCareGiverPets(response.data.content || []);
+                        console.log('돌보미 반려동물 데이터:', response.data.content || []);
                     } else {
                         setCareGiverPets([]); 
                         setError(response.data.errorMessage || '돌보미 반려동물 목록을 불러오는 중 오류가 발생했습니다.');
@@ -80,7 +79,7 @@ function MainPage() {
             }
             setLoading(false); 
         };
-    
+
         const loadCategories = async () => {
             const token = localStorage.getItem('accessToken');
             if (token) {
@@ -103,7 +102,7 @@ function MainPage() {
                 setError('로그인이 필요합니다.');
             }
         };
-    
+
         const loadSchedules = async () => {
             const token = localStorage.getItem('accessToken');
             if (token) {
@@ -113,7 +112,7 @@ function MainPage() {
                             'Authorization': `${token}`,
                         },
                     });
-        
+
                     if (response.status === 200) {
                         const schedulesData = response.data.content || [];
 
@@ -128,6 +127,8 @@ function MainPage() {
                                 status: dateInfo.status,
                             }))
                         );
+
+                        console.log('일정 목록 데이터:', formattedSchedules || []);
 
                         setSchedules(formattedSchedules);
                     } else {
@@ -144,18 +145,110 @@ function MainPage() {
                 setLoading(false);
             }
         };        
-        
+
         loadPets();
         loadCareGiverPets();
         loadCategories(); 
         loadSchedules();
     }, []);
     
-    useEffect(() => {
-        const allScheduleIds = new Set(schedules.map(schedule => schedule.scheduleId));
-        setSelectedSchedules(allScheduleIds);
-    }, [schedules]); 
+    const handlePetCheckboxChange = (petName) => {
+        const newSelectedPets = new Set(selectedPets);
+        if (newSelectedPets.has(petName)) {
+            newSelectedPets.delete(petName);
+        } else {
+            newSelectedPets.add(petName); 
+        }
+        setSelectedPets(newSelectedPets);
+        
+        const updatedSchedules = {};
+        schedules.forEach(schedule => {
+            const key = `${schedule.scheduleId}-${schedule.date}`;
+            if (newSelectedPets.has(schedule.petName[0])) { 
+                updatedSchedules[key] = true; 
+            } else if (selectedSchedules[key] && schedule.petName[0] === petName) {
+                updatedSchedules[key] = false; 
+            } else {
+                updatedSchedules[key] = selectedSchedules[key]; 
+            }
+        });
     
+        setSelectedSchedules(prev => ({
+            ...prev,
+            ...updatedSchedules,
+        }));
+    };
+    
+    const handleCareGiverCheckboxChange = (petName) => {
+        const newSelectedPets = new Set(selectedPets);
+        if (newSelectedPets.has(petName)) {
+            newSelectedPets.delete(petName); 
+        } else {
+            newSelectedPets.add(petName); 
+        }
+        setSelectedPets(newSelectedPets);
+        
+        const updatedSchedules = {};
+        schedules.forEach(schedule => {
+            const key = `${schedule.scheduleId}-${schedule.date}`;
+            if (newSelectedPets.has(schedule.petName[0])) { 
+                updatedSchedules[key] = true; 
+            } else if (selectedSchedules[key] && schedule.petName[0] === petName) {
+                updatedSchedules[key] = false; 
+            } else {
+                updatedSchedules[key] = selectedSchedules[key];
+            }
+        });
+    
+        setSelectedSchedules(prev => ({
+            ...prev,
+            ...updatedSchedules,
+        }));
+    };
+    
+    const handleCategoryCheckboxChange = (categoryId) => {
+        const newSelectedCategories = new Set(selectedCategories);
+        if (newSelectedCategories.has(categoryId)) {
+            newSelectedCategories.delete(categoryId); 
+        } else {
+            newSelectedCategories.add(categoryId); 
+        }
+        setSelectedCategories(newSelectedCategories);
+    
+        const updatedSchedules = {};
+        schedules.forEach(schedule => {
+            const key = `${schedule.scheduleId}-${schedule.date}`;
+            if (newSelectedCategories.has(schedule.categoryId)) {
+                updatedSchedules[key] = true; 
+            } else if (selectedSchedules[key] && schedule.categoryId === categoryId) {
+                updatedSchedules[key] = false; 
+            } else {
+                updatedSchedules[key] = selectedSchedules[key]; 
+            }
+        });
+    
+        setSelectedSchedules(prev => ({
+            ...prev,
+            ...updatedSchedules,
+        }));
+    };
+    
+
+    const handleScheduleCheckboxChange = (scheduleId, date) => {
+        const key = `${scheduleId}-${date}`;
+        setSelectedSchedules(prevSelectedSchedules => ({
+            ...prevSelectedSchedules,
+            [key]: !prevSelectedSchedules[key], 
+        }));
+    };
+
+    const getFilteredSchedules = () => {
+        return schedules.filter(schedule => {
+            const key = `${schedule.scheduleId}-${schedule.date}`;
+            return selectedSchedules[key]; 
+        });
+    };
+
     const openCategoryModal = () => setIsCategoryModalOpen(true);
     const closeCategoryModal = () => setIsCategoryModalOpen(false);
     const openScheduleModal = () => setIsScheduleModalOpen(true);
@@ -167,12 +260,10 @@ function MainPage() {
         setIsScheduleDetailModalOpen(true); 
     };
     
-    
     const closeScheduleDetailModal = () => {
         setIsScheduleDetailModalOpen(false); 
         setSelectedScheduleId(null); 
     };
-    
     
     const getPriorityLabel = (priority) => {
         switch (priority) {
@@ -200,132 +291,12 @@ function MainPage() {
         }
     };
     
-    const handlePetCheckboxChange = (petId) => {
-        setSelectedPets(prevSelectedPets => {
-            const newSelectedPets = new Set(prevSelectedPets);
-            if (newSelectedPets.has(petId)) {
-                newSelectedPets.delete(petId); 
-            } else {
-                newSelectedPets.add(petId);
-            }
-    
-            const updatedSchedules = schedules.reduce((acc, schedule) => {
-                if (schedule.petName.includes(petId)) {
-                    // const key = `${schedule.scheduleId}-${schedule.date}`;
-                    const isChecked = newSelectedPets.has(petId);
-                    if (isChecked) {
-                        acc.add(schedule.scheduleId);
-                    } else {
-                        acc.delete(schedule.scheduleId); 
-                    }
-                }
-                return acc;
-            }, new Set(selectedSchedules)); 
-    
-            setSelectedSchedules(updatedSchedules); 
-    
-            console.log('선택된 반려동물 ID:', petId);
-            console.log('선택된 일정 ID:', Array.from(updatedSchedules));
-    
-            return newSelectedPets; 
-        });
-    };
-    
-    const handleCareGiverCheckboxChange = (petId) => {
-        setSelectedPets(prevSelectedPets => {
-            const newSelectedPets = new Set(prevSelectedPets);
-            if (newSelectedPets.has(petId)) {
-                newSelectedPets.delete(petId);
-            } else {
-                newSelectedPets.add(petId);
-            }
-    
-            const updatedSchedules = schedules.map(schedule => {
-                if (schedule.petName.includes(petId)) {
-                    // const key = `${schedule.scheduleId}-${schedule.date}`;
-                    return {
-                        ...schedule,
-                        checked: newSelectedPets.has(petId) ? true : false,
-                    };
-                }
-                return schedule;
-            });
-    
-            setSelectedSchedules(new Set(updatedSchedules.filter(schedule => schedule.checked).map(schedule => schedule.scheduleId)));
-    
-            return newSelectedPets;
-        });
-    };
-
-    const handleCategoryCheckboxChange = (categoryId) => {
-        setSelectedCategories(prevSelectedCategories => {
-            const newSelectedCategories = new Set(prevSelectedCategories);
-            if (newSelectedCategories.has(categoryId)) {
-                newSelectedCategories.delete(categoryId);
-            } else {
-                newSelectedCategories.add(categoryId);
-            }
-    
-            const updatedSchedules = schedules.map(schedule => {
-                if (schedule.categoryId === categoryId) {
-                    // const key = `${schedule.scheduleId}-${schedule.date}`;
-                    return {
-                        ...schedule,
-                        checked: newSelectedCategories.has(categoryId) ? true : false,
-                    };
-                }
-                return schedule;
-            });
-    
-            setSelectedSchedules(new Set(updatedSchedules.filter(schedule => schedule.checked).map(schedule => schedule.scheduleId)));
-    
-            return newSelectedCategories;
-        });
-    };
-    
-    const handleScheduleCheckboxChange = (scheduleId, date) => {
-        setSelectedDates(prevSelectedDates => {
-            const newSelectedDates = new Set(prevSelectedDates);
-            const key = `${scheduleId}-${date}`;
-            if (newSelectedDates.has(key)) {
-                newSelectedDates.delete(key);
-            } else {
-                newSelectedDates.add(key);
-            }
-    
-            const updatedScheduleDetails = newSelectedDates.has(key)
-                ? [...scheduleDetails, { scheduleId, title: schedules.find(schedule => schedule.scheduleId === scheduleId).title, date: date }] // date를 그대로 사용
-                : scheduleDetails.filter(detail => detail.scheduleId !== scheduleId || detail.date !== date);
-    
-            setScheduleDetails(updatedScheduleDetails);
-            return newSelectedDates;
-        });
-    };
-    
-    // const sortedSchedules = schedules.flatMap(schedule =>
-    //     schedule.dates ? schedule.dates.map(dateInfo => ({
-    //         scheduleId: schedule.scheduleId,
-    //         title: schedule.title,
-    //         date: dateInfo.date, 
-    //         petName: schedule.petName.join(', '), 
-    //         priority: schedule.priority,
-    //         dateStatus: dateInfo.status, 
-    //     })) : [] 
-    // ).sort((a, b) => {
-    //     if (sortOrder === 'recent') {
-    //         return a.date - b.date; 
-    //     } else {
-    //         return b.date - a.date; 
-    //     }
-    // });
-    
-
     return (
         <div className="main-page">
             <NavBar title="메인페이지" />
 
             <div className="left-section">
-                <div className="button-container">
+            <div className="button-container">
                     <button onClick={openCategoryModal} className="create-category-button">
                         일정 카테고리 생성
                     </button>
@@ -372,8 +343,8 @@ function MainPage() {
                                         </div>
                                         <input
                                             type="checkbox"
-                                            checked={selectedPets.has(pet.petId)}
-                                            onChange={() => handlePetCheckboxChange(pet.petId)}
+                                            checked={selectedPets.has(pet.name)}
+                                            onChange={() => handlePetCheckboxChange(pet.name)}
                                             className="pet-checkbox"
                                         />
                                     </div>
@@ -393,8 +364,8 @@ function MainPage() {
                                         </div>
                                         <input
                                             type="checkbox"
-                                            checked={selectedPets.has(pet.petId)}
-                                            onChange={() => handleCareGiverCheckboxChange(pet.petId)}
+                                            checked={selectedPets.has(pet.name)}
+                                            onChange={() => handleCareGiverCheckboxChange(pet.name)}
                                             className="pet-checkbox"
                                         />
                                     </div>
@@ -426,25 +397,24 @@ function MainPage() {
                     <p>{error}</p>
                 ) : schedules.length > 0 ? (
                     <div className="schedule-list-content">
-                       { schedules.map((schedule) => (
+                        {schedules.map((schedule) => (
                             <div key={`${schedule.scheduleId}-${schedule.date}`} className="schedule-item" onClick={() => openScheduleDetailModal(schedule.scheduleId, schedule.date)}>
                                 <div className="schedule-title">
                                     <input
                                         type="checkbox"
-                                        checked={selectedSchedules.has(schedule.scheduleId) && selectedDates.has(`${schedule.scheduleId}-${schedule.date}`)}
+                                        checked={selectedSchedules[`${schedule.scheduleId}-${schedule.date}`] || false} 
                                         onClick={(e) => e.stopPropagation()} 
                                         onChange={() => handleScheduleCheckboxChange(schedule.scheduleId, schedule.date)}
                                         className="schedule-checkbox"
                                     />
                                     <h4>{schedule.title}</h4>
-                                 </div>
+                                </div>
                                 <p>날짜: {schedule.date.toLocaleString()}</p>
                                 <p>반려동물: {schedule.petName}</p>
                                 <p>우선순위: {getPriorityLabel(schedule.priority)}</p>
                                 <p>상태: {getStatusLabel(schedule.status)}</p> 
                             </div>
                         ))}
-
                     </div>
                 ) : (
                     <p>등록된 일정이 없습니다.</p>
@@ -453,9 +423,8 @@ function MainPage() {
 
             <div className="right-section">
                 <CalendarComponent 
-                    schedules={scheduleDetails}
-                    selectedSchedules={selectedSchedules} 
-                    selectedDates={selectedDates} 
+                    schedules={getFilteredSchedules()} 
+                    selectedDates={Object.keys(selectedSchedules).filter(key => selectedSchedules[key])} 
                 />
             </div>
 
@@ -466,16 +435,16 @@ function MainPage() {
                     pets={[...pets, ...careGiverPets]} 
                 />
             )}
-    
+
             <ScheduleDetailModal 
                 isOpen={isScheduleDetailModalOpen} 
                 onRequestClose={closeScheduleDetailModal} 
                 scheduleId={selectedScheduleId} 
                 selectedDate={selectedDate}
             />
-
         </div>
     );
 }    
 
 export default MainPage;
+
