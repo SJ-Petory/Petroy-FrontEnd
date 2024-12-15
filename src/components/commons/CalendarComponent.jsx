@@ -76,9 +76,10 @@ const CalendarComponent = ({ schedules, selectedDates }) => {
                             const dateStr = date.toDateString(); 
                             const isToday = dateStr === today.toDateString();
                             const hasSchedules = schedules.filter(schedule => new Date(schedule.date).toDateString() === dateStr);
+                            const isSelected = selectedDates.includes(dateStr); // 선택된 날짜 확인
 
                             return (
-                                <div key={idx} className={`day ${isToday ? 'today' : ''}`}>
+                                <div key={idx} className={`day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`}>
                                     {date.getDate()}
                                     {hasSchedules.length > 0 && (
                                         <div className="schedule-details">
