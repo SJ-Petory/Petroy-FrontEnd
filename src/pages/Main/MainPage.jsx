@@ -27,7 +27,6 @@ function MainPage() {
     const [sortOrder, setSortOrder] = useState('recent');
     const [selectedDate, setSelectedDate] = useState(null);
 
-    useEffect(() => {
         const loadPets = async () => {
             const token = localStorage.getItem('accessToken');
             if (token) {
@@ -144,13 +143,22 @@ function MainPage() {
                 setError('로그인이 필요합니다.');
                 setLoading(false);
             }
-        };        
+        };      
 
+    useEffect(() => {
         loadPets();
         loadCareGiverPets();
         loadCategories(); 
         loadSchedules();
     }, []);
+
+    const handleCategoryCreated = () => {
+        loadCategories(); // 카테고리가 생성된 후 카테고리 다시 로드
+    };
+
+    const handleScheduleCreated = () => {
+        loadSchedules(); // 일정이 생성된 후 일정을 다시 로드
+    };
     
     const handlePetCheckboxChange = (petName) => {
         const newSelectedPets = new Set(selectedPets);
@@ -428,11 +436,17 @@ function MainPage() {
                 />
             </div>
 
-            <CategoryModal isOpen={isCategoryModalOpen} onRequestClose={closeCategoryModal} />
+            <CategoryModal 
+                isOpen={isCategoryModalOpen} 
+                onRequestClose={closeCategoryModal} 
+                onCategoryCreated={handleCategoryCreated} 
+            />
+
             {isScheduleModalOpen && (
                 <ScheduleModal 
                     onClose={closeScheduleModal} 
                     pets={[...pets, ...careGiverPets]} 
+                    onScheduleCreated={handleScheduleCreated}
                 />
             )}
 
