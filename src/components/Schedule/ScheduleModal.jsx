@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/Main/ScheduleModal.css';
-import defaultPetPic from '../../assets/DefaultImage.png';
+import defaultPetPic from '../../assets/images/DefaultImage.png';
 import Calendar from 'react-calendar';  
 import axios from 'axios';
 

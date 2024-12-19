@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import defaultProfilePic from '../../assets/DefaultImage.png';
+import defaultProfilePic from '../../assets/images/DefaultImage.png';
 import '../../styles/Friend/FriendDetail.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;

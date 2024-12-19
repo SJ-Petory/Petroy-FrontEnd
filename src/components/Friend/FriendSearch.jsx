@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import '../../styles/Friend/FriendSearch.css'; 
 import FriendRequest from './FriendRequest.jsx'; 
-import defaultProfilePic from '../../assets/DefaultImage.png'; 
+import defaultProfilePic from '../../assets/images/DefaultImage.png';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import defaultProfilePic from '../../assets/DefaultImage.png';
+import defaultProfilePic from '../../assets/images/DefaultImage.png';
 import '../../styles/Friend/FriendCard.css';
 
 const FriendCard = ({ id, name, image, onAccept, onReject }) => { // props로 데이터 전달
