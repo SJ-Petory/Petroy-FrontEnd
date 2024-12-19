@@ -113,7 +113,6 @@ function MainPage() {
 
                     if (response.status === 200) {
                         const schedulesData = response.data.content || [];
-                        console.log("일정 목록 데이터",response.data.content || [] )
 
                         const formattedSchedules = schedulesData.flatMap(schedule => 
                             schedule.dateInfo.map(dateInfo => ({
