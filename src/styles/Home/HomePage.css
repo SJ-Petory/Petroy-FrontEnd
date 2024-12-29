@@ -363,6 +363,7 @@ html, body {
     box-sizing: border-box;
     display: block;
     height: 56px;
+
     font-weight: 500;
     letter-spacing: -0.3px;
     line-height: 28px;
@@ -530,7 +531,7 @@ html, body {
     margin-top: 10px;
 }
 
-.homepage-bottom a {
+.homepage-bottom-button {
     box-sizing: border-box;
     display: inline-block;
     height: 61px;
@@ -547,9 +548,14 @@ html, body {
     background-color: rgb(214, 116, 35);
     border-radius: 50px;
     cursor: pointer;
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 테두리에 그림자 효과 */
+    border: none;
 }
 
-.homepage-bottom a:hover {
+.homepage-bottom-button:hover {
     background-color: rgba(44, 42, 42, 0.8);
-    color: rgb(255, 255, 255);
 }
