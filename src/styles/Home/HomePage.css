@@ -27,6 +27,7 @@ html, body {
     color: #ffffff;
     margin-left: 8%;
     margin-top: 2%;
+    cursor: pointer;
 }
 
 .button-group {
@@ -129,7 +130,7 @@ html, body {
     width: 100%;     
     margin-bottom: 8vh;
 }
-/* 스와이퍼 페이징 컨테이너 */
+
 .swiper-pagination {
     position: absolute;
     box-sizing: border-box;
@@ -137,46 +138,51 @@ html, body {
     flex-direction: column;
     flex-wrap: nowrap;
     height: 76px;
-    width: 10px;
-    right: 6%;
+    right: 90px;
     top: 323px;
+    width: 10px;
     z-index: 101;
     text-size-adjust: 100%;
+    font-family: 'Pretendard', sans-serif;
     font-size: 12.96px;
-    column-gap: 15px; 
-    row-gap: 15px;    
+    column-gap: 15px;
+    gap: 20px; 
     transform: matrix(1, 0, 0, 1, 0, -38);
     unicode-bidi: isolate;
 }
 
-/* 스와이퍼 페이징 각 요소 */
 .swiper-pagination-bullet {
     box-sizing: border-box;
     display: block;
     height: 10px;
     width: 10px;
-    background-attachment: scroll;
-    background-clip: border-box;
     background-color: rgb(66, 55, 47);
-    background-image: none;
-    background-origin: padding-box;
-    background-position-x: 0%;
-    background-position-y: 0%;
-    background-repeat: repeat;
-    background-size: auto;
-    cursor: pointer;
-    border-radius: 10px; 
+    border-radius: 50%;
     opacity: 0.2;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    transform: scale(1);
+    transition: 
+        transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+        opacity 0.3s ease,
+        background-color 0.3s ease;
 }
 
-/* 활성화된 페이징 요소 */
+.swiper-pagination-bullet-on {
+    opacity: 1;
+    background-color: rgb(66, 55, 47);
+    transform: scaleY(2.2); 
+    width: 10px; 
+    border-radius: 50% / 25%; 
+    transition: 
+        transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+        opacity 0.3s ease,
+        background-color 0.3s ease;
+}
+
 .swiper-pagination-bullet.active {
-    background-color: rgb(229, 159, 112);
     opacity: 1;
 }
 
-/* 텍스트 영역 */
 .text-area {
     box-sizing: border-box;
     display: block;
@@ -289,7 +295,6 @@ html, body {
     color: rgba(66, 55, 47, 0.5);
 }
 
-/* 프로그레스 바 */
 .progress {
     position: relative;
     align-items: center;
@@ -310,7 +315,6 @@ html, body {
     animation: progressAnimation 5s linear infinite;
 }
 
-/* 프로그레스 바 애니메이션 */
 @keyframes progressAnimation {
     from {
         width: 0;
@@ -318,4 +322,140 @@ html, body {
     to {
         width: 100%;
     }
+}
+
+#section02 {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    margin-top: 5%;
+    margin-bottom: 10%;
+    width: 90vw;
+    font-weight: 400;
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-origin: padding-box;
+    background-position: 0px 0%;
+    background-repeat: no-repeat;
+    background-size: auto;
+    unicode-bidi: isolate;
+    text-align: center;
+}
+
+.tit_wrap {
+    box-sizing: border-box;
+    display: block;
+    height: 162px;
+    margin-bottom: 40px;
+    padding-top: 25px;
+    width: 1175px;
+    font-weight: 400;
+    text-align: center;
+    background-position: 50% 0px;
+    background-repeat: no-repeat;
+}
+
+.animate {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease-in-out;
+}
+
+.animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.s_tit {
+    box-sizing: border-box;
+    display: block;
+    height: 56px;
+    width: 1175px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+    line-height: 28px;
+    text-align: center;
+    color: rgb(119, 119, 119);
+    word-break: break-all;
+    margin-top: 30px;
+}
+
+ul {
+    box-sizing: border-box;
+    display: flex; 
+    justify-content: center; 
+    gap: 100px; 
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    padding: 0 0 15%; 
+    margin-top: 50px;
+}
+
+li {
+    position: relative;
+    box-sizing: border-box;
+    display: flex; 
+    flex-direction: column;
+    align-items: center; 
+    justify-content: flex-start;
+    height: 50vh;
+    width: 20vw;
+    text-align: left;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15); 
+    transition: all 0.3s ease;
+    background-color: #fff; 
+    border-radius: 10px; 
+    overflow: hidden; 
+}
+
+li img {
+    width: 100%; 
+    max-height: 100%; 
+}
+
+.bg {
+    position: absolute;
+    height: 40px;
+    padding-top: 40px;
+    top: 200px;
+    width: 100%;
+    background-color: #fff;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+}
+
+.txt_box {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 250px; 
+    text-align: center;
+    background-color: #fff;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center; 
+}
+
+.txt {
+    height: 10%;
+    width: 100%;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    color: rgb(119, 119, 119);
+    margin-bottom: 15px;
+    height: 50%; 
+}
+
+h4 {
+    color: rgb(218, 137, 83);
+    font-weight: 900;
+    font-size: 22px;
+    margin-bottom: 10px;
 }
