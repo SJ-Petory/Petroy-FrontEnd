@@ -190,7 +190,7 @@ function HomePage() {
                     <span>PETORY</span>
                     <h2>반려동물 라이프의 새로운 시작!</h2>
                     <p>지금 바로 가입하고 반려동물과의 특별한 시간을 만들어보세요.</p>
-                    <a onClick={handleLoginClick}>이용하기</a>
+                    <button onClick={handleLoginClick} className="homepage-bottom-button">이용하기</button>
                 </div>
             </div>
         </div>
