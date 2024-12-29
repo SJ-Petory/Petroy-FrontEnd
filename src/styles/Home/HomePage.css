@@ -331,7 +331,6 @@ html, body {
     align-items: center; 
     justify-content: center; 
     margin-top: 5%;
-    margin-bottom: 10%;
     width: 90vw;
     font-weight: 400;
     background-attachment: scroll;
@@ -458,4 +457,100 @@ h4 {
     font-weight: 900;
     font-size: 22px;
     margin-bottom: 10px;
+}
+
+.homepage-bottom {
+    box-sizing: border-box;
+    display: block;
+    height: 40%;
+    padding: 50px 0 50px 0;
+    width: 100%;
+    font-family: SUIT, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: rgba(0, 0, 0, 0.5); 
+    background-image: url('../../assets/images/bottom.jpg');
+    background-origin: padding-box;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: darken; 
+    unicode-bidi: isolate;
+}
+
+.homepage-bottom span {
+    box-sizing: border-box;
+    display: inline;
+    height: auto;
+    width: 100%;
+    text-size-adjust: 100%;
+    font-family: SUIT, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+}
+
+.homepage-bottom h2 {
+    box-sizing: border-box;
+    display: block;
+    height: 30px;
+    margin: 30px 0 0 0;
+    padding: 0;
+    width: 100%;
+    text-size-adjust: 100%;
+    font-family: GangwonEduPowerExtraBoldA;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 30px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+}
+
+.homepage-bottom p {
+    box-sizing: border-box;
+    display: block;
+    height: 24px;
+    margin: 0 0 30px 0;
+    padding: 0;
+    width: 100%;
+    text-size-adjust: 100%;
+    font-family: SUIT, sans-serif;
+    font-size: 16px;
+    font-weight: 00;
+    line-height: 24px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    word-break: break-word;
+    margin-top: 10px;
+}
+
+.homepage-bottom a {
+    box-sizing: border-box;
+    display: inline-block;
+    height: 61px;
+    padding: 17px 0;
+    width: 215px;
+    text-size-adjust: 100%;
+    font-family: SUIT, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 27px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    background-color: rgb(214, 116, 35);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.homepage-bottom a:hover {
+    background-color: rgba(44, 42, 42, 0.8);
+    color: rgb(255, 255, 255);
 }
